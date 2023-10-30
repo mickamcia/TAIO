@@ -1,7 +1,7 @@
 #include "graph.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
+#include <string.h>
 
 void graph_generate(graph* g, int edge_weight_max, int edge_weight_min, float edge_occur_prob){
     for(int i = 0; i < g->vert_count; i++){
@@ -59,6 +59,23 @@ void graph_destroy(graph *g)
 {
     free(g->mat);
     free(g);
+}
+
+graph *graph_clone(graph *g)
+{
+    graph* copy = graph_init(g->vert_count);
+    memcpy(copy->mat, g->mat, sizeof(int) * g->vert_count * g->vert_count);
+    return copy;
+}
+
+void graph_permute(graph *g)
+{
+
+}
+
+void graph_add_noise(graph* g, int absolute, float relative)
+{
+    
 }
 
 void graph_save_to_file(graph *g, char *path)
