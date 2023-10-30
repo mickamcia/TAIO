@@ -13,5 +13,5 @@ matrix* matrix_clone(matrix* m);
 
 void matrix_generate_permutation(matrix* m);
 void matrix_multiply(matrix* a, matrix* b, matrix* c);
-
+void matrix_transpose(matrix* m);
 #endif

@@ -53,7 +53,6 @@ matrix* graph_load_from_file(char *path)
 void graph_save_to_file(matrix *g, char *path)
 {
     FILE *file = fopen(path, "w");
-    
     fprintf(file, "%d\n", g->size);
     for(int i = 0; i < g->size; i++){
         for(int j = 0; j < g->size; j++){
@@ -72,11 +71,11 @@ void graph_permute(matrix *g)
     
     matrix_generate_permutation(permutation);
     matrix_multiply(g, permutation, output);
-    
-    matrix_destroy(g);
+    matrix_transpose(permutation);
+    matrix_multiply(permutation, output, g);
     matrix_destroy(permutation);
-    g->size = output->size;
-    g->mat = output->mat;
+    matrix_destroy(output);
+
 }
 
 void graph_add_noise(matrix* g, float prob, int absolute, float relative)

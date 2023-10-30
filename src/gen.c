@@ -5,9 +5,9 @@
 int main(){
     srand(time(NULL));
 
-    matrix* g1 = matrix_init(4);
+    matrix* g1 = matrix_init(8);
     graph_generate(g1, 5, 2, 0.5);
-
+    
     matrix* g2 = matrix_clone(g1);
     graph_add_noise(g2, 0.5, 1, 0.0);
 
