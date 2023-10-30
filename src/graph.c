@@ -67,14 +67,14 @@ void graph_save_to_file(matrix *g, char *path)
 void graph_permute(matrix *g)
 {
     matrix* permutation = matrix_init(g->size);
-    matrix* output = matrix_init(g->size);
+    matrix* temp = matrix_init(g->size);
     
     matrix_generate_permutation(permutation);
-    matrix_multiply(g, permutation, output);
+    matrix_multiply(g, permutation, temp);
     matrix_transpose(permutation);
-    matrix_multiply(permutation, output, g);
+    matrix_multiply(permutation, temp, g);
     matrix_destroy(permutation);
-    matrix_destroy(output);
+    matrix_destroy(temp);
 
 }
 
