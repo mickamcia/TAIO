@@ -6,11 +6,11 @@
 void graph_generate(graph* g, int edge_weight_max, int edge_weight_min, float edge_occur_prob){
     for(int i = 0; i < g->vert_count; i++){
         for(int j = 0; j < g->vert_count; j++){
-            if(edge_occur_prob < (float)rand() / RAND_MAX){
-                g->mat[i * g->vert_count + j] = 0;
+            if(edge_occur_prob > (float)rand() / RAND_MAX){
+                g->mat[i * g->vert_count + j] = rand() % (1 + edge_weight_max - edge_weight_min) + edge_weight_min;   
             }
             else{
-                g->mat[i * g->vert_count + j] = rand() % (1 + edge_weight_max - edge_weight_min) + edge_weight_min;   
+                g->mat[i * g->vert_count + j] = 0;
             }
         }
     }
@@ -70,12 +70,22 @@ graph *graph_clone(graph *g)
 
 void graph_permute(graph *g)
 {
-
+    
 }
 
-void graph_add_noise(graph* g, int absolute, float relative)
+void graph_add_noise(graph* g, float prob, int absolute, float relative)
 {
-    
+    for(int i = 0; i < g->vert_count; i++){
+        for(int j = 0; j < g->vert_count; j++){
+            if(prob > (float)rand() / RAND_MAX){
+                int value = g->mat[i * g->vert_count + j];
+                int max_error = (int)(relative * value) + absolute;
+                int error = (rand() % (2 * max_error + 1)) - max_error; // error in < -max_error, max_error >
+                value += error;
+                g->mat[i * g->vert_count + j] = value < 0 ? 0 : value;
+            }
+        }
+    }
 }
 
 void graph_save_to_file(graph *g, char *path)

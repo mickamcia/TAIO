@@ -13,4 +13,4 @@ void graph_destroy(graph* g);
 
 graph* graph_clone(graph* g);
 void graph_permute(graph* g);
-void graph_add_noise(graph* g, int absolute, float relative);
+void graph_add_noise(graph* g, float prob, int absolute, float relative);
