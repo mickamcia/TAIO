@@ -69,12 +69,14 @@ void graph_permute(matrix *g)
 {
     matrix* permutation = matrix_init(g->size);
     matrix* output = matrix_init(g->size);
+    
     matrix_generate_permutation(permutation);
     matrix_multiply(g, permutation, output);
-    matrix* swap = g;
-    g = output;
-    matrix_destroy(swap);
+    
+    matrix_destroy(g);
     matrix_destroy(permutation);
+    g->size = output->size;
+    g->mat = output->mat;
 }
 
 void graph_add_noise(matrix* g, float prob, int absolute, float relative)
