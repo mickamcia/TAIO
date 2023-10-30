@@ -8,13 +8,8 @@ int main(){
     matrix* g1 = matrix_init(8);
     graph_generate(g1, 5, 2, 0.5);
 
-    for(int i = 0; i < g1->size; i++){
-        for(int j = 0; j < g1->size; j++){
-            g1->mat[i * g1->size + j] = 10 * i + j + 11;
-        }
-    }
     matrix* g2 = matrix_clone(g1);
-    //graph_add_noise(g2, 0.5, 1, 0.0);
+    graph_add_noise(g2, 0.5, 1, 0.0);
 
     matrix* g3 = matrix_clone(g2);
     graph_permute(g3);
