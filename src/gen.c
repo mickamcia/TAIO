@@ -32,13 +32,13 @@ void test_basic(){
 
 void test_exact_clique(){
     const int clique_size = 8;
-    const int graph_size = 12;
+    const int graph_size = 20;
     matrix* g0 = matrix_init(clique_size);
     graph_generate(g0, 3, 1, 1.0);
     matrix* g1 = matrix_extend(g0, graph_size - clique_size);
 
     matrix* g2 = matrix_init(graph_size);
-    graph_generate(g2, 3, 1, 0.5);
+    graph_generate(g2, 3, 1, 0.8);
 
     matrix* g3 = matrix_init(graph_size);
     matrix_add(g1, g2, g3); // now g3 has a guaranteed clique of size equal to g0's vertex count

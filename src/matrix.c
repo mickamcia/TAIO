@@ -109,15 +109,11 @@ void matrix_transpose(matrix *m)
 {
     const int BLOCK_SIZE = 16;
     const int n = m->size;
-    for (int i = 0; i < n; i += BLOCK_SIZE) {
-        for (int j = i; j < n; j += BLOCK_SIZE) {
-            for (int ii = i; ii < i + BLOCK_SIZE && ii < n; ii++) {
-                for (int jj = j + ii + 1; jj < j + BLOCK_SIZE && jj < n; jj++) {
-                    int swap = m->mat[ii * n + jj];
-                    m->mat[ii * n + jj] = m->mat[ii + n * jj];
-                    m->mat[ii + n * jj] = swap;
-                }
-            }
+    for (int i = 0; i < n; i++) {
+        for (int j = i; j < n; j++) {
+            int swap = m->mat[i * n + j];
+            m->mat[i * n + j] = m->mat[i + n * j];
+            m->mat[i + n * j] = swap;
         }
     }
 }
