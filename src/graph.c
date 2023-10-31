@@ -21,7 +21,7 @@ void graph_print(matrix *g)
     printf("%d\n", g->size);
     for(int i = 0; i < g->size; i++){
         for(int j = 0; j < g->size; j++){
-            printf("%d ", g->mat[i * g->size + j]);
+            printf("% 2d ", g->mat[i * g->size + j]); // prints from 0 to 99
         }
         printf("\n");
     }
@@ -56,7 +56,7 @@ void graph_save_to_file(matrix *g, char *path)
     fprintf(file, "%d\n", g->size);
     for(int i = 0; i < g->size; i++){
         for(int j = 0; j < g->size; j++){
-            fprintf(file, "%d ", g->mat[i * g->size + j]);
+            fprintf(file, "% 2d ", g->mat[i * g->size + j]); // prints from 0 to 99
         }
         fprintf(file, "\n");
     }
@@ -72,9 +72,9 @@ void graph_permute(matrix *g)
     matrix_multiply(g, permutation, temp);
     matrix_transpose(permutation);
     matrix_multiply(permutation, temp, g);
+
     matrix_destroy(permutation);
     matrix_destroy(temp);
-
 }
 
 void graph_add_noise(matrix* g, float prob, int absolute, float relative)
@@ -84,6 +84,7 @@ void graph_add_noise(matrix* g, float prob, int absolute, float relative)
             if(prob > (float)rand() / RAND_MAX){
                 int value = g->mat[i * g->size + j];
                 if(value == 0) continue; // do not create new edges
+                
                 int max_error = (int)(relative * value) + absolute;
                 int error = (rand() % (2 * max_error + 1)) - max_error; // error in < -max_error, max_error >
                 value += error;

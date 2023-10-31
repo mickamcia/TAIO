@@ -1,11 +1,6 @@
 #include "exact_clique.h"
 #include <stdlib.h>
 
-matrix* exact_clique_run(matrix *g)
-{
-    matrix* result = matrix_clone(g);
-}
-
 void exact_clique_simplify_graph(matrix *g)
 {
     const int n = g->size;
@@ -25,4 +20,11 @@ void exact_clique_simplify_graph(matrix *g)
     for(int i = 0; i < n; i++){
         g->mat[i * n + i] = 0;
     }
+}
+
+matrix* exact_clique_run(matrix *g)
+{
+    matrix* result = matrix_clone(g);
+    exact_clique_simplify_graph(result);
+    return result;
 }
