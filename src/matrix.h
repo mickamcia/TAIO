@@ -1,5 +1,5 @@
 #ifndef MATRIX_H
-#define MATRIx_H
+#define MATRIX_H
 
 typedef struct{
     int* mat;
