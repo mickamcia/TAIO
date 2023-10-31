@@ -2,6 +2,11 @@
 #include <time.h>
 #include <stdlib.h>
 
+#include "approx_clique.h"
+#include "approx_subgraph.h"
+#include "exact_clique.h"
+#include "exact_subgraph.h"
+
 int main(){
     srand(time(NULL));
 
