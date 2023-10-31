@@ -70,9 +70,7 @@ void graph_permute(matrix *g)
     
     matrix_generate_permutation(permutation);
     matrix_multiply(g, permutation, temp);
-    graph_print(permutation);
     matrix_transpose(permutation);
-    graph_print(permutation);
     matrix_multiply(permutation, temp, g);
 
     matrix_destroy(permutation);
