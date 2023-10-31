@@ -7,27 +7,61 @@
 #include "exact_clique.h"
 #include "exact_subgraph.h"
 
-int main(){
-    srand(time(NULL));
+void test_basic(){
+    matrix* g0 = matrix_init(8);
+    graph_generate(g0, 5, 2, 0.5);
 
-    matrix* g1 = matrix_init(8);
-    graph_generate(g1, 5, 2, 0.5);
+    matrix* g1 = matrix_clone(g0);
+    graph_add_noise(g1, 0.5, 1, 0.0);
 
     matrix* g2 = matrix_clone(g1);
-    graph_add_noise(g2, 0.5, 1, 0.0);
-
-    matrix* g3 = matrix_clone(g2);
-    graph_permute(g3);
+    graph_permute(g2);
     
+    graph_print(g0);
     graph_print(g1);
     graph_print(g2);
-    graph_print(g3);
     
-    graph_save_to_file(g1, "res/G1.txt");
-    graph_save_to_file(g2, "res/G2.txt");
-    graph_save_to_file(g3, "res/G3.txt");
+    graph_save_to_file(g0, "res/TEST_BASIC_0.txt");
+    graph_save_to_file(g1, "res/TEST_BASIC_1.txt");
+    graph_save_to_file(g2, "res/TEST_BASIC_2.txt");
     
+    matrix_destroy(g0);
+    matrix_destroy(g1);
+    matrix_destroy(g2);
+}
+
+void test_exact_clique(){
+    matrix* g0 = matrix_init(8);
+    graph_generate(g0, 5, 1, 1.0);
+    matrix* g1 = matrix_extend(g0, 8);
+
+    matrix* g2 = matrix_init(16);
+    graph_generate(g2, 5, 1, 0.5);
+
+    matrix* g3 = matrix_init(16);
+    matrix_add(g1, g2, g3); // now g3 has a guaranteed clique of size equal to g0's vertex count
+    graph_permute(g3);
+
+    matrix* g4 = exact_clique_run(g3);
+
+    graph_save_to_file(g0, "res/TEST_EXACT_CLIQUE_0.txt");
+    graph_save_to_file(g1, "res/TEST_EXACT_CLIQUE_1.txt");
+    graph_save_to_file(g2, "res/TEST_EXACT_CLIQUE_2.txt");
+    graph_save_to_file(g3, "res/TEST_EXACT_CLIQUE_3.txt");
+    graph_save_to_file(g4, "res/TEST_EXACT_CLIQUE_4.txt");
+    
+    matrix_destroy(g0);
     matrix_destroy(g1);
     matrix_destroy(g2);
     matrix_destroy(g3);
+    matrix_destroy(g4);
+}
+
+int main(){
+    srand(time(NULL));  
+
+    test_basic();
+    test_exact_clique();
+
+    return 0;
 }

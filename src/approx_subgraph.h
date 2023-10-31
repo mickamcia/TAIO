@@ -3,6 +3,6 @@
 
 #include "matrix.h"
 
-matrix* approx_subgraph_run(matrix* graph_a, matrix* graph_b);
+matrix* approx_subgraph_run(matrix* a, matrix* b);
 
 #endif

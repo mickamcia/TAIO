@@ -11,5 +11,4 @@ void graph_save_to_file(matrix* g, char* path);
 void graph_permute(matrix* g);
 void graph_add_noise(matrix* g, float prob, int absolute, float relative);
 
-
 #endif

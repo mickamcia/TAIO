@@ -24,6 +24,23 @@ matrix *matrix_clone(matrix *m)
     return copy;
 }
 
+matrix *matrix_extend(matrix *m, int extend_by_size)
+{
+    if(extend_by_size <= 0){
+        printf("Error, extend_by_size <= 0.\n");
+        return NULL;
+    }
+
+    const int smaller = m->size;
+    const int bigger = smaller + extend_by_size;
+    matrix* result = matrix_init(bigger);
+
+    for(int i = 0; i < smaller; i++){
+        memcpy(&(result->mat[i * bigger]), &(m->mat[i * smaller]), smaller * sizeof(int));
+    }
+
+    return result;
+}
 
 void matrix_generate_permutation(matrix *m)
 {
@@ -45,11 +62,34 @@ void matrix_generate_permutation(matrix *m)
     free(permutation);
 }
 
-void matrix_multiply(matrix *a, matrix *b, matrix *c)
+void matrix_add(matrix *a, matrix *b, matrix *c)
 {
+    if(a->size != b->size || a->size != c->size){
+        printf("Error inequal sizes\n");
+        return;
+    }
+    
+    const int n = a->size;
+    memset(c->mat, 0, sizeof(int) * n * n);
+
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            c->mat[i * n + j] = a->mat[i * n + j] + b->mat[i * n + j];
+        }
+    }
+}
+
+void matrix_multiply(matrix *a, matrix *b, matrix *c)
+{    
+    if(a->size != b->size || a->size != c->size){
+        printf("Error inequal sizes\n");
+        return;
+    }
+
     const int BLOCK_SIZE = 16;
     const int n = a->size;
     memset(c->mat, 0, sizeof(int) * n * n);
+
     for (int i = 0; i < n; i += BLOCK_SIZE) {
         for (int j = 0; j < n; j += BLOCK_SIZE) {
             for (int k = 0; k < n; k += BLOCK_SIZE) {

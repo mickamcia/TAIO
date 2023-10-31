@@ -10,8 +10,11 @@ typedef struct{
 matrix* matrix_init(int size);
 void matrix_destroy(matrix* m);
 matrix* matrix_clone(matrix* m);
+matrix* matrix_extend(matrix* m, int plus_size);
 
 void matrix_generate_permutation(matrix* m);
+void matrix_add(matrix* a, matrix* b, matrix* c);
 void matrix_multiply(matrix* a, matrix* b, matrix* c);
 void matrix_transpose(matrix* m);
+
 #endif

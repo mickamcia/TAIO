@@ -63,7 +63,6 @@ void graph_save_to_file(matrix *g, char *path)
     fclose(file);
 }
 
-
 void graph_permute(matrix *g)
 {
     matrix* permutation = matrix_init(g->size);
