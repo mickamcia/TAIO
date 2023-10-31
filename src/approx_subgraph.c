@@ -3,5 +3,6 @@
 
 matrix *approx_subgraph_run(matrix* a, matrix* b)
 {
-    return NULL;
+    matrix* result = matrix_init(1);
+    return result;
 }

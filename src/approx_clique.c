@@ -3,5 +3,6 @@
 
 matrix *approx_clique_run(matrix *g)
 {
-    return NULL;
+    matrix* result = matrix_init(1);
+    return result;
 }
