@@ -81,10 +81,10 @@ void exact_subgraph_run(matrix* a, matrix* b)
     exact_clique_run(clique);
     extract_solution(clique, a, b);
 
-    graph_print(a);
-    graph_print(b);
-    graph_print(mod_prod);
-    graph_print(clique);
+    //graph_print(a);
+    //graph_print(b);
+    //graph_print(mod_prod);
+    //graph_print(clique);
     
     matrix_destroy(mod_prod);
     matrix_destroy(clique);

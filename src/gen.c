@@ -175,9 +175,9 @@ void test_exact_subgraph_simple(){
 void test_exact_subgraph(){
     printf("\n%s\n", __func__);
 
-    const int subgraph_size = 3;
-    const int graph_a_size = 4;
-    const int graph_b_size = 5;
+    const int subgraph_size = 5;
+    const int graph_a_size = 6;
+    const int graph_b_size = 6;
     matrix* g0 = matrix_init(subgraph_size);
     graph_generate(g0, 1, 1, 0.7);
     
