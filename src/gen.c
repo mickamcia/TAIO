@@ -177,7 +177,7 @@ void test_exact_subgraph(){
 
     const int subgraph_size = 5;
     const int graph_a_size = 6;
-    const int graph_b_size = 6;
+    const int graph_b_size = 7;
     matrix* g0 = matrix_init(subgraph_size);
     graph_generate(g0, 1, 1, 0.7);
     
