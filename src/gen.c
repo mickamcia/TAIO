@@ -40,13 +40,12 @@ void test_approx_clique(){
     const int graph_size = 12;
     matrix* g0 = matrix_init(clique_size);
     graph_generate(g0, 3, 1, 1.0);
-    matrix* g1 = matrix_extend(g0, graph_size - clique_size);
 
     matrix* g2 = matrix_init(graph_size);
     graph_generate(g2, 3, 1, 0.8);
 
     matrix* g3 = matrix_init(graph_size);
-    matrix_add(g1, g2, g3); // now g3 has a guaranteed clique of size equal to g0's vertex count
+    matrix_overload(g0, g2, g3); // now g3 has a guaranteed clique of size equal to g0's vertex count
     graph_permute(g3);
 
     matrix* g4 = matrix_clone(g3);
@@ -59,7 +58,6 @@ void test_approx_clique(){
     graph_save_to_file(g4, "res/TEST_APPROX_CLIQUE_4.txt");
     
     matrix_destroy(g0);
-    matrix_destroy(g1);
     matrix_destroy(g2);
     matrix_destroy(g3);
     matrix_destroy(g4);
@@ -74,8 +72,6 @@ void test_approx_subgraph(){
     matrix* g0 = matrix_init(subgraph_size);
     graph_generate(g0, 3, 1, 0.7);
     
-    matrix* g1 = matrix_extend(g0, graph_a_size - subgraph_size);
-    matrix* g2 = matrix_extend(g0, graph_b_size - subgraph_size);
 
     matrix* g3 = matrix_init(graph_a_size);
     graph_generate(g3, 3, 1, 0.8);
@@ -83,9 +79,9 @@ void test_approx_subgraph(){
     graph_generate(g4, 5, 2, 0.6);
 
     matrix* g5 = matrix_init(graph_a_size);
-    matrix_add(g1, g3, g5); 
+    matrix_overload(g0, g3, g5); 
     matrix* g6 = matrix_init(graph_b_size);
-    matrix_add(g2, g4, g6); // now g5 and g6 have a guaranteed g0 subgraph
+    matrix_overload(g0, g4, g6); // now g5 and g6 have a guaranteed g0 subgraph
 
     graph_permute(g5);
     graph_permute(g6);
@@ -105,8 +101,6 @@ void test_approx_subgraph(){
     graph_save_to_file(g7, "res/TEST_APPROX_SUBGRAPH_8.txt");
     
     matrix_destroy(g0);
-    matrix_destroy(g1);
-    matrix_destroy(g2);
     matrix_destroy(g3);
     matrix_destroy(g4);
     matrix_destroy(g5);
@@ -123,13 +117,12 @@ void test_exact_clique(){
     const int graph_size = 20;
     matrix* g0 = matrix_init(clique_size);
     graph_generate(g0, 3, 1, 1.0);
-    matrix* g1 = matrix_extend(g0, graph_size - clique_size);
 
     matrix* g2 = matrix_init(graph_size);
     graph_generate(g2, 3, 1, 0.8);
 
     matrix* g3 = matrix_init(graph_size);
-    matrix_add(g1, g2, g3); // now g3 has a guaranteed clique of size equal to g0's vertex count
+    matrix_overload(g0, g2, g3); // now g3 has a guaranteed clique of size equal to g0's vertex count
     graph_permute(g3);
 
     matrix* g4 = matrix_clone(g3);
@@ -142,7 +135,6 @@ void test_exact_clique(){
     graph_save_to_file(g4, "res/TEST_EXACT_CLIQUE_4.txt");
     
     matrix_destroy(g0);
-    matrix_destroy(g1);
     matrix_destroy(g2);
     matrix_destroy(g3);
     matrix_destroy(g4);
@@ -187,20 +179,18 @@ void test_exact_subgraph(){
     const int graph_a_size = 4;
     const int graph_b_size = 5;
     matrix* g0 = matrix_init(subgraph_size);
-    graph_generate(g0, 3, 1, 0.7);
+    graph_generate(g0, 1, 1, 0.7);
     
-    matrix* g1 = matrix_extend(g0, graph_a_size - subgraph_size);
-    matrix* g2 = matrix_extend(g0, graph_b_size - subgraph_size);
 
     matrix* g3 = matrix_init(graph_a_size);
-    graph_generate(g3, 3, 1, 0.0);
+    graph_generate(g3, 2, 2, 0.5);
     matrix* g4 = matrix_init(graph_b_size);
-    graph_generate(g4, 5, 2, 0.0);
+    graph_generate(g4, 3, 3, 0.5);
 
     matrix* g5 = matrix_init(graph_a_size);
-    matrix_add(g1, g3, g5); 
+    matrix_overload(g0, g3, g5); 
     matrix* g6 = matrix_init(graph_b_size);
-    matrix_add(g2, g4, g6); // now g5 and g6 have a guaranteed g0 subgraph
+    matrix_overload(g0, g4, g6); // now g5 and g6 have a guaranteed g0 subgraph
 
     graph_permute(g5);
     graph_permute(g6);
@@ -209,19 +199,19 @@ void test_exact_subgraph(){
     matrix* g8 = matrix_clone(g6);
     exact_subgraph_run(g7, g8);
 
+    graph_print(g0);
     graph_print(g5);
     graph_print(g7);
     graph_print(g6);
     graph_print(g8);
 
+    graph_save_to_file(g0, "res/TEST_EXACT_SUBGRAPH_5.txt");
     graph_save_to_file(g5, "res/TEST_EXACT_SUBGRAPH_5.txt");
     graph_save_to_file(g6, "res/TEST_EXACT_SUBGRAPH_6.txt");
     graph_save_to_file(g7, "res/TEST_EXACT_SUBGRAPH_7.txt");
     graph_save_to_file(g8, "res/TEST_EXACT_SUBGRAPH_8.txt");
     
     matrix_destroy(g0);
-    matrix_destroy(g1);
-    matrix_destroy(g2);
     matrix_destroy(g3);
     matrix_destroy(g4);
     matrix_destroy(g5);
@@ -237,8 +227,8 @@ int main(){
     test_approx_clique();
     test_approx_subgraph();
     test_exact_clique();
-    test_exact_subgraph();
     test_exact_subgraph_simple();
+    test_exact_subgraph();
 
     return 0;
 }

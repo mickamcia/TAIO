@@ -3,5 +3,5 @@
 
 void approx_clique_run(matrix *g)
 {
-    
+
 }

@@ -37,13 +37,6 @@ void recursive_travelsal(matrix* g, int* curr_clique, int* curr_size, int curr_v
         memcpy(best_clique, curr_clique, sizeof(int) * n);
     }
     
-    /*
-    for(int i = 0; i < n; i++){
-        printf("%d ", curr_clique[i]);
-    }
-    printf("\n");
-    */
-    
     for(int i = curr_vetrex; i < n; i++){
         if(can_add_to_clique(g, curr_clique, i)){
             curr_clique[i] = 1;
@@ -95,5 +88,4 @@ void exact_clique_run(matrix *g)
 
     free(curr_clique);
     free(best_clique);
-
 }

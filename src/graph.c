@@ -6,7 +6,7 @@
 void graph_generate(matrix* g, int edge_weight_max, int edge_weight_min, float edge_occur_prob){
     for(int i = 0; i < g->size; i++){
         for(int j = 0; j < g->size; j++){
-            if(edge_occur_prob > (float)rand() / RAND_MAX){
+            if(i != j && edge_occur_prob > (float)rand() / RAND_MAX){
                 g->mat[i * g->size + j] = rand() % (1 + edge_weight_max - edge_weight_min) + edge_weight_min;   
             }
             else{

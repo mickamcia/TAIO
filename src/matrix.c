@@ -62,6 +62,7 @@ void matrix_generate_permutation(matrix *m)
     free(permutation);
 }
 
+
 void matrix_add(matrix *a, matrix *b, matrix *c)
 {
     if(a->size != b->size || a->size != c->size){
@@ -75,6 +76,23 @@ void matrix_add(matrix *a, matrix *b, matrix *c)
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
             c->mat[i * n + j] = a->mat[i * n + j] + b->mat[i * n + j];
+        }
+    }
+}
+
+void matrix_multiply_elementwise(matrix *a, matrix *b, matrix *c)
+{
+    if(a->size != b->size || a->size != c->size){
+        printf("Error inequal sizes\n");
+        return;
+    }
+    
+    const int n = a->size;
+    memset(c->mat, 0, sizeof(int) * n * n);
+
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            c->mat[i * n + j] = a->mat[i * n + j] * b->mat[i * n + j];
         }
     }
 }
@@ -116,4 +134,38 @@ void matrix_transpose(matrix *m)
             m->mat[i + n * j] = swap;
         }
     }
+}
+
+/*
+couldn't think of a proper name, that's how this function works:
+
+    a  a     b  b  b     a  a  b
+    a  a  +  b  b  b  =  a  a  b
+             b  b  b     b  b  b    
+*/
+#include "graph.h"
+void matrix_overload(matrix *a, matrix *b, matrix *c)
+{
+    if(a->size  > b->size || b->size != c->size){
+        printf("Error bad sizes\n");
+        return;
+    }
+    
+    memset(c->mat, 0, sizeof(int) * c->size * c->size);
+
+    for (int i = 0; i < c->size; i++) {
+        for (int j = 0; j < c->size; j++) {
+            if(i < a->size && j < a->size){
+                c->mat[i * c->size + j] = a->mat[i * a->size + j];
+            }
+            else{
+                c->mat[i * c->size + j] = b->mat[i * b->size + j];
+            }
+        }
+    }
+    printf("\n\n");
+    graph_print(a);
+    graph_print(b);
+    graph_print(c);
+    printf("\n\n");
 }

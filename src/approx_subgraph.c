@@ -3,5 +3,5 @@
 
 void approx_subgraph_run(matrix* a, matrix* b)
 {
-    
+
 }
