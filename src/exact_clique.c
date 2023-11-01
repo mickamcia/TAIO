@@ -70,10 +70,9 @@ int can_add_to_clique(matrix *g, int *clique, int vertex_index)
 }
 
 // driver function
-matrix* exact_clique_run(matrix *g)
+void exact_clique_run(matrix *g)
 {
-    matrix* result = matrix_clone(g);
-    simplify_graph(result);
+    simplify_graph(g);
 
     const int n = g->size;
     int curr_size = 0;
@@ -83,13 +82,13 @@ matrix* exact_clique_run(matrix *g)
     memset(curr_clique, 0, sizeof(int) * n);
     memset(best_clique, 0, sizeof(int) * n);
 
-    recursive_travelsal(result, curr_clique, &curr_size, 0, best_clique, &best_size);
+    recursive_travelsal(g, curr_clique, &curr_size, 0, best_clique, &best_size);
 
     for(int i = 0; i < n; i++){
         if(best_clique[i] == 0){
             for(int j = 0; j < n; j++){
-                result->mat[i * n + j] = 0;
-                result->mat[i + n * j] = 0;
+                g->mat[i * n + j] = 0;
+                g->mat[i + n * j] = 0;
             }
         }
     }
@@ -97,5 +96,4 @@ matrix* exact_clique_run(matrix *g)
     free(curr_clique);
     free(best_clique);
 
-    return result;
 }

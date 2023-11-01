@@ -26,8 +26,8 @@ matrix *matrix_clone(matrix *m)
 
 matrix *matrix_extend(matrix *m, int extend_by_size)
 {
-    if(extend_by_size <= 0){
-        printf("Error, extend_by_size <= 0.\n");
+    if(extend_by_size < 0){
+        printf("Error, extend_by_size < 0.\n");
         return NULL;
     }
 

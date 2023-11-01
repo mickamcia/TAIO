@@ -3,6 +3,6 @@
 
 #include "matrix.h"
 
-matrix* exact_subgraph_run(matrix* a, matrix* b);
+void exact_subgraph_run(matrix* a, matrix* b);
 
 #endif
