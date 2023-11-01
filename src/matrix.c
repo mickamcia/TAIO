@@ -163,9 +163,4 @@ void matrix_overload(matrix *a, matrix *b, matrix *c)
             }
         }
     }
-    printf("\n\n");
-    graph_print(a);
-    graph_print(b);
-    graph_print(c);
-    printf("\n\n");
 }
