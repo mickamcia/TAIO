@@ -7,6 +7,7 @@
 #include "approx_subgraph.h"
 #include "exact_clique.h"
 #include "exact_subgraph.h"
+#include "exact_clique_bb.h"
 
 void test_basic(){
     printf("\n%s\n", __func__);
@@ -114,12 +115,12 @@ void test_exact_clique(){
     printf("\n%s\n", __func__);
 
     const int clique_size = 6;
-    const int graph_size = 20;
+    const int graph_size = 200;
     matrix* g0 = matrix_init(clique_size);
     graph_generate(g0, 3, 1, 1.0);
 
     matrix* g2 = matrix_init(graph_size);
-    graph_generate(g2, 3, 1, 0.8);
+    graph_generate(g2, 3, 1, 0.2);
 
     matrix* g3 = matrix_init(graph_size);
     matrix_overload(g0, g2, g3); // now g3 has a guaranteed clique of size equal to g0's vertex count
@@ -133,6 +134,36 @@ void test_exact_clique(){
 
     graph_save_to_file(g3, "res/TEST_EXACT_CLIQUE_3.txt");
     graph_save_to_file(g4, "res/TEST_EXACT_CLIQUE_4.txt");
+    
+    matrix_destroy(g0);
+    matrix_destroy(g2);
+    matrix_destroy(g3);
+    matrix_destroy(g4);
+}
+
+void test_exact_clique_bb(){
+    printf("\n%s\n", __func__);
+
+    const int clique_size = 8;
+    const int graph_size = 12;
+    matrix* g0 = matrix_init(clique_size);
+    graph_generate(g0, 3, 1, 0.8);
+
+    matrix* g2 = matrix_init(graph_size);
+    graph_generate(g2, 3, 1, 0.8);
+
+    matrix* g3 = matrix_init(graph_size);
+    matrix_overload(g0, g2, g3); // now g3 has a guaranteed clique of size equal to g0's vertex count
+    graph_permute(g3);
+
+    matrix* g4 = matrix_clone(g3);
+    exact_clique_bb_run(g4);
+
+    graph_print(g3);
+    graph_print(g4);
+
+    graph_save_to_file(g3, "res/TEST_EXACT_CLIQUE_BB_3.txt");
+    graph_save_to_file(g4, "res/TEST_EXACT_CLIQUE_BB_4.txt");
     
     matrix_destroy(g0);
     matrix_destroy(g2);
@@ -223,12 +254,13 @@ void test_exact_subgraph(){
 int main(){
     srand(time(NULL));  
 
-    test_basic();
-    test_approx_clique();
-    test_approx_subgraph();
-    test_exact_clique();
-    test_exact_subgraph_simple();
-    test_exact_subgraph();
+    //test_basic();
+    //test_approx_clique();
+    //test_approx_subgraph();
+    //test_exact_clique();
+    //test_exact_subgraph_simple();
+    //test_exact_subgraph();
+    test_exact_clique_bb();
 
     return 0;
 }
