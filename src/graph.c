@@ -21,7 +21,9 @@ void graph_print(matrix *g)
     printf("%d\n", g->size);
     for(int i = 0; i < g->size; i++){
         for(int j = 0; j < g->size; j++){
-            printf("% 3d ", g->mat[i * g->size + j]); // prints from 0 to 99, should change to "%d" by the end
+            const int val = g->mat[i * g->size + j];
+            if(val >= 0) printf("% 3d ", val); // prints from 0 to 99, should change to "%d" by the end
+            else printf("    ");
         }
         printf("\n");
     }
