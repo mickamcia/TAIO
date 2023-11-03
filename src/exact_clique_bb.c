@@ -11,7 +11,7 @@ int graph_weight_selected_vertices(const matrix* g, const int* vertices){
     int total = 0;
     for(int i = 0; i < g->size; i++){
         if(vertices[i] == 0) continue;
-        for(int j = 0; j < g->size; j++){
+        for(int j = i + 1; j < g->size; j++){
             if(vertices[j] == 0) continue;
             total += g->mat[i * g->size + j];
         }
@@ -73,9 +73,10 @@ void calculate_nbors(const matrix* g, int* nbors, const int vertex){
 }
 
 int calculate_sigma_weight(const matrix* g, const int* clique, const int vertex){
+    if(clique[vertex] == 1) return 0;
     int total = 0;
     for(int i = 0; i < g->size; i++){
-        if(clique[i] == 1 && i != vertex){
+        if(clique[i] == 1){
             total += g->mat[i * g->size + vertex];
         }
     }
@@ -101,7 +102,7 @@ void calculate_permutation_and_upper_bound(const matrix* g, const int* curr_cliq
     int k = 0;
 
     while(!is_empty(candidates_prim, g->size)){
-        if(DEBUG) printf("\nK: %d", k);
+        if(DEBUG > 1) printf("\nK: %d", k);
         k++;
         for(int i = 0; i < g->size; i++){
             indep_set_cands[i] = candidates_prim[i];
@@ -115,7 +116,7 @@ void calculate_permutation_and_upper_bound(const matrix* g, const int* curr_cliq
                     min_vertex = i;
                 }
             }
-            if(DEBUG) printf("\nMIN_VERTEX: %d", min_vertex);
+            if(DEBUG > 1) printf("\nMIN_VERTEX: %d", min_vertex);
             // calculate upper_bound for min_vertex
             upper_bound[min_vertex] = sigma_scores[min_vertex]; // + max
             for(int color = 0; color < k; color++){
@@ -139,7 +140,7 @@ void calculate_permutation_and_upper_bound(const matrix* g, const int* curr_cliq
             // remove nbors of min_vertex from indep_set_cands
             calculate_nbors(g, nbors, min_vertex);
 
-            if(DEBUG){                
+            if(DEBUG > 1){                
                 printf("\nindep_set_cands:  ");
                 for(int i = 0; i < g->size; i++){
                     printf("%d ", indep_set_cands[i]);
@@ -196,7 +197,7 @@ void calculate_permutation_and_upper_bound(const matrix* g, const int* curr_cliq
 
 void expand(const matrix* g, int* best_clique, int* curr_clique, int* candidates){
 
-    if(DEBUG){  
+    if(DEBUG > 0){  
         printf("\nENTER");
         printf("\nbest_clique: ");
         for(int i = 0; i < g->size; i++){
@@ -215,12 +216,12 @@ void expand(const matrix* g, int* best_clique, int* curr_clique, int* candidates
 
     const int curr_clique_score = graph_weight_selected_vertices(g, curr_clique);
     const int best_clique_score = graph_weight_selected_vertices(g, best_clique);
-    if(DEBUG) printf("\nSCORES: %d %d", best_clique_score, curr_clique_score);
+    if(DEBUG > 0) printf("\nSCORES: %d %d", best_clique_score, curr_clique_score);
     if(is_empty(candidates, g->size)){
         if(curr_clique_score > best_clique_score){
             memcpy(best_clique, curr_clique, sizeof(int) * g->size);
         }
-        if(DEBUG) printf("\nTERMINATE: %d %d", best_clique_score, curr_clique_score);
+        if(DEBUG > 0) printf("\nTERMINATE: %d %d", best_clique_score, curr_clique_score);
         return;
     }
 
@@ -231,7 +232,7 @@ void expand(const matrix* g, int* best_clique, int* curr_clique, int* candidates
 
     //calculate_candidates(g, curr_clique, candidates);
     calculate_permutation_and_upper_bound(g, curr_clique, candidates, permutation, upper_bound);
-    if(DEBUG){  
+    if(DEBUG > 0){  
         printf("\npermutation: ");
         for(int i = 0; i < g->size; i++){
             printf("%d ", permutation[i]);
@@ -247,10 +248,10 @@ void expand(const matrix* g, int* best_clique, int* curr_clique, int* candidates
         if(idx < 0) continue;
         if(candidates[idx] == 1 && curr_clique_score + upper_bound[idx] > best_clique_score){
             curr_clique[idx] = 1;
-            if(DEBUG) printf("\nPERM UPPER: %d %d", permutation[i], upper_bound[idx]);
+            if(DEBUG > 0) printf("\nPERM UPPER: %d %d", permutation[i], upper_bound[idx]);
             calculate_nbors(g, nbors, idx);
             calculate_expandable(expandable, nbors, candidates, permutation, i, g->size);
-            if(DEBUG){
+            if(DEBUG > 0){
                 printf("\nnbors:       ");
                 for(int j = 0; j < g->size; j++){
                     printf("%d ", nbors[j]);
