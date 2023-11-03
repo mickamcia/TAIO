@@ -126,3 +126,24 @@ void graph_simplify_multidigraph_to_multigraph(matrix *g) // turns directed mult
         g->mat[i * n + i] = 0;
     }
 }
+
+void graph_simplify_multidigraph_to_graph(matrix *g) // turns directed multigraph into a graph
+{
+    const int n = g->size;
+    const int min_edges = 1;
+    for(int i = 0; i < n; i++){
+        for(int j = i + 1; j < n; j++){
+            if(g->mat[i * n + j] >= min_edges && g->mat[i + n * j] >= min_edges){
+                g->mat[i * n + j] = 1;
+                g->mat[i + n * j] = 1;
+            }
+            else{
+                g->mat[i * n + j] = 0;
+                g->mat[i + n * j] = 0;
+            }
+        }
+    }
+    for(int i = 0; i < n; i++){
+        g->mat[i * n + i] = 0;
+    }
+}

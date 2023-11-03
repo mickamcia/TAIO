@@ -210,13 +210,13 @@ void test_exact_subgraph(){
     const int graph_a_size = 8;
     const int graph_b_size = 9;
     matrix* g0 = matrix_init(subgraph_size);
-    graph_generate(g0, 1, 1, 0.7, 1);
+    graph_generate(g0, 7, 7, 0.7, 1);
     
 
     matrix* g3 = matrix_init(graph_a_size);
-    graph_generate(g3, 2, 2, 0.5, 1);
+    graph_generate(g3, 2, 2, 0.0, 1);
     matrix* g4 = matrix_init(graph_b_size);
-    graph_generate(g4, 3, 3, 0.5, 1);
+    graph_generate(g4, 3, 3, 1.0, 1);
 
     matrix* g5 = matrix_init(graph_a_size);
     matrix_overload(g0, g3, g5); 
@@ -254,20 +254,20 @@ void test_exact_subgraph(){
 void test_exact_clique_bb_random(){
     printf("\n%s\n", __func__);
 
-    const int graph_size = 8;
+    const int graph_size = 10;
 
     matrix* g0 = matrix_init(graph_size);
-    graph_generate(g0, 10, 1, 0.5, 1);
+    graph_generate(g0, 10, 1, 0.2, 0);
     graph_permute(g0);
 
     matrix* g1 = matrix_clone(g0);
     exact_clique_bb_run(g1);
 
-    //graph_print(g0);
+    graph_print(g0);
     graph_print(g1);
 
-    graph_save_to_file(g0, "res/TEST_EXACT_SUBGRAPH_5.txt");
-    graph_save_to_file(g1, "res/TEST_EXACT_SUBGRAPH_5.txt");
+    graph_save_to_file(g0, "res/TEST_EXACT_CLIQUE_BB_RANDOM_0.txt");
+    graph_save_to_file(g1, "res/TEST_EXACT_CLIQUE_BB_RANDOM_1.txt");
     
     matrix_destroy(g0);
     matrix_destroy(g1);
@@ -280,7 +280,7 @@ int main(){
     //test_approx_subgraph();
     //test_exact_clique();
     //test_exact_subgraph_simple();
-    //test_exact_subgraph();
+    test_exact_subgraph();
     //test_exact_clique_bb();
     test_exact_clique_bb_random();
 

@@ -279,8 +279,6 @@ void expand(const matrix* g, int* best_clique, int* curr_clique, int* candidates
 // driver function
 void exact_clique_bb_run(matrix *g){
 
-    graph_simplify_multidigraph_to_multigraph(g);
-    graph_print(g);
     int* curr_clique = (int*)malloc(sizeof(int) * g->size);
     int* best_clique = (int*)malloc(sizeof(int) * g->size);
     int* candidates  = (int*)malloc(sizeof(int) * g->size);

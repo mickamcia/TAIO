@@ -1,4 +1,5 @@
 #include "matrix.h"
+#include "graph.h"
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -143,7 +144,6 @@ couldn't think of a proper name, that's how this function works:
     a  a  +  b  b  b  =  a  a  b
              b  b  b     b  b  b    
 */
-#include "graph.h"
 void matrix_overload(matrix *a, matrix *b, matrix *c)
 {
     if(a->size  > b->size || b->size != c->size){

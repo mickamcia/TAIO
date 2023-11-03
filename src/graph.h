@@ -11,6 +11,7 @@ void graph_save_to_file(matrix* g, char* path);
 void graph_permute(matrix* g);
 void graph_add_noise(matrix* g, float prob, int absolute, float relative);
 
+void graph_simplify_multidigraph_to_graph(matrix *g);
 void graph_simplify_multidigraph_to_multigraph(matrix *g);
 
 #endif

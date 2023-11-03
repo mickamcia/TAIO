@@ -1,5 +1,5 @@
 #include "exact_subgraph.h"
-#include "exact_clique.h"
+#include "exact_clique_bb.h"
 #include "graph.h"
 #include <stdlib.h>
 #include <string.h>
@@ -26,7 +26,7 @@ matrix* modular_product(matrix* a, matrix* b)
                     const int a_edge = a->mat[a_i * a->size + a_j];
                     const int b_edge = b->mat[b_i * b->size + b_j];
                     if(a_edge != 0 && b_edge != 0){
-                        c->mat[(a_i * b->size + b_i) * c->size + (a_j * b->size + b_j)] = 1;//min(a_edge, b_edge);
+                        c->mat[(a_i * b->size + b_i) * c->size + (a_j * b->size + b_j)] = min(a_edge, b_edge);
                     }
                     else if(a_edge == 0 && b_edge == 0){
                         c->mat[(a_i * b->size + b_i) * c->size + (a_j * b->size + b_j)] = 1;
@@ -47,7 +47,7 @@ void extract_solution(matrix *clique, matrix *a, matrix *b)
 
     for(int i = 0; i < clique->size; i++){
         for(int j = 0; j < clique->size; j++){
-            if(clique->mat[i * clique->size + j] != 0){
+            if(clique->mat[i * clique->size + j] != -1){
                 a_clique_indices[i / b->size] = 1;
                 b_clique_indices[i % b->size] = 1;
             }
@@ -78,13 +78,8 @@ void exact_subgraph_run(matrix* a, matrix* b)
     matrix* mod_prod = modular_product(a, b);
     matrix* clique = matrix_clone(mod_prod);
 
-    exact_clique_run(clique);
+    exact_clique_bb_run(clique);
     extract_solution(clique, a, b);
-
-    //graph_print(a);
-    //graph_print(b);
-    //graph_print(mod_prod);
-    //graph_print(clique);
     
     matrix_destroy(mod_prod);
     matrix_destroy(clique);

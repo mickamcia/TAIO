@@ -1,33 +1,11 @@
 #include "exact_clique.h"
+#include "graph.h"
 #include <stdlib.h>
 #include <string.h>
 
 // internal functions
-void simplify_graph(matrix* g);
 void recursive_travelsal(matrix* g, int* curr_clique, int* curr_size, int curr_vertex, int* best_clique, int* best_size);
 int can_add_to_clique(matrix* g, int* clique, int vertex_index);
-
-void simplify_graph(matrix *g) // turns directed multigraph into a graph
-{
-    const int n = g->size;
-    const int min_edges = 1;
-    for(int i = 0; i < n; i++){
-        for(int j = i + 1; j < n; j++){
-            if(g->mat[i * n + j] >= min_edges && g->mat[i + n * j] >= min_edges){
-                g->mat[i * n + j] = 1;
-                g->mat[i + n * j] = 1;
-            }
-            else{
-                g->mat[i * n + j] = 0;
-                g->mat[i + n * j] = 0;
-            }
-        }
-    }
-    for(int i = 0; i < n; i++){
-        g->mat[i * n + i] = 0;
-    }
-}
-
 
 void recursive_travelsal(matrix* g, int* curr_clique, int* curr_size, int curr_vetrex, int* best_clique, int* best_size)
 {
@@ -65,7 +43,6 @@ int can_add_to_clique(matrix *g, int *clique, int vertex_index)
 // driver function
 void exact_clique_run(matrix *g)
 {
-    simplify_graph(g);
 
     const int n = g->size;
     int curr_size = 0;
