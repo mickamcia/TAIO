@@ -248,18 +248,18 @@ void expand(const matrix* g, int* best_clique, int* curr_clique, int* candidates
     for(int i = 0; i < g->size; i++){
         const int idx = permutation[i];
         if(idx < 0) continue;
-        if(candidates[idx] == 1 && curr_clique_score + upper_bound[i] > best_clique_score){
+        if(candidates[idx] == 1 && curr_clique_score + upper_bound[idx] > best_clique_score){
             curr_clique[idx] = 1;
             calculate_nbors(g, nbors, idx);
             calculate_expandable(expandable, nbors, candidates, idx, g->size);
             if(DEBUG){
                 printf("\nnbors:       ");
-                for(int i = 0; i < g->size; i++){
-                    printf("%d ", nbors[i]);
+                for(int j = 0; j < g->size; j++){
+                    printf("%d ", nbors[j]);
                 }
                 printf("\ncandidates:  ");
-                for(int i = 0; i < g->size; i++){
-                    printf("%d ", candidates[i]);
+                for(int j = 0; j < g->size; j++){
+                    printf("%d ", candidates[j]);
                 }
             }
             expand(g, best_clique, curr_clique, expandable);
