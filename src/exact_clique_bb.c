@@ -26,7 +26,7 @@ void simplify_graph_to_directed(matrix *g) // turns directed multigraph into a m
     }
 }
 
-int graph_weight_selected_vertices(matrix* g, int* vertices){
+int graph_weight_selected_vertices(const matrix* g, const int* vertices){
     int total = 0;
     for(int i = 0; i < g->size; i++){
         if(vertices[i] == 0) continue;
@@ -38,14 +38,14 @@ int graph_weight_selected_vertices(matrix* g, int* vertices){
     return total;
 }
 
-int is_empty(int* set, int size){
+int is_empty(const int* set, const int size){
     for(int i = 0; i < size; i++){
         if(set[i] != 0) return 0;
     }
     return 1;
 }
 
-int is_addable_to_clique(matrix* g, int* clique, int vertex){
+int is_addable_to_clique(const matrix* g, const int* clique, const int vertex){
     if(clique[vertex] == 1) return 0;
 
     for(int i = 0; i < g->size; i++){
@@ -58,7 +58,7 @@ int is_addable_to_clique(matrix* g, int* clique, int vertex){
     return 1;
 }
 
-void calculate_candidates(matrix* g, int* clique, int* candidates){
+void calculate_candidates(const matrix* g, const int* clique, int* candidates){
     for(int i = 0; i < g->size; i++){
         if(is_addable_to_clique(g, clique, i)){
             candidates[i] = 1;
@@ -69,7 +69,18 @@ void calculate_candidates(matrix* g, int* clique, int* candidates){
     }
 }
 
-void calculate_nbors(matrix* g, int* nbors, int vertex){
+void calculate_expandable(int* expandable, const int* nbors, const int* candidates, const int vertex, const int size){
+    for(int i = 0; i < size; i++){
+        if(i < i){
+            expandable[i] = 0;
+        }
+        else{
+            expandable[i] = nbors[i] * candidates[i];
+        }
+    }
+}
+
+void calculate_nbors(const matrix* g, int* nbors, const int vertex){
     for(int i = 0; i < g->size; i++){
         if(i != vertex && g->mat[i * g->size + vertex] != 0){
             nbors[i] = 1;
@@ -80,11 +91,14 @@ void calculate_nbors(matrix* g, int* nbors, int vertex){
     }
 }
 
-void calc_seq_and_ub(matrix* g, int* curr_clique, int* candidates){
-
+void calculate_permutation_and_upper_bound(const matrix* g, const int* curr_clique, const int* candidates, int* permutation, int* upper_bound){
+    for(int i = 0; i < g->size; i++){
+        permutation[i] = i;
+        upper_bound[i] = 1;
+    }
 }
 
-void expand(matrix* g, int* best_clique, int* curr_clique, int* candidates){
+void expand(const matrix* g, int* best_clique, int* curr_clique, int* candidates){
 
     /*
     printf("\nENTER");
@@ -110,23 +124,24 @@ void expand(matrix* g, int* best_clique, int* curr_clique, int* candidates){
         return;
     }
 
-    calculate_candidates(g, curr_clique, candidates);
-    calc_seq_and_ub(g, curr_clique, candidates);
-
-    int* candidate_intersection = (int*)malloc(sizeof(int) * g->size);
+    int* expandable = (int*)malloc(sizeof(int) * g->size);
     int* nbors = (int*)malloc(sizeof(int) * g->size);
+    int* permutation = (int*)malloc(sizeof(int) * g->size);
+    int* upper_bound = (int*)malloc(sizeof(int) * g->size);
+
+    calculate_candidates(g, curr_clique, candidates);
+    calculate_permutation_and_upper_bound(g, curr_clique, candidates, permutation, upper_bound);
+
+    const int curr_clique_score = graph_weight_selected_vertices(g, curr_clique);
+    const int best_clique_score = graph_weight_selected_vertices(g, best_clique);
+
     for(int i = 0; i < g->size; i++){
-        if(candidates[i] == 1){
-            curr_clique[i] = 1;
-            calculate_nbors(g, nbors, i);
-            for(int j = 0; j < g->size; j++){
-                if(j < 0){
-                    candidate_intersection[j] = 0;
-                }
-                else{
-                    candidate_intersection[j] = nbors[j] * candidates[j];
-                }
-            }
+        const int idx = permutation[i];
+        if(idx < 0) continue;
+        if(candidates[idx] == 1 && curr_clique_score + upper_bound[i] > best_clique_score){
+            curr_clique[idx] = 1;
+            calculate_nbors(g, nbors, idx);
+            calculate_expandable(expandable, nbors, candidates, idx, g->size);
             /*
             printf("\nnbors:       ");
             for(int i = 0; i < g->size; i++){
@@ -137,13 +152,15 @@ void expand(matrix* g, int* best_clique, int* curr_clique, int* candidates){
                 printf("%d ", candidates[i]);
             }
             */
-            expand(g, best_clique, curr_clique, candidate_intersection);
-            curr_clique[i] = 0;
+            expand(g, best_clique, curr_clique, expandable);
+            curr_clique[idx] = 0;
         }
     }
 
-    free(candidate_intersection);
+    free(expandable);
     free(nbors);
+    free(permutation);
+    free(upper_bound);
 }
 
 // driver function
