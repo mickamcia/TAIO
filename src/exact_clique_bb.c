@@ -75,7 +75,7 @@ void calculate_nbors(const matrix* g, int* nbors, const int vertex){
 int calculate_sigma_weight(const matrix* g, const int* clique, const int vertex){
     int total = 0;
     for(int i = 0; i < g->size; i++){
-        if(clique[i] == 1){
+        if(clique[i] == 1 && i != vertex){
             total += g->mat[i * g->size + vertex];
         }
     }
@@ -217,7 +217,7 @@ void expand(const matrix* g, int* best_clique, int* curr_clique, int* candidates
     const int best_clique_score = graph_weight_selected_vertices(g, best_clique);
     if(DEBUG) printf("\nSCORES: %d %d", best_clique_score, curr_clique_score);
     if(is_empty(candidates, g->size)){
-        if(curr_clique_score >= best_clique_score){
+        if(curr_clique_score > best_clique_score){
             memcpy(best_clique, curr_clique, sizeof(int) * g->size);
         }
         if(DEBUG) printf("\nTERMINATE: %d %d", best_clique_score, curr_clique_score);
