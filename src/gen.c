@@ -145,12 +145,12 @@ void test_exact_clique_bb(){
     printf("\n%s\n", __func__);
 
     const int clique_size = 5;
-    const int graph_size = 400;
+    const int graph_size = 1000;
     matrix* g0 = matrix_init(clique_size);
     graph_generate(g0, 3, 3, 1.0);
 
     matrix* g2 = matrix_init(graph_size);
-    graph_generate(g2, 10, 1, 0.4);
+    graph_generate(g2, 10, 1, 0.3);
 
     matrix* g3 = matrix_init(graph_size);
     matrix_overload(g0, g2, g3); // now g3 has a guaranteed clique of size equal to g0's vertex count
