@@ -144,8 +144,8 @@ void test_exact_clique(){
 void test_exact_clique_bb(){
     printf("\n%s\n", __func__);
 
-    const int clique_size = 12;
-    const int graph_size = 100;
+    const int clique_size = 180;
+    const int graph_size = 200;
     matrix* g0 = matrix_init(clique_size);
     graph_generate(g0, 3, 3, 1.0);
 

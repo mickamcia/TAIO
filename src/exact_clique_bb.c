@@ -72,7 +72,7 @@ void calculate_candidates(const matrix* g, const int* clique, int* candidates){
 
 void calculate_expandable(int* expandable, const int* nbors, const int* candidates, const int vertex, const int size){
     for(int i = 0; i < size; i++){
-        if(i < i){
+        if(i < vertex){
             expandable[i] = 0;
         }
         else{
@@ -239,7 +239,7 @@ void expand(const matrix* g, int* best_clique, int* curr_clique, int* candidates
     int* permutation = (int*)malloc(sizeof(int) * g->size);
     int* upper_bound = (int*)malloc(sizeof(int) * g->size);
 
-    calculate_candidates(g, curr_clique, candidates);
+    //calculate_candidates(g, curr_clique, candidates);
     calculate_permutation_and_upper_bound(g, curr_clique, candidates, permutation, upper_bound);
 
     const int curr_clique_score = graph_weight_selected_vertices(g, curr_clique);
