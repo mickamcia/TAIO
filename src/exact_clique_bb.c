@@ -93,7 +93,7 @@ void calculate_nbors(const matrix* g, int* nbors, const int vertex){
 }
 
 int calculate_sigma_weight(const matrix* g, const int vertex){
-    return 1000;
+    return 1000; //TODO
 }
 
 void calculate_permutation_and_upper_bound(const matrix* g, const int* curr_clique, const int* candidates, int* permutation, int* upper_bound){
