@@ -13,7 +13,7 @@ void test_basic(){
     printf("\n%s\n", __func__);
 
     matrix* g0 = matrix_init(8);
-    graph_generate(g0, 5, 2, 0.5);
+    graph_generate(g0, 5, 2, 0.5, 0);
 
     matrix* g1 = matrix_clone(g0);
     graph_add_noise(g1, 0.5, 1, 0.0);
@@ -40,10 +40,10 @@ void test_approx_clique(){
     const int clique_size = 8;
     const int graph_size = 12;
     matrix* g0 = matrix_init(clique_size);
-    graph_generate(g0, 3, 1, 1.0);
+    graph_generate(g0, 3, 1, 1.0, 0);
 
     matrix* g2 = matrix_init(graph_size);
-    graph_generate(g2, 3, 1, 0.8);
+    graph_generate(g2, 3, 1, 0.8, 0);
 
     matrix* g3 = matrix_init(graph_size);
     matrix_overload(g0, g2, g3); // now g3 has a guaranteed clique of size equal to g0's vertex count
@@ -71,13 +71,13 @@ void test_approx_subgraph(){
     const int graph_a_size = 6;
     const int graph_b_size = 7;
     matrix* g0 = matrix_init(subgraph_size);
-    graph_generate(g0, 3, 1, 0.7);
+    graph_generate(g0, 3, 1, 0.7, 1);
     
 
     matrix* g3 = matrix_init(graph_a_size);
-    graph_generate(g3, 3, 1, 0.8);
+    graph_generate(g3, 3, 1, 0.8, 1);
     matrix* g4 = matrix_init(graph_b_size);
-    graph_generate(g4, 5, 2, 0.6);
+    graph_generate(g4, 5, 2, 0.6, 1);
 
     matrix* g5 = matrix_init(graph_a_size);
     matrix_overload(g0, g3, g5); 
@@ -115,12 +115,12 @@ void test_exact_clique(){
     printf("\n%s\n", __func__);
 
     const int clique_size = 6;
-    const int graph_size = 200;
+    const int graph_size = 12;
     matrix* g0 = matrix_init(clique_size);
-    graph_generate(g0, 3, 1, 1.0);
+    graph_generate(g0, 3, 1, 1.0, 0);
 
     matrix* g2 = matrix_init(graph_size);
-    graph_generate(g2, 3, 1, 0.2);
+    graph_generate(g2, 3, 1, 0.2, 0);
 
     matrix* g3 = matrix_init(graph_size);
     matrix_overload(g0, g2, g3); // now g3 has a guaranteed clique of size equal to g0's vertex count
@@ -144,13 +144,13 @@ void test_exact_clique(){
 void test_exact_clique_bb(){
     printf("\n%s\n", __func__);
 
-    const int clique_size = 120;
-    const int graph_size = 160;
+    const int clique_size = 5;
+    const int graph_size = 12;
     matrix* g0 = matrix_init(clique_size);
-    graph_generate(g0, 3, 3, 1.0);
+    graph_generate(g0, 1, 1, 1.0, 0);
 
     matrix* g2 = matrix_init(graph_size);
-    graph_generate(g2, 10, 10, 0.5);
+    graph_generate(g2, 10, 1, 0.4, 0);
 
     matrix* g3 = matrix_init(graph_size);
     matrix_overload(g0, g2, g3); // now g3 has a guaranteed clique of size equal to g0's vertex count
@@ -210,13 +210,13 @@ void test_exact_subgraph(){
     const int graph_a_size = 8;
     const int graph_b_size = 9;
     matrix* g0 = matrix_init(subgraph_size);
-    graph_generate(g0, 1, 1, 0.7);
+    graph_generate(g0, 1, 1, 0.7, 1);
     
 
     matrix* g3 = matrix_init(graph_a_size);
-    graph_generate(g3, 2, 2, 0.5);
+    graph_generate(g3, 2, 2, 0.5, 1);
     matrix* g4 = matrix_init(graph_b_size);
-    graph_generate(g4, 3, 3, 0.5);
+    graph_generate(g4, 3, 3, 0.5, 1);
 
     matrix* g5 = matrix_init(graph_a_size);
     matrix_overload(g0, g3, g5); 
@@ -251,6 +251,27 @@ void test_exact_subgraph(){
     matrix_destroy(g8);
 }
 
+void test_exact_clique_bb_random(){
+    printf("\n%s\n", __func__);
+
+    const int graph_size = 8;
+
+    matrix* g0 = matrix_init(graph_size);
+    graph_generate(g0, 10, 1, 0.5, 1);
+    graph_permute(g0);
+
+    matrix* g1 = matrix_clone(g0);
+    exact_clique_bb_run(g1);
+
+    graph_print(g0);
+    graph_print(g1);
+
+    graph_save_to_file(g0, "res/TEST_EXACT_SUBGRAPH_5.txt");
+    graph_save_to_file(g1, "res/TEST_EXACT_SUBGRAPH_5.txt");
+    
+    matrix_destroy(g0);
+    matrix_destroy(g1);
+}
 int main(){
     srand(time(NULL));  
 
@@ -260,7 +281,8 @@ int main(){
     //test_exact_clique();
     //test_exact_subgraph_simple();
     //test_exact_subgraph();
-    test_exact_clique_bb();
+    //test_exact_clique_bb();
+    test_exact_clique_bb_random();
 
     return 0;
 }

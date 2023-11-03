@@ -1,31 +1,11 @@
 #include "exact_clique_bb.h"
+#include "graph.h"
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
 
 #define DEBUG 0
-void simplify_graph_to_directed(matrix *g) // turns directed multigraph into a multigraph
-{
-    const int n = g->size;
-    const int min_edges = 1;
-    for(int i = 0; i < n; i++){
-        for(int j = i + 1; j < n; j++){
-            const int a_to_b = g->mat[i * n + j];
-            const int b_to_a = g->mat[i + n * j];
-            if(a_to_b >= min_edges && b_to_a >= min_edges){
-                g->mat[i * n + j] = a_to_b + b_to_a;
-                g->mat[i + n * j] = a_to_b + b_to_a;
-            }
-            else{
-                g->mat[i * n + j] = 0;
-                g->mat[i + n * j] = 0;
-            }
-        }
-    }
-    for(int i = 0; i < n; i++){
-        g->mat[i * n + i] = 0;
-    }
-}
+
 
 int graph_weight_selected_vertices(const matrix* g, const int* vertices){
     int total = 0;
@@ -70,13 +50,13 @@ void calculate_candidates(const matrix* g, const int* clique, int* candidates){
     }
 }
 
-void calculate_expandable(int* expandable, const int* nbors, const int* candidates, const int vertex, const int size){
-    for(int i = 0; i < size; i++){
-        if(i < vertex){
-            expandable[i] = 0;
-        }
-        else{
-            expandable[i] = nbors[i] * candidates[i];
+void calculate_expandable(int* expandable, const int* nbors, const int* candidates, const int* permutation, const int vertex, const int size){
+    for(int j = 0; j < size; j++){
+        expandable[j] = nbors[j] * candidates[j];
+    }
+    for(int j = 0; j <= vertex; j++){
+        if(permutation[j] != -1){
+            expandable[permutation[j]] = 0;
         }
     }
 }
@@ -121,7 +101,7 @@ void calculate_permutation_and_upper_bound(const matrix* g, const int* curr_cliq
     int k = 0;
 
     while(!is_empty(candidates_prim, g->size)){
-        if(DEBUG) printf("K: %d\n", k);
+        if(DEBUG) printf("\nK: %d", k);
         k++;
         for(int i = 0; i < g->size; i++){
             indep_set_cands[i] = candidates_prim[i];
@@ -235,9 +215,9 @@ void expand(const matrix* g, int* best_clique, int* curr_clique, int* candidates
 
     const int curr_clique_score = graph_weight_selected_vertices(g, curr_clique);
     const int best_clique_score = graph_weight_selected_vertices(g, best_clique);
-    if(DEBUG) printf("\nTERMINATE: %d %d", best_clique_score, curr_clique_score);
+    if(DEBUG) printf("\nSCORES: %d %d", best_clique_score, curr_clique_score);
     if(is_empty(candidates, g->size)){
-        if(curr_clique_score > best_clique_score){
+        if(curr_clique_score >= best_clique_score){
             memcpy(best_clique, curr_clique, sizeof(int) * g->size);
         }
         if(DEBUG) printf("\nTERMINATE: %d %d", best_clique_score, curr_clique_score);
@@ -249,16 +229,27 @@ void expand(const matrix* g, int* best_clique, int* curr_clique, int* candidates
     int* permutation = (int*)malloc(sizeof(int) * g->size);
     int* upper_bound = (int*)malloc(sizeof(int) * g->size);
 
-    calculate_candidates(g, curr_clique, candidates);
+    //calculate_candidates(g, curr_clique, candidates);
     calculate_permutation_and_upper_bound(g, curr_clique, candidates, permutation, upper_bound);
+    if(DEBUG){  
+        printf("\npermutation: ");
+        for(int i = 0; i < g->size; i++){
+            printf("%d ", permutation[i]);
+        }
+        printf("\nupper_bound: ");
+        for(int i = 0; i < g->size; i++){
+            printf("%d ", upper_bound[i]);
+        }
+        printf("\n");
+    }
     for(int i = 0; i < g->size; i++){
         const int idx = permutation[i];
         if(idx < 0) continue;
         if(candidates[idx] == 1 && curr_clique_score + upper_bound[idx] > best_clique_score){
             curr_clique[idx] = 1;
-            if(DEBUG) printf("\n%d %d", permutation[i], upper_bound[idx]);
+            if(DEBUG) printf("\nPERM UPPER: %d %d", permutation[i], upper_bound[idx]);
             calculate_nbors(g, nbors, idx);
-            calculate_expandable(expandable, nbors, candidates, idx, g->size);
+            calculate_expandable(expandable, nbors, candidates, permutation, i, g->size);
             if(DEBUG){
                 printf("\nnbors:       ");
                 for(int j = 0; j < g->size; j++){
@@ -267,6 +258,10 @@ void expand(const matrix* g, int* best_clique, int* curr_clique, int* candidates
                 printf("\ncandidates:  ");
                 for(int j = 0; j < g->size; j++){
                     printf("%d ", candidates[j]);
+                }
+                printf("\nexpandable:  ");
+                for(int j = 0; j < g->size; j++){
+                    printf("%d ", expandable[j]);
                 }
             }
             expand(g, best_clique, curr_clique, expandable);
@@ -282,8 +277,9 @@ void expand(const matrix* g, int* best_clique, int* curr_clique, int* candidates
 
 // driver function
 void exact_clique_bb_run(matrix *g){
-    simplify_graph_to_directed(g);
 
+    graph_simplify_multidigraph_to_multigraph(g);
+    graph_print(g);
     int* curr_clique = (int*)malloc(sizeof(int) * g->size);
     int* best_clique = (int*)malloc(sizeof(int) * g->size);
     int* candidates  = (int*)malloc(sizeof(int) * g->size);

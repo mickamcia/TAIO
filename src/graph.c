@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-void graph_generate(matrix* g, int edge_weight_max, int edge_weight_min, float edge_occur_prob){
+void graph_generate(matrix* g, int edge_weight_max, int edge_weight_min, float edge_occur_prob, int should_be_directed){
     for(int i = 0; i < g->size; i++){
         for(int j = 0; j < g->size; j++){
             if(i != j && edge_occur_prob > (float)rand() / RAND_MAX){
@@ -12,6 +12,14 @@ void graph_generate(matrix* g, int edge_weight_max, int edge_weight_min, float e
             else{
                 g->mat[i * g->size + j] = 0;
             }
+        }
+    }
+
+    if(should_be_directed) return;
+
+    for(int i = 0; i < g->size; i++){
+        for(int j = 0; j < g->size; j++){
+            g->mat[i * g->size + j] = g->mat[i + g->size * j];   
         }
     }
 }
@@ -93,5 +101,28 @@ void graph_add_noise(matrix* g, float prob, int absolute, float relative)
                 g->mat[i * g->size + j] = value < 0 ? 0 : value; // might delete an edge
             }
         }
+    }
+}
+
+void graph_simplify_multidigraph_to_multigraph(matrix *g) // turns directed multigraph into a multigraph
+{
+    const int n = g->size;
+    const int min_edges = 1;
+    for(int i = 0; i < n; i++){
+        for(int j = i + 1; j < n; j++){
+            const int a_to_b = g->mat[i * n + j];
+            const int b_to_a = g->mat[i + n * j];
+            if(a_to_b >= min_edges && b_to_a >= min_edges){
+                g->mat[i * n + j] = a_to_b + b_to_a;
+                g->mat[i + n * j] = a_to_b + b_to_a;
+            }
+            else{
+                g->mat[i * n + j] = 0;
+                g->mat[i + n * j] = 0;
+            }
+        }
+    }
+    for(int i = 0; i < n; i++){
+        g->mat[i * n + i] = 0;
     }
 }
