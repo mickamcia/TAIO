@@ -92,8 +92,14 @@ void calculate_nbors(const matrix* g, int* nbors, const int vertex){
     }
 }
 
-int calculate_sigma_weight(const matrix* g, const int vertex){
-    return 1000; //TODO
+int calculate_sigma_weight(const matrix* g, const int* clique, const int vertex){
+    int total = 0;
+    for(int i = 0; i < g->size; i++){
+        if(clique[i] == 1){
+            total += g->mat[i * g->size + vertex];
+        }
+    }
+    return total;
 }
 
 void calculate_permutation_and_upper_bound(const matrix* g, const int* curr_clique, const int* candidates, int* permutation, int* upper_bound){
@@ -103,12 +109,13 @@ void calculate_permutation_and_upper_bound(const matrix* g, const int* curr_cliq
     int* vertex_coloring = (int*)malloc(sizeof(int) * g->size);
     int* indep_set_cands = (int*)malloc(sizeof(int) * g->size);
 
-    int fill_index = 0;
+    int fill_index = g->size - 1;
 
     for(int i = 0; i < g->size; i++){
+        vertex_coloring[i] = -1;
         upper_bound[i] = -1;
         permutation[i] = -1;
-        sigma_scores[i] = calculate_sigma_weight(g, i);
+        sigma_scores[i] = calculate_sigma_weight(g, curr_clique, i);
         candidates_prim[i] = candidates[i];
     }
     int k = 0;
@@ -117,7 +124,6 @@ void calculate_permutation_and_upper_bound(const matrix* g, const int* curr_cliq
         if(DEBUG) printf("K: %d\n", k);
         k++;
         for(int i = 0; i < g->size; i++){
-            vertex_coloring[i] = -1;
             indep_set_cands[i] = candidates_prim[i];
         }
         while(!is_empty(indep_set_cands, g->size)){
@@ -125,7 +131,7 @@ void calculate_permutation_and_upper_bound(const matrix* g, const int* curr_cliq
             int min_vertex = -1;
             for(int i = 0; i < g->size; i++){
                 if(indep_set_cands[i] == 0) continue;
-                if(min_vertex == -1 || sigma_scores[min_vertex] < sigma_scores[i]){
+                if(min_vertex == -1 || sigma_scores[min_vertex] > sigma_scores[i]){
                     min_vertex = i;
                 }
             }
@@ -140,15 +146,15 @@ void calculate_permutation_and_upper_bound(const matrix* g, const int* curr_cliq
                             max_score = sigma_scores[i];
                         }
                     }
-                    upper_bound[min_vertex] += max_score;
                 }
+                upper_bound[min_vertex] += max_score;
             }
 
             // update coloring with min_vertex
             vertex_coloring[min_vertex] = k;
 
             // append min_vetrex to permutation
-            permutation[fill_index++] = min_vertex;
+            permutation[fill_index--] = min_vertex;
 
             // remove nbors of min_vertex from indep_set_cands
             calculate_nbors(g, nbors, min_vertex);
@@ -226,11 +232,15 @@ void expand(const matrix* g, int* best_clique, int* curr_clique, int* candidates
         }
         printf("\n");
     }
+
+    const int curr_clique_score = graph_weight_selected_vertices(g, curr_clique);
+    const int best_clique_score = graph_weight_selected_vertices(g, best_clique);
+    if(DEBUG) printf("\nTERMINATE: %d %d", best_clique_score, curr_clique_score);
     if(is_empty(candidates, g->size)){
-        if(graph_weight_selected_vertices(g, curr_clique) > graph_weight_selected_vertices(g, best_clique)){
+        if(curr_clique_score > best_clique_score){
             memcpy(best_clique, curr_clique, sizeof(int) * g->size);
         }
-        if(DEBUG) printf("\nTERMINATE");
+        if(DEBUG) printf("\nTERMINATE: %d %d", best_clique_score, curr_clique_score);
         return;
     }
 
@@ -239,17 +249,14 @@ void expand(const matrix* g, int* best_clique, int* curr_clique, int* candidates
     int* permutation = (int*)malloc(sizeof(int) * g->size);
     int* upper_bound = (int*)malloc(sizeof(int) * g->size);
 
-    //calculate_candidates(g, curr_clique, candidates);
+    calculate_candidates(g, curr_clique, candidates);
     calculate_permutation_and_upper_bound(g, curr_clique, candidates, permutation, upper_bound);
-
-    const int curr_clique_score = graph_weight_selected_vertices(g, curr_clique);
-    const int best_clique_score = graph_weight_selected_vertices(g, best_clique);
-
     for(int i = 0; i < g->size; i++){
         const int idx = permutation[i];
         if(idx < 0) continue;
         if(candidates[idx] == 1 && curr_clique_score + upper_bound[idx] > best_clique_score){
             curr_clique[idx] = 1;
+            if(DEBUG) printf("\n%d %d", permutation[i], upper_bound[idx]);
             calculate_nbors(g, nbors, idx);
             calculate_expandable(expandable, nbors, candidates, idx, g->size);
             if(DEBUG){
