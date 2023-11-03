@@ -263,7 +263,7 @@ void test_exact_clique_bb_random(){
     matrix* g1 = matrix_clone(g0);
     exact_clique_bb_run(g1);
 
-    graph_print(g0);
+    //graph_print(g0);
     graph_print(g1);
 
     graph_save_to_file(g0, "res/TEST_EXACT_SUBGRAPH_5.txt");
