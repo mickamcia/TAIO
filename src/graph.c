@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "limits.h"
 
 void graph_generate(matrix* g, int edge_weight_max, int edge_weight_min, float edge_occur_prob, int should_be_directed){
     for(int i = 0; i < g->size; i++){
@@ -26,11 +27,12 @@ void graph_generate(matrix* g, int edge_weight_max, int edge_weight_min, float e
 
 void graph_print(matrix *g)
 {
-    printf("%d\n", g->size);
+    printf("\n%d\n", g->size);
     for(int i = 0; i < g->size; i++){
         for(int j = 0; j < g->size; j++){
             const int val = g->mat[i * g->size + j];
-            if(val >= 0) printf("% 3d ", val); // prints from 0 to 99, should change to "%d" by the end
+            if (val == INT_MAX) printf("max ");
+            else if (val >= -1) printf("% 3d ", val); // prints from 0 to 99, should change to "%d" by the end
             else printf("    ");
         }
         printf("\n");
@@ -146,4 +148,22 @@ void graph_simplify_multidigraph_to_graph(matrix *g) // turns directed multigrap
     for(int i = 0; i < n; i++){
         g->mat[i * n + i] = 0;
     }
+}
+
+matrix* graph_complement(matrix* g)
+{
+    matrix* gc = matrix_init(g->size);
+
+    int n = g->size;
+
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            if (i == j) continue;
+            int index = i * n + j;
+            if (g->mat[index] == 0)
+                gc->mat[index] = 1;
+        }
+    }
+
+    return gc;
 }

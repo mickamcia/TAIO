@@ -8,6 +8,7 @@
 #include "exact_clique.h"
 #include "exact_subgraph.h"
 #include "exact_clique_bb.h"
+#include "bma.h"
 
 void test_basic(){
     printf("\n%s\n", __func__);
@@ -43,7 +44,7 @@ void test_approx_clique(){
     graph_generate(g0, 3, 1, 1.0, 0);
 
     matrix* g2 = matrix_init(graph_size);
-    graph_generate(g2, 3, 1, 0.8, 0);
+    graph_generate(g2, 3, 1, 0.8f, 0);
 
     matrix* g3 = matrix_init(graph_size);
     matrix_overload(g0, g2, g3); // now g3 has a guaranteed clique of size equal to g0's vertex count
@@ -71,13 +72,13 @@ void test_approx_subgraph(){
     const int graph_a_size = 6;
     const int graph_b_size = 7;
     matrix* g0 = matrix_init(subgraph_size);
-    graph_generate(g0, 3, 1, 0.7, 1);
+    graph_generate(g0, 3, 1, 0.7f, 1);
     
 
     matrix* g3 = matrix_init(graph_a_size);
-    graph_generate(g3, 3, 1, 0.8, 1);
+    graph_generate(g3, 3, 1, 0.8f, 1);
     matrix* g4 = matrix_init(graph_b_size);
-    graph_generate(g4, 5, 2, 0.6, 1);
+    graph_generate(g4, 5, 2, 0.6f, 1);
 
     matrix* g5 = matrix_init(graph_a_size);
     matrix_overload(g0, g3, g5); 
@@ -120,7 +121,7 @@ void test_exact_clique(){
     graph_generate(g0, 3, 1, 1.0, 0);
 
     matrix* g2 = matrix_init(graph_size);
-    graph_generate(g2, 3, 1, 0.2, 0);
+    graph_generate(g2, 3, 1, 0.2f, 0);
 
     matrix* g3 = matrix_init(graph_size);
     matrix_overload(g0, g2, g3); // now g3 has a guaranteed clique of size equal to g0's vertex count
@@ -150,7 +151,7 @@ void test_exact_clique_bb(){
     graph_generate(g0, 1, 1, 1.0, 0);
 
     matrix* g2 = matrix_init(graph_size);
-    graph_generate(g2, 10, 1, 0.4, 0);
+    graph_generate(g2, 10, 1, 0.4f, 0);
 
     matrix* g3 = matrix_init(graph_size);
     matrix_overload(g0, g2, g3); // now g3 has a guaranteed clique of size equal to g0's vertex count
@@ -210,7 +211,7 @@ void test_exact_subgraph(){
     const int graph_a_size = 8;
     const int graph_b_size = 9;
     matrix* g0 = matrix_init(subgraph_size);
-    graph_generate(g0, 7, 7, 0.7, 1);
+    graph_generate(g0, 7, 7, 0.7f, 1);
     
 
     matrix* g3 = matrix_init(graph_a_size);
@@ -257,7 +258,7 @@ void test_exact_clique_bb_random(){
     const int graph_size = 10;
 
     matrix* g0 = matrix_init(graph_size);
-    graph_generate(g0, 10, 1, 0.2, 0);
+    graph_generate(g0, 10, 1, 0.2f, 0);
     graph_permute(g0);
 
     matrix* g1 = matrix_clone(g0);
@@ -272,6 +273,76 @@ void test_exact_clique_bb_random(){
     matrix_destroy(g0);
     matrix_destroy(g1);
 }
+
+void test_mn_clique() {
+    int size = 8;
+
+    matrix* g0 = matrix_init(size);
+
+    //graph_generate(g0, 1, 0, 0.5f, 0);
+    graph_generate(g0, 0, 0, 0.0f, 0);
+
+   // graf z papieru o bellmanie-fordzie
+
+    int a = 0, b = 1, c = 2, d = 3, e = 4, f = 5, g = 6, h = 7;
+
+    g0->mat[a * size + b] = 1;
+    g0->mat[a * size + c] = 1;
+    g0->mat[a * size + h] = 1;
+    
+    g0->mat[b * size + a] = 1;
+    g0->mat[b * size + e] = 1;
+    g0->mat[c * size + a] = 1;
+    g0->mat[c * size + d] = 1;
+    g0->mat[d * size + c] = 1;
+    g0->mat[d * size + g] = 1;
+    g0->mat[d * size + f] = 1;
+    g0->mat[e * size + b] = 1;
+    g0->mat[e * size + g] = 1;
+    g0->mat[e * size + f] = 1;
+    g0->mat[f * size + h] = 1;
+    g0->mat[f * size + d] = 1;
+    g0->mat[f * size + e] = 1;
+    g0->mat[g * size + h] = 1;
+    g0->mat[g * size + d] = 1;
+    g0->mat[g * size + e] = 1;
+    g0->mat[h * size + g] = 1;
+    g0->mat[h * size + f] = 1;
+    g0->mat[h * size + a] = 1;
+
+
+    
+    /*g0->mat[1] = 1;
+    //g0->mat[2] = 0;
+    g0->mat[3] = 1;
+
+    g0->mat[4] = 1;
+    g0->mat[5] = 0;
+    g0->mat[6] = 0;
+    g0->mat[7] = 1;
+
+    g0->mat[8] = 0;
+    g0->mat[9] = 0;
+    g0->mat[10] = 0;
+    g0->mat[11] = 0;
+
+    g0->mat[12] = 1;
+    g0->mat[13] = 1;
+    g0->mat[14] = 0;
+    g0->mat[15] = 0;*/
+
+    matrix* g1 = graph_complement(g0);
+    graph_print(g0);
+    graph_print(g1);
+
+    bma(g1);
+
+
+
+    matrix_destroy(g1);
+    matrix_destroy(g0);
+}
+
 int main(){
     srand(time(NULL));  
 
