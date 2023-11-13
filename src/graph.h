@@ -15,5 +15,6 @@ void graph_simplify_multidigraph_to_graph(matrix *g);
 void graph_simplify_multidigraph_to_multigraph(matrix *g);
 
 matrix* graph_complement(matrix* g);
+int graph_calc_clique_size(matrix* g);
 
 #endif

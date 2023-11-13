@@ -4,6 +4,10 @@
 #include <string.h>
 #include "limits.h"
 
+// internal functions
+int graph_calc_clique_size_n(matrix* g);
+int graph_calc_clique_size_m(matrix* g);
+
 void graph_generate(matrix* g, int edge_weight_max, int edge_weight_min, float edge_occur_prob, int should_be_directed){
     for(int i = 0; i < g->size; i++){
         for(int j = 0; j < g->size; j++){
@@ -166,4 +170,22 @@ matrix* graph_complement(matrix* g)
     }
 
     return gc;
+}
+
+int graph_calc_clique_size(matrix* g) {
+    return graph_calc_clique_size_m(g);
+}
+
+int graph_calc_clique_size_n(matrix* g) {
+    return 0;
+}
+
+int graph_calc_clique_size_m(matrix* g) {
+    int graph_size = 0;
+    for (int i = 0; i < g->size; i++)
+        for (int j = 0; j < g->size; j++)
+            if (g->mat[i * g->size + j] > 0)
+                graph_size += g->mat[i * g->size + j];
+
+    return graph_size;
 }

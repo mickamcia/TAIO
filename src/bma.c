@@ -6,7 +6,7 @@
 #include <string.h>
 #include "utils.h"
 
-#define DEBUG 1
+#define DEBUG 0
 
 void bma_init(matrix* g, matrix* exclude_curr, matrix* exclude_next, int* cost, int* previous)
 {
@@ -42,7 +42,7 @@ void array_print(int* g, int size, char name[])
 	printf("\n%s\n", name);
 	for (int i = 0; i < size; i++) {
 		const int val = g[i];
-		if (val == INT_MAX) printf("max ");
+		if (val == INT_MAX) printf("inf ");
 		else if (val >= -1) printf("% 3d ", val); // prints from 0 to 99, should change to "%d" by the end
 		else printf("    ");
 	}
@@ -61,7 +61,7 @@ void array2d_print(int* arr, int columns, int rows, char name[])
 	for (int i = 0; i < rows; i++) {
 		for (int j = 0; j < columns; j++) {
 			const int val = arr[i * columns + j];
-			if (val == INT_MAX) printf("max ");
+			if (val == INT_MAX) printf("inf ");
 			else if (val >= -1) printf("% 3d ", val); // prints from 0 to 99, should change to "%d" by the end
 			else printf("    ");
 		}
@@ -69,7 +69,7 @@ void array2d_print(int* arr, int columns, int rows, char name[])
 	}
 }
 
-void bma_relaxation(matrix* g, matrix* exclude_curr, matrix* exclude_next, int* cost, int* previous)
+int bma_relaxation(matrix* g, matrix* exclude_curr, matrix* exclude_next, int* cost, int* previous)
 {
 	int lastRound = -1;
 	int n = g->size;
@@ -90,9 +90,6 @@ void bma_relaxation(matrix* g, matrix* exclude_curr, matrix* exclude_next, int* 
 				memcpy(vExclude, &(exclude_curr->mat[u * n]), sizeof(int) * n);
 				vExclude[v] = 1;
 				vCost = 1 + cost[round * n + u];
-				if(DEBUG) 
-					array_print(vExclude, n, "vExclude[u] = 1");
-
 
 				for (int j = 0; j < n; j++) {	// for each neighbor of v
 					if (j != v && g->mat[v * n + j] == 1) { 
@@ -120,11 +117,20 @@ void bma_relaxation(matrix* g, matrix* exclude_curr, matrix* exclude_next, int* 
 
 		memcpy(exclude_curr->mat, exclude_next->mat, sizeof(int) * n * n);
 		memset(exclude_next->mat, 0, sizeof(int) * n * n);
+
+		if (DEBUG) {
+			printf("\nexclude_curr:");
+			graph_print(exclude_curr);
+			array2d_print(cost, g->size, g->size + 1, "cost");
+			array2d_print(previous, g->size, g->size + 1, "previous");
+		}
 	}
 	free(vExclude);
+
+	return lastRound;
 }
 
-void bma(matrix* g)
+int bma(matrix* g, int* cost, int* previous)
 {
 	int rows = g->size + 1;
 	int columns = g->size;
@@ -132,25 +138,16 @@ void bma(matrix* g)
 	matrix* exclude_curr = matrix_init(g->size);
 	matrix* exclude_next = matrix_init(g->size);
 
-	// vertices - columns, rounds - rows
-	int* cost = (int*)malloc(sizeof(int) * columns * rows);
-	int* previous = (int*)malloc(sizeof(int) * columns * rows);
-	if (!cost || !previous) 
-		ERR("malloc");
-	
-	memset(cost, 0, sizeof(int) * columns * rows);
-	memset(previous, 0, sizeof(int) * columns * rows);
-
 	bma_init(g, exclude_curr, exclude_next, cost, previous);
 
 	if (DEBUG) {
-		printf("\nexclude_curr:");
+		printf("\ninit exclude_curr:");
 		graph_print(exclude_curr);
-		array2d_print(cost, columns, rows, "cost");
-		array2d_print(previous, columns, rows, "previous");
+		array2d_print(cost, columns, rows, "init cost");
+		array2d_print(previous, columns, rows, "init previous");
 	}
 
-	bma_relaxation(g, exclude_curr, exclude_next, cost, previous);
+	int lastRound = bma_relaxation(g, exclude_curr, exclude_next, cost, previous);
 
 	if (DEBUG) {
 		printf("\nexclude_curr:");
@@ -159,8 +156,8 @@ void bma(matrix* g)
 		array2d_print(previous, columns, rows, "previous");
 	}
 
-	free(previous);
-	free(cost);
 	matrix_destroy(exclude_next);
 	matrix_destroy(exclude_curr);
+
+	return lastRound;
 }

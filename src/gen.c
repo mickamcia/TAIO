@@ -133,8 +133,8 @@ void test_exact_clique(){
     graph_print(g3);
     graph_print(g4);
 
-    graph_save_to_file(g3, "res/TEST_EXACT_CLIQUE_3.txt");
-    graph_save_to_file(g4, "res/TEST_EXACT_CLIQUE_4.txt");
+    graph_save_to_file(g3, "/res/TEST_EXACT_CLIQUE_3.txt");
+    graph_save_to_file(g4, "/res/TEST_EXACT_CLIQUE_4.txt");
     
     matrix_destroy(g0);
     matrix_destroy(g2);
@@ -275,14 +275,7 @@ void test_exact_clique_bb_random(){
 }
 
 void paper_example(matrix* g0) {
-    int size = 8;
-
-    matrix* g0 = matrix_init(size);
-
-    //graph_generate(g0, 1, 0, 0.5f, 0);
-    graph_generate(g0, 0, 0, 0.0f, 0);
-
-   // graf z papieru o bellmanie-fordzie
+    // graf z papieru o bellmanie-fordzie
 
     int a = 0, b = 1, c = 2, d = 3, e = 4, f = 5, g = 6, h = 7;
     int size = g0->size;
@@ -290,7 +283,7 @@ void paper_example(matrix* g0) {
     for (int i = 0; i < g0->size; i++)
         for (int j = 0; j < g0->size; j++)
             g0->mat[i * size + j] = 1;
-    
+
     g0->mat[a * size + b] = 0;
     g0->mat[a * size + c] = 0;
     g0->mat[a * size + h] = 0;
@@ -314,46 +307,48 @@ void paper_example(matrix* g0) {
     g0->mat[h * size + f] = 0;
     g0->mat[h * size + a] = 0;
 }
-    
-void medium_example(matrix* g0) {
-    g0->mat[1] = 1;
-    g0->mat[2] = 0;
-    g0->mat[3] = 1;
 
-    g0->mat[4] = 1;
-    g0->mat[5] = 0;
-    g0->mat[6] = 0;
-    g0->mat[7] = 1;
+void medium_example(matrix* g) {
+    int a = 0, b = 1, c = 2, d = 3, e = 4, f = 5;
 
-    g0->mat[8] = 0;
-    g0->mat[9] = 0;
-    g0->mat[10] = 0;
-    g0->mat[11] = 0;
+    g->mat[a * g->size + b] = 1;
+    g->mat[a * g->size + f] = 1;
+    g->mat[b * g->size + a] = 1;
+    g->mat[b * g->size + f] = 1;
+    g->mat[f * g->size + a] = 1;
+    g->mat[f * g->size + b] = 1;
+    g->mat[f * g->size + c] = 1;
+    g->mat[c * g->size + f] = 1;
+    g->mat[c * g->size + b] = 1;
+    g->mat[c * g->size + a] = 1;
+    g->mat[a * g->size + c] = 1;
+    g->mat[b * g->size + c] = 1;
 
-    g0->mat[12] = 1;
-    g0->mat[13] = 1;
-    g0->mat[14] = 0;
-    g0->mat[15] = 0;
+    g->mat[d * g->size + e] = 5;
+    g->mat[e * g->size + d] = 2;
 }
 
 void simple_example(matrix* g0) {
     int a = 0, b = 1, c = 2;
     int size = g0->size;
 
-    g0->mat[a * size + c] = 1;
+    g0->mat[a * size + c] = 2;
     g0->mat[c * size + a] = 1;
 }
 
 void test_approx_clique_v1() {
-    int size = 8;
+    int size = 6;
 
     matrix* g0 = matrix_init(size);
+   
+    //paper_example(g0);
+    medium_example(g0);
+    //simple_example(g0);
 
-    paper_example(g0);
+    graph_print(g0);
 
     approx_clique_run(g0);
 
-    matrix_destroy(g1);
     matrix_destroy(g0);
 }
 
