@@ -274,7 +274,7 @@ void test_exact_clique_bb_random(){
     matrix_destroy(g1);
 }
 
-void test_mn_clique() {
+void paper_example(matrix* g0) {
     int size = 8;
 
     matrix* g0 = matrix_init(size);
@@ -285,35 +285,39 @@ void test_mn_clique() {
    // graf z papieru o bellmanie-fordzie
 
     int a = 0, b = 1, c = 2, d = 3, e = 4, f = 5, g = 6, h = 7;
+    int size = g0->size;
 
-    g0->mat[a * size + b] = 1;
-    g0->mat[a * size + c] = 1;
-    g0->mat[a * size + h] = 1;
+    for (int i = 0; i < g0->size; i++)
+        for (int j = 0; j < g0->size; j++)
+            g0->mat[i * size + j] = 1;
     
-    g0->mat[b * size + a] = 1;
-    g0->mat[b * size + e] = 1;
-    g0->mat[c * size + a] = 1;
-    g0->mat[c * size + d] = 1;
-    g0->mat[d * size + c] = 1;
-    g0->mat[d * size + g] = 1;
-    g0->mat[d * size + f] = 1;
-    g0->mat[e * size + b] = 1;
-    g0->mat[e * size + g] = 1;
-    g0->mat[e * size + f] = 1;
-    g0->mat[f * size + h] = 1;
-    g0->mat[f * size + d] = 1;
-    g0->mat[f * size + e] = 1;
-    g0->mat[g * size + h] = 1;
-    g0->mat[g * size + d] = 1;
-    g0->mat[g * size + e] = 1;
-    g0->mat[h * size + g] = 1;
-    g0->mat[h * size + f] = 1;
-    g0->mat[h * size + a] = 1;
-
-
+    g0->mat[a * size + b] = 0;
+    g0->mat[a * size + c] = 0;
+    g0->mat[a * size + h] = 0;
+    g0->mat[b * size + a] = 0;
+    g0->mat[b * size + e] = 0;
+    g0->mat[c * size + a] = 0;
+    g0->mat[c * size + d] = 0;
+    g0->mat[d * size + c] = 0;
+    g0->mat[d * size + g] = 0;
+    g0->mat[d * size + f] = 0;
+    g0->mat[e * size + b] = 0;
+    g0->mat[e * size + g] = 0;
+    g0->mat[e * size + f] = 0;
+    g0->mat[f * size + h] = 0;
+    g0->mat[f * size + d] = 0;
+    g0->mat[f * size + e] = 0;
+    g0->mat[g * size + h] = 0;
+    g0->mat[g * size + d] = 0;
+    g0->mat[g * size + e] = 0;
+    g0->mat[h * size + g] = 0;
+    g0->mat[h * size + f] = 0;
+    g0->mat[h * size + a] = 0;
+}
     
-    /*g0->mat[1] = 1;
-    //g0->mat[2] = 0;
+void medium_example(matrix* g0) {
+    g0->mat[1] = 1;
+    g0->mat[2] = 0;
     g0->mat[3] = 1;
 
     g0->mat[4] = 1;
@@ -329,31 +333,43 @@ void test_mn_clique() {
     g0->mat[12] = 1;
     g0->mat[13] = 1;
     g0->mat[14] = 0;
-    g0->mat[15] = 0;*/
+    g0->mat[15] = 0;
+}
 
-    matrix* g1 = graph_complement(g0);
-    graph_print(g0);
-    graph_print(g1);
+void simple_example(matrix* g0) {
+    int a = 0, b = 1, c = 2;
+    int size = g0->size;
 
-    bma(g1);
+    g0->mat[a * size + c] = 1;
+    g0->mat[c * size + a] = 1;
+}
 
+void test_approx_clique_v1() {
+    int size = 8;
 
+    matrix* g0 = matrix_init(size);
+
+    paper_example(g0);
+
+    approx_clique_run(g0);
 
     matrix_destroy(g1);
     matrix_destroy(g0);
 }
 
 int main(){
-    srand(time(NULL));  
+    srand((unsigned int)time(NULL));  
+
+    test_approx_clique_v1();
 
     //test_basic();
     //test_approx_clique();
     //test_approx_subgraph();
     //test_exact_clique();
     //test_exact_subgraph_simple();
-    test_exact_subgraph();
+    //test_exact_subgraph();
     //test_exact_clique_bb();
-    test_exact_clique_bb_random();
+    //test_exact_clique_bb_random();
 
     return 0;
 }
