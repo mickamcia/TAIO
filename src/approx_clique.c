@@ -41,7 +41,10 @@ matrix* get_max_clique(matrix* all_cliques, matrix* g) {
 				clique->mat[k * clique->size + j] = -1;
 				if (all_cliques->mat[i * all_cliques->size + j] == 0) 
 					continue;
-				if (j != k && all_cliques->mat[i * all_cliques->size + k]) {
+
+				if (k == j)
+					clique->mat[k * clique->size + k] = 0;
+				else if  (all_cliques->mat[i * all_cliques->size + k]) {
 					if (g->mat[j * g->size + k] > 0)
 						clique->mat[j * clique->size + k] = g->mat[j * g->size + k];
 					if (g->mat[k * g->size + j] > 0)
@@ -63,7 +66,7 @@ matrix* get_max_clique(matrix* all_cliques, matrix* g) {
 	return max_clique;
 }
 
-void approx_clique_run(matrix *g)
+matrix* approx_clique_run(matrix *g)
 {
 	matrix* g_s = matrix_clone(g);
 	graph_simplify_multidigraph_to_graph(g_s);
@@ -86,18 +89,16 @@ void approx_clique_run(matrix *g)
 
 	matrix* all_cliques = get_all_cliques(g, cost, previous, lastRound);
 
-	printf("\nAll cliques:");
-	graph_print(all_cliques);
+	// printf("\nAll cliques:");
+	// graph_print(all_cliques);
 
 	matrix* max_clique = get_max_clique(all_cliques, g);
 
-	printf("\n\nMax clique - size %d:", graph_calc_clique_size(max_clique));
-	graph_print(max_clique);
-
 	free(previous);
 	free(cost);
-	matrix_destroy(max_clique);
 	matrix_destroy(all_cliques);
 	matrix_destroy(g_c);
 	matrix_destroy(g_s);
+
+	return max_clique;
 }

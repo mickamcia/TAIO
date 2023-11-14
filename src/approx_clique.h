@@ -3,6 +3,6 @@
 
 #include "matrix.h"
 
-void approx_clique_run(matrix* g);
+matrix* approx_clique_run(matrix* g);
 
 #endif

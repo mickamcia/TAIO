@@ -189,3 +189,7 @@ int graph_calc_clique_size_m(matrix* g) {
 
     return graph_size;
 }
+
+int graph_clique_equal(matrix* g1, matrix* g2) {
+    return graph_calc_clique_size(g1) == graph_calc_clique_size(g2);
+}
