@@ -423,6 +423,23 @@ void simple_example(matrix* g0) {
     g0->mat[c * size + a] = 1;
 }
 
+void example2(matrix* g0) {
+    int a = 0, b = 1, c = 2, d = 3;
+    int size = g0->size;
+
+    g0->mat[a * size + b] = 3;
+    g0->mat[a * size + c] = 3;
+    g0->mat[a * size + d] = 3;
+
+    // jak to odkomentujesz to tez nie zwraca poprawnego podgrafu
+    g0->mat[b * size + a] = 1;
+    g0->mat[c * size + a] = 1;
+    g0->mat[d * size + a] = 1;
+}
+
+    g1 = matrix_clone(g0);
+}
+
 void test_approx_clique_v1() {
     int size = 6;
 
@@ -439,6 +456,31 @@ void test_approx_clique_v1() {
     matrix_destroy(g0);
 }
 
+void test_example_sub_v1() {
+    int size = 4;
+
+    matrix* g0 = matrix_init(size);
+    matrix* g1 = matrix_init(size);
+
+    example2(g0, g1);
+
+    matrix* g1 = matrix_clone(g0);
+
+    graph_simplify_multidigraph_to_multigraph(g0);
+    graph_simplify_multidigraph_to_multigraph(g1);
+
+    graph_print(g0);
+    graph_print(g1);
+
+    exact_subgraph_run(g0, g1);
+
+    graph_print(g0);
+    graph_print(g1);
+
+    matrix_destroy(g0);
+    matrix_destroy(g1);
+}
+
 int main(){
     srand((unsigned int)time(NULL));  
 
@@ -446,7 +488,9 @@ int main(){
     //test_approx_clique();
 
     //test_clique();
-    test_clique_random();
+    //test_clique_random();
+
+    test_example_sub_v1();
 
     //test_basic();
     //test_approx_clique();
