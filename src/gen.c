@@ -1,14 +1,15 @@
-#include "graph.h"
 #include <time.h>
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "graph.h"
 #include "approx_clique.h"
 #include "approx_subgraph.h"
 #include "exact_clique.h"
 #include "exact_subgraph.h"
 #include "exact_clique_bb.h"
 #include "bma.h"
+#include "utils.h"
 
 #pragma region Examples to be removed
 
@@ -299,8 +300,8 @@ void test_exact_clique_bb_random(){
 void test_clique() {
     printf("\n%s\n", __func__);
 
-    const int clique_size = 6;
-    const int graph_size = 12;
+    const int clique_size = 50;
+    const int graph_size = 500;
     matrix* g0 = matrix_init(clique_size);
     graph_generate(g0, 3, 1, 1.0, 0);
 
@@ -312,12 +313,20 @@ void test_clique() {
     graph_permute(g3);
 
     matrix* g_exact = matrix_clone(g3);
+
+    clock_t time_exact = clock();
     exact_clique_bb_run(g_exact);
-    matrix* g_approx = approx_clique_run(g3);
+    time_exact = clock() - time_exact;
+
+    clock_t time_approx = clock();
+    matrix* g_approx = approx_clique_run(g0);
+    time_approx = clock() - time_approx;
 
     graph_print(g3);
     graph_print(g_exact);
     graph_print(g_approx);
+
+    utils_print_execution_time(time_exact, time_approx);
 
     graph_save_to_file(g3, "res/TEST_EXACT_CLIQUE_3.txt");
     graph_save_to_file(g_exact, "res/TEST_EXACT_CLIQUE_EXACT.txt");
@@ -342,7 +351,7 @@ void test_clique() {
 void test_clique_random() {
     printf("\n%s\n", __func__);
 
-    const int directed = 0;
+    const int directed = 1;
     const int graph_size = 200;
 
     matrix* g0 = matrix_init(graph_size);
@@ -355,12 +364,20 @@ void test_clique_random() {
     graph_permute(g0);
 
     matrix* g_exact = matrix_clone(g0);
+    
+    clock_t time_exact = clock();
     exact_clique_bb_run(g_exact);
+    time_exact = clock() - time_exact;
+
+    clock_t time_approx = clock();
     matrix* g_approx = approx_clique_run(g0);
+    time_approx = clock() - time_approx;
 
     graph_print(g0);
     graph_print(g_exact);
     graph_print(g_approx);
+
+    utils_print_execution_time(time_exact, time_approx);
 
     graph_save_to_file(g0, "res/TEST_EXACT_CLIQUE_3.txt");
     graph_save_to_file(g_exact, "res/TEST_EXACT_CLIQUE_EXACT.txt");
@@ -518,11 +535,11 @@ void test_approx_subgraph(){
 void test_subgraph() {
     printf("\n%s\n", __func__);
 
-    const int subgraph_size = 6;
-    const int graph_a_size = 10;
-    const int graph_b_size = 12;
+    const int subgraph_size = 10;
+    const int graph_a_size = 20;
+    const int graph_b_size = 20;
     matrix* g0 = matrix_init(subgraph_size);
-    graph_generate(g0, 7, 1, 0.7f, 1);
+    graph_generate(g0, 7, 1, 0.8f, 1);
 
 
     matrix* g3 = matrix_init(graph_a_size);
@@ -540,11 +557,17 @@ void test_subgraph() {
 
     matrix* a_exact = matrix_clone(g5);
     matrix* b_exact = matrix_clone(g6);
+
+    clock_t time_exact = clock();
     exact_subgraph_run(a_exact, b_exact);
+    time_exact = clock() - time_exact;
     
     matrix* a_approx = matrix_clone(g5);
     matrix* b_approx = matrix_clone(g6);
+    
+    clock_t time_approx = clock();
     approx_subgraph_run(a_approx, b_approx);
+    time_approx = clock() - time_approx;
 
     printf("\nSubgraph:");
     graph_print(g0);
@@ -560,6 +583,8 @@ void test_subgraph() {
     graph_print(b_exact);
     printf("\nApprox subgraph of b:");
     graph_print(b_approx);
+
+    utils_print_execution_time(time_exact, time_approx);
 
     if (graph_calc_clique_size(g0) == graph_calc_clique_size(a_exact) && graph_clique_equal(a_exact, a_approx) && graph_clique_equal(b_exact, b_approx)) {
         printf("\033[0;32m%s", "\nPASS");
