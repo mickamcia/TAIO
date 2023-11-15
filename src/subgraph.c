@@ -15,8 +15,8 @@ matrix* modular_product(matrix* a, matrix* b)
     for (int a_i = 0; a_i < a->size; a_i++) {
         for (int b_i = 0; b_i < b->size; b_i++) {
             for (int a_j = 0; a_j < a->size; a_j++) {
+                if (a_i == a_j) continue;
                 for (int b_j = 0; b_j < b->size; b_j++) {
-                    if (a_i == a_j) continue;
                     if (b_i == b_j) continue;
                     const int a_edge = a->mat[a_i * a->size + a_j];
                     const int b_edge = b->mat[b_i * b->size + b_j];
@@ -48,21 +48,40 @@ void extract_solution(matrix* clique, matrix* a, matrix* b)
             }
         }
     }
-    for (int i = 0; i < a->size; i++) {
-        for (int j = 0; j < a->size; j++) {
-            if (a_clique_indices[i] == 0 || a_clique_indices[j] == 0) {
-                a->mat[i * a->size + j] = -1;
-            }
-        }
-    }
-    for (int i = 0; i < b->size; i++) {
-        for (int j = 0; j < b->size; j++) {
-            if (b_clique_indices[i] == 0 || b_clique_indices[j] == 0) {
-                b->mat[i * b->size + j] = -1;
-            }
-        }
-    }
 
+    matrix* a_copy = matrix_clone(a);
+    matrix* b_copy = matrix_clone(b);
+
+    for (int a_i = 0; a_i < a->size; a_i++) {
+        for (int a_j = 0; a_j < a->size; a_j++) {
+            const int a_edge = a_copy->mat[a_i * a->size + a_j];
+            for (int b_i = 0; b_i < b->size; b_i++) {
+                for (int b_j = 0; b_j < b->size; b_j++) {
+                    int val = clique->mat[(a_i * b->size + b_i) * clique->size + (a_j * b->size + b_j)];
+
+                    const int b_edge = b_copy->mat[b_i * b->size + b_j];
+
+                    if (a_clique_indices[a_i] == 0 || a_clique_indices[a_j] == 0) {
+                        a->mat[a_i * a->size + a_j] = -1;
+                    }
+                    else if (a_i != a_j && val > 0 && a_edge != 0 && b_edge != 0) {
+                        a->mat[a_i * a->size + a_j] = val;
+                    }
+
+
+                    if (b_clique_indices[b_i] == 0 || b_clique_indices[b_j] == 0) {
+                        b->mat[b_i * b->size + b_j] = -1;
+                    }
+                    else if (b_i != b_j && val > 0 && a_edge != 0 && b_edge != 0) {
+                        b->mat[b_i * b->size + b_j] = val;
+                    }
+                }
+            }
+        }
+    }
+    
+    matrix_destroy(a_copy);
+    matrix_destroy(b_copy);
     free(a_clique_indices);
     free(b_clique_indices);
 }
