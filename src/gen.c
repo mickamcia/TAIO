@@ -339,6 +339,80 @@ void test_exact_subgraph(){
     matrix_destroy(g8);
 }
 
+void test_subgraph() {
+    printf("\n%s\n", __func__);
+
+    const int subgraph_size = 6;
+    const int graph_a_size = 8;
+    const int graph_b_size = 9;
+    matrix* g0 = matrix_init(subgraph_size);
+    graph_generate(g0, 7, 1, 0.7f, 1);
+
+
+    matrix* g3 = matrix_init(graph_a_size);
+    graph_generate(g3, 2, 1, 0.0, 1);
+    matrix* g4 = matrix_init(graph_b_size);
+    graph_generate(g4, 3, 1, 1.0, 1);
+
+    matrix* g5 = matrix_init(graph_a_size);
+    matrix_overload(g0, g3, g5);
+    matrix* g6 = matrix_init(graph_b_size);
+    matrix_overload(g0, g4, g6); // now g5 and g6 have a guaranteed g0 subgraph
+
+    graph_permute(g5);
+    graph_permute(g6);
+
+    matrix* a_exact = matrix_clone(g5);
+    matrix* b_exact = matrix_clone(g6);
+    exact_subgraph_run(a_exact, b_exact);
+    
+    matrix* a_approx = matrix_clone(g5);
+    matrix* b_approx = matrix_clone(g6);
+    approx_subgraph_run(a_approx, b_approx);
+
+    printf("\nSubgraph:");
+    graph_print(g0);
+    printf("\nOriginal a:");
+    graph_print(g5);
+    printf("\nExact subgraph of a:");
+    graph_print(a_exact);
+    printf("\nApprox subgraph of a:");
+    graph_print(a_approx);
+    printf("\nOriginal b:");
+    graph_print(g6);
+    printf("\nExact subgraph of b:");
+    graph_print(b_exact);
+    printf("\nApprox subgraph of b:");
+    graph_print(b_approx);
+
+    if (graph_clique_equal(a_exact, a_approx) && graph_clique_equal(b_exact, b_approx)) {
+        printf("\033[0;32m%s", "\nPASS");
+    }
+    else {
+        printf("\033[0;31m%s", "\nFAIL");
+    }
+
+    printf("\033[0;37m\n\n");
+
+    graph_save_to_file(g0, "res/TEST_EXACT_SUBGRAPH_5.txt");
+    graph_save_to_file(g5, "res/TEST_EXACT_SUBGRAPH_5.txt");
+    graph_save_to_file(g6, "res/TEST_EXACT_SUBGRAPH_6.txt");
+    graph_save_to_file(a_exact, "res/TEST_EXACT_SUBGRAPH_7.txt");
+    graph_save_to_file(a_approx, "res/TEST_EXACT_SUBGRAPH_7.txt");
+    graph_save_to_file(b_exact, "res/TEST_EXACT_SUBGRAPH_8.txt");
+    graph_save_to_file(b_approx, "res/TEST_EXACT_SUBGRAPH_8.txt");
+
+    matrix_destroy(g0);
+    matrix_destroy(g3);
+    matrix_destroy(g4);
+    matrix_destroy(g5);
+    matrix_destroy(g6);
+    matrix_destroy(a_exact);
+    matrix_destroy(a_approx);
+    matrix_destroy(b_exact);
+    matrix_destroy(b_approx);
+}
+
 void test_exact_clique_bb_random(){
     printf("\n%s\n", __func__);
 
@@ -437,9 +511,6 @@ void example2(matrix* g0) {
     g0->mat[d * size + a] = 1;
 }
 
-    g1 = matrix_clone(g0);
-}
-
 void test_approx_clique_v1() {
     int size = 6;
 
@@ -456,26 +527,50 @@ void test_approx_clique_v1() {
     matrix_destroy(g0);
 }
 
-void test_example_sub_v1() {
+void test_subgraph_simple() {
     int size = 4;
 
     matrix* g0 = matrix_init(size);
     matrix* g1 = matrix_init(size);
 
-    example2(g0, g1);
+    example2(g0);
 
     matrix* g1 = matrix_clone(g0);
 
-    graph_simplify_multidigraph_to_multigraph(g0);
     graph_simplify_multidigraph_to_multigraph(g1);
 
-    graph_print(g0);
-    graph_print(g1);
+    matrix* a_exact = matrix_clone(g0);
+    matrix* b_exact = matrix_clone(g1);
+    matrix* a_approx = matrix_clone(g0);
+    matrix* b_approx = matrix_clone(g1);
 
-    exact_subgraph_run(g0, g1);
-
+    exact_subgraph_run(a_exact, b_exact);
+    //approx_subgraph_run(a_approx, b_approx);
+    
+    //printf("\nSubgraph:");
+    //graph_print(g0);
+    printf("\nOriginal a:");
     graph_print(g0);
+    printf("\nExact subgraph of a:");
+    //graph_print(a_exact);
+    //printf("\nApprox subgraph of a:");
+    graph_print(a_approx);
+    printf("\nOriginal b:");
     graph_print(g1);
+    printf("\nExact subgraph of b:");
+    graph_print(b_exact);
+    //printf("\nApprox subgraph of b:");
+    //graph_print(b_approx);
+
+
+   /* if (graph_clique_equal(a_exact, a_approx) && graph_clique_equal(b_exact, b_approx)) {
+        printf("\033[0;32m%s", "\nPASS");
+    }
+    else {
+        printf("\033[0;31m%s", "\nFAIL");
+    }
+
+    printf("\033[0;37m\n\n");*/
 
     matrix_destroy(g0);
     matrix_destroy(g1);
@@ -490,7 +585,8 @@ int main(){
     //test_clique();
     //test_clique_random();
 
-    test_example_sub_v1();
+    //test_subgraph_simple();
+    test_subgraph();
 
     //test_basic();
     //test_approx_clique();
