@@ -49,17 +49,16 @@ void extract_solution(matrix* clique, matrix* a, matrix* b)
         }
     }
 
-    matrix* a_copy = matrix_clone(a);
-    matrix* b_copy = matrix_clone(b);
+    matrix* a_original = matrix_clone(a);
+    matrix* b_original = matrix_clone(b);
 
     for (int a_i = 0; a_i < a->size; a_i++) {
         for (int a_j = 0; a_j < a->size; a_j++) {
-            const int a_edge = a_copy->mat[a_i * a->size + a_j];
+            const int a_edge = a_original->mat[a_i * a->size + a_j];
             for (int b_i = 0; b_i < b->size; b_i++) {
                 for (int b_j = 0; b_j < b->size; b_j++) {
+                    const int b_edge = b_original->mat[b_i * b->size + b_j];
                     int val = clique->mat[(a_i * b->size + b_i) * clique->size + (a_j * b->size + b_j)];
-
-                    const int b_edge = b_copy->mat[b_i * b->size + b_j];
 
                     if (a_clique_indices[a_i] == 0 || a_clique_indices[a_j] == 0) {
                         a->mat[a_i * a->size + a_j] = -1;
@@ -80,8 +79,8 @@ void extract_solution(matrix* clique, matrix* a, matrix* b)
         }
     }
     
-    matrix_destroy(a_copy);
-    matrix_destroy(b_copy);
+    matrix_destroy(a_original);
+    matrix_destroy(b_original);
     free(a_clique_indices);
     free(b_clique_indices);
 }
