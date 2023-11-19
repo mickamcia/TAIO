@@ -31,44 +31,6 @@ void bma_init(matrix* g, matrix* exclude_curr, matrix* exclude_next, int* cost, 
 	}
 }
 
-/// <summary>
-/// Helper function - to be removed
-/// </summary>
-/// <param name="g"></param>
-/// <param name="size"></param>
-/// <param name="name"></param>
-void array_print(int* g, int size, char name[])
-{
-	printf("\n%s\n", name);
-	for (int i = 0; i < size; i++) {
-		const int val = g[i];
-		if (val == INT_MAX) printf("inf ");
-		else if (val >= -1) printf("% 3d ", val); // prints from 0 to 99, should change to "%d" by the end
-		else printf("    ");
-	}
-}
-
-/// <summary>
-/// Helper function - to be removed
-/// </summary>
-/// <param name="arr"></param>
-/// <param name="columns"></param>
-/// <param name="rows"></param>
-/// <param name="name"></param>
-void array2d_print(int* arr, int columns, int rows, char name[])
-{
-	printf("\n%s\n", name);
-	for (int i = 0; i < rows; i++) {
-		for (int j = 0; j < columns; j++) {
-			const int val = arr[i * columns + j];
-			if (val == INT_MAX) printf("inf ");
-			else if (val >= -1) printf("% 3d ", val); // prints from 0 to 99, should change to "%d" by the end
-			else printf("    ");
-		}
-		printf("\n");
-	}
-}
-
 int bma_relaxation(matrix* g, matrix* exclude_curr, matrix* exclude_next, int* cost, int* previous)
 {
 	int lastRound = -1;

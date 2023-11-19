@@ -10,6 +10,7 @@
 #include "exact_clique_bb.h"
 #include "bma.h"
 #include "utils.h"
+#include "metric.h"
 
 #pragma region Examples to be removed
 
@@ -616,8 +617,101 @@ void test_subgraph() {
 
 #pragma endregion
 
+#pragma region Metric
+
+void test_metric_pass() {
+    int size = 15;
+    matrix* g1 = matrix_init(size);
+    graph_generate(g1, 7, 1, 0.8f, 1);
+    matrix* g2 = matrix_clone(g1);
+
+    int d = distance(g1, g2);
+
+    printf("G1\n");
+    graph_print(g1);
+    printf("G2\n");
+    graph_print(g2);
+    printf("Distance: %d", d);
+
+    if (d == 0) {
+        printf("\033[0;32m%s", "\nPASS");
+    }
+    else {
+        printf("\033[0;31m%s", "\nFAIL");
+    }
+
+    printf("\033[0;37m\n\n");
+
+    matrix_destroy(g1);
+    matrix_destroy(g2);
+}
+
+void test_metric_permute_pass() {
+    int size = 20;
+    matrix* g1 = matrix_init(size);
+    graph_generate(g1, 1, 0, 0.8f, 1);
+    matrix* g2 = matrix_clone(g1);
+    graph_permute(g2);
+
+    printf("G1\n");
+    graph_print(g1);
+    printf("G2\n");
+    graph_print(g2);
+
+    int d = distance(g1, g2);
+
+    printf("Distance: %d", d);
+
+    if (d == 0) {
+        printf("\033[0;32m%s", "\nPASS");
+    }
+    else {
+        printf("\033[0;31m%s", "\nFAIL");
+    }
+
+    printf("\033[0;37m\n\n");
+
+    matrix_destroy(g1);
+    matrix_destroy(g2);
+}
+
+void test_metric_fail() {
+    int size = 11;
+    matrix* g1 = matrix_init(size);
+    graph_generate(g1, 7, 1, 0.8f, 1);
+    matrix* g2 = matrix_clone(g1);
+
+    graph_add_noise(g2, 0.5f, 1, 0.0);
+
+    int d = distance(g1, g2);
+
+    printf("G1\n");
+    graph_print(g1);
+    printf("G2\n");
+    graph_print(g2);
+    printf("Distance: %d", d);
+
+    if (d != 0) {
+        printf("\033[0;32m%s", "\nPASS");
+    }
+    else {
+        printf("\033[0;31m%s", "\nFAIL");
+    }
+
+    printf("\033[0;37m\n\n");
+
+    matrix_destroy(g1);
+    matrix_destroy(g2);
+}
+
+#pragma endregion
+
 int main(){
     srand((unsigned int)time(NULL));  
+
+    //test_metric_fail();
+    //test_metric_pass();
+    test_metric_permute_pass();
 
     //test_approx_clique_v1();
     //test_approx_clique();
@@ -626,7 +720,7 @@ int main(){
     //test_clique_random();
 
     //test_subgraph_simple();
-    test_subgraph();
+    //test_subgraph();
 
     //test_basic();
     //test_approx_clique();
