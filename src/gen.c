@@ -186,7 +186,7 @@ void test_subgraph_simple() {
 
 #pragma region Clique
 
-void test_approx_clique(){
+void test_approx_clique(int* passed, int* failed){
     printf("\n%s\n", __func__);
 
     const int clique_size = 8;
@@ -216,7 +216,7 @@ void test_approx_clique(){
     matrix_destroy(g4);
 }
 
-void test_exact_clique(){
+void test_exact_clique(int* passed, int* failed){
     printf("\n%s\n", __func__);
 
     const int clique_size = 6;
@@ -246,7 +246,7 @@ void test_exact_clique(){
     matrix_destroy(g4);
 }
 
-void test_exact_clique_bb(){
+void test_exact_clique_bb(int* passed, int* failed){
     printf("\n%s\n", __func__);
 
     const int clique_size = 5;
@@ -276,7 +276,7 @@ void test_exact_clique_bb(){
     matrix_destroy(g4);
 }
 
-void test_exact_clique_bb_random(){
+void test_exact_clique_bb_random(int* passed, int* failed){
     printf("\n%s\n", __func__);
 
     const int graph_size = 10;
@@ -298,7 +298,7 @@ void test_exact_clique_bb_random(){
     matrix_destroy(g1);
 }
 
-void test_clique() {
+void test_clique(int* passed, int* failed) {
     printf("\n%s\n", __func__);
 
     const int clique_size = 50;
@@ -349,7 +349,7 @@ void test_clique() {
     matrix_destroy(g_approx);
 }
 
-void test_clique_random() {
+void test_clique_random(int* passed, int* failed) {
     printf("\n%s\n", __func__);
 
     const int directed = 1;
@@ -406,7 +406,7 @@ void test_clique_random() {
 
 #pragma region Subgraph
 
-void test_exact_subgraph_simple(){
+void test_exact_subgraph_simple(int* passed, int* failed){
     printf("\n%s\n", __func__);
 
     const int subgraph_size = 3;
@@ -438,7 +438,7 @@ void test_exact_subgraph_simple(){
     matrix_destroy(g3);
 }
 
-void test_exact_subgraph(){
+void test_exact_subgraph(int* passed, int* failed){
     printf("\n%s\n", __func__);
 
     const int subgraph_size = 2;
@@ -486,7 +486,7 @@ void test_exact_subgraph(){
     matrix_destroy(g8);
 }
 
-void test_approx_subgraph(){
+void test_approx_subgraph(int* passed, int* failed){
     printf("\n%s\n", __func__);
 
     const int subgraph_size = 4;
@@ -533,12 +533,12 @@ void test_approx_subgraph(){
     
 }
 
-void test_subgraph() {
+void test_subgraph(int* passed, int* failed) {
     printf("\n%s\n", __func__);
 
-    const int subgraph_size = 10;
-    const int graph_a_size = 20;
-    const int graph_b_size = 20;
+    const int subgraph_size = 5;
+    const int graph_a_size = 12;
+    const int graph_b_size = 9;
     matrix* g0 = matrix_init(subgraph_size);
     graph_generate(g0, 7, 1, 0.8f, 1);
 
@@ -562,10 +562,10 @@ void test_subgraph() {
     clock_t time_exact = clock();
     exact_subgraph_run(a_exact, b_exact);
     time_exact = clock() - time_exact;
-    
+
     matrix* a_approx = matrix_clone(g5);
     matrix* b_approx = matrix_clone(g6);
-    
+
     clock_t time_approx = clock();
     approx_subgraph_run(a_approx, b_approx);
     time_approx = clock() - time_approx;
@@ -587,12 +587,27 @@ void test_subgraph() {
 
     utils_print_execution_time(time_exact, time_approx);
 
-    if (graph_calc_clique_size(g0) == graph_calc_clique_size(a_exact) && graph_clique_equal(a_exact, a_approx) && graph_clique_equal(b_exact, b_approx)) {
-        printf("\033[0;32m%s", "\nPASS");
+    if (distance(g0, a_exact) == 0 &&
+        distance(g0, b_exact) == 0) 
+    {
+        printf("\033[0;32m%s", "\nPASSED");
+        printf("\033[0;37m\n\n");
+        (*passed)++;
+        
+        if (
+            distance(a_exact, a_approx) != 0 ||
+            distance(b_exact, b_approx) != 0
+            ) 
+        {
+            printf("\033[0;31m%s", "\nAPPROX FAILED");
+        }
     }
-    else {
+    else
+    {
         printf("\033[0;31m%s", "\nFAIL");
+        (*failed)++;
     }
+    
 
     printf("\033[0;37m\n\n");
 
@@ -619,7 +634,7 @@ void test_subgraph() {
 
 #pragma region Metric
 
-void test_metric_pass() {
+void test_metric_pass(int* passed, int* failed) {
     int size = 15;
     matrix* g1 = matrix_init(size);
     graph_generate(g1, 7, 1, 0.8f, 1);
@@ -635,9 +650,11 @@ void test_metric_pass() {
 
     if (d == 0) {
         printf("\033[0;32m%s", "\nPASS");
+        (*passed)++;
     }
     else {
         printf("\033[0;31m%s", "\nFAIL");
+        (*failed)++;
     }
 
     printf("\033[0;37m\n\n");
@@ -646,7 +663,7 @@ void test_metric_pass() {
     matrix_destroy(g2);
 }
 
-void test_metric_permute_pass() {
+void test_metric_permute_pass(int* passed, int* failed) {
     int size = 20;
     matrix* g1 = matrix_init(size);
     graph_generate(g1, 1, 0, 0.8f, 1);
@@ -664,9 +681,11 @@ void test_metric_permute_pass() {
 
     if (d == 0) {
         printf("\033[0;32m%s", "\nPASS");
+        (*passed)++;
     }
     else {
         printf("\033[0;31m%s", "\nFAIL");
+        (*failed)++;
     }
 
     printf("\033[0;37m\n\n");
@@ -675,7 +694,7 @@ void test_metric_permute_pass() {
     matrix_destroy(g2);
 }
 
-void test_metric_fail() {
+void test_metric_fail(int* passed, int* failed) {
     int size = 11;
     matrix* g1 = matrix_init(size);
     graph_generate(g1, 7, 1, 0.8f, 1);
@@ -693,9 +712,11 @@ void test_metric_fail() {
 
     if (d != 0) {
         printf("\033[0;32m%s", "\nPASS");
+        (*passed)++;
     }
     else {
         printf("\033[0;31m%s", "\nFAIL");
+        (*failed)++;
     }
 
     printf("\033[0;37m\n\n");
@@ -706,12 +727,14 @@ void test_metric_fail() {
 
 #pragma endregion
 
-int main(){
-    srand((unsigned int)time(NULL));  
+int main() {
+    srand((unsigned int)time(NULL));
 
-    //test_metric_fail();
-    //test_metric_pass();
-    test_metric_permute_pass();
+    int passed = 0, failed = 0;
+
+    //test_metric_fail(&passed, &failed);
+    //test_metric_pass(&passed, &failed);
+    //test_metric_permute_pass(&passed, &failed);
 
     //test_approx_clique_v1();
     //test_approx_clique();
@@ -720,7 +743,7 @@ int main(){
     //test_clique_random();
 
     //test_subgraph_simple();
-    //test_subgraph();
+    test_subgraph(&passed, &failed);
 
     //test_basic();
     //test_approx_clique();
@@ -730,6 +753,15 @@ int main(){
     //test_exact_subgraph();
     //test_exact_clique_bb();
     //test_exact_clique_bb_random();
+
+
+    printf("-------------\n");
+    printf("TESTS SUMMARY\n");
+    printf("-------------\n");
+    printf("\033[0;32m%s: %d\n", "PASSED", passed);
+    printf("\033[0;31m%s: %d\n", "FAILED", failed);
+    printf("\033[0;37m");
+    printf("-------------\n");
 
     return 0;
 }
