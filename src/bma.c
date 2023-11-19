@@ -81,8 +81,7 @@ int bma_relaxation(matrix* g, matrix* exclude_curr, matrix* exclude_next, int* c
 		memset(exclude_next->mat, 0, sizeof(int) * n * n);
 
 		if (DEBUG) {
-			printf("\nexclude_curr:");
-			graph_print(exclude_curr);
+			graph_print(exclude_curr, "exclude_curr");
 			array2d_print(cost, g->size, g->size + 1, "cost");
 			array2d_print(previous, g->size, g->size + 1, "previous");
 		}
@@ -103,8 +102,7 @@ int bma(matrix* g, int* cost, int* previous)
 	bma_init(g, exclude_curr, exclude_next, cost, previous);
 
 	if (DEBUG) {
-		printf("\ninit exclude_curr:");
-		graph_print(exclude_curr);
+		graph_print(exclude_curr, "init exclude_curr");
 		array2d_print(cost, columns, rows, "init cost");
 		array2d_print(previous, columns, rows, "init previous");
 	}
@@ -112,8 +110,7 @@ int bma(matrix* g, int* cost, int* previous)
 	int lastRound = bma_relaxation(g, exclude_curr, exclude_next, cost, previous);
 
 	if (DEBUG) {
-		printf("\nexclude_curr:");
-		graph_print(exclude_curr);
+		graph_print(exclude_curr, "exclude_curr");
 		array2d_print(cost, columns, rows, "cost");
 		array2d_print(previous, columns, rows, "previous");
 	}

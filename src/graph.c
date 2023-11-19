@@ -29,9 +29,13 @@ void graph_generate(matrix* g, int edge_weight_max, int edge_weight_min, float e
     }
 }
 
-void graph_print(matrix *g)
+void graph_print(matrix *g, const char* name)
 {
-    //printf("\n%d vertices\n", g->size);
+    printf("\n%s\n-", name);
+
+    for (int j = 0; j <= g->size; j++) {
+        printf("----");
+    }
 
     printf("\n u\\v|");
 
@@ -57,6 +61,12 @@ void graph_print(matrix *g)
         }
         printf("\n");
     }
+
+    for (int j = 0; j <= g->size; j++) {
+        printf("----");
+    }
+
+    printf("-\n");
 }
 
 matrix* graph_load_from_file(char *path)

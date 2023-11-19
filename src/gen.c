@@ -122,9 +122,9 @@ void test_basic(){
     matrix* g2 = matrix_clone(g1);
     graph_permute(g2);
     
-    graph_print(g0);
-    graph_print(g1);
-    graph_print(g2);
+    graph_print(g0, "");
+    graph_print(g1, "");
+    graph_print(g2, "");
     
     graph_save_to_file(g0, "res/TEST_BASIC_0.txt");
     graph_save_to_file(g1, "res/TEST_BASIC_1.txt");
@@ -153,20 +153,13 @@ void test_subgraph_simple() {
     exact_subgraph_run(a_exact, b_exact);
     approx_subgraph_run(a_approx, b_approx);
     
-    printf("\nSubgraph:");
-    graph_print(g0);
-    printf("\nOriginal a:");
-    graph_print(g0);
-    printf("\nExact subgraph of a:");
-    graph_print(a_exact);
-    printf("\nApprox subgraph of a:");
-    graph_print(a_approx);
-    printf("\nOriginal b:");
-    graph_print(g1);
-    printf("\nExact subgraph of b:");
-    graph_print(b_exact);
-    printf("\nApprox subgraph of b:");
-    graph_print(b_approx);
+    graph_print(g0, "Subgraph");
+    graph_print(g0, "Original a");
+    graph_print(a_exact, "Exact subgraph of a");
+    graph_print(a_approx, "Approx subgraph of a");
+    graph_print(g1, "Original b");
+    graph_print(b_exact, "Exact subgraph of b");
+    graph_print(b_approx, "Approx subgraph of b");
 
 
     if (graph_clique_equal(a_exact, a_approx) && graph_clique_equal(b_exact, b_approx)) {
