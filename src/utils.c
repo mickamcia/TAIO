@@ -53,3 +53,39 @@ void array2d_print(int* arr, int columns, int rows, char name[])
 		printf("\n");
 	}
 }
+
+void set_green_output_color(){
+	printf("\033[0;32m");
+}
+
+void set_red_output_color(){
+	printf("\033[0;31m");
+}
+
+void reset_output_color(){
+	printf("\033[0;37m");
+}
+
+void print_test_pass(const char* test_name){
+	set_green_output_color();
+	printf("\n%s PASSED\n", test_name);
+	reset_output_color();
+}
+
+void print_test_pass_msg(const char* test_name, const char* msg){
+	set_green_output_color();
+	printf("\n%s PASSED (%s)\n", test_name, msg);
+	reset_output_color();
+}
+
+void print_test_fail(const char* test_name){
+	set_red_output_color();
+	printf("\n%s FAILED\n", test_name);
+	reset_output_color();
+}
+
+void print_test_fail_msg(const char* test_name, const char* msg){
+	set_red_output_color();
+	printf("\n%s FAILED (%s)\n", test_name, msg);
+	reset_output_color();
+}
