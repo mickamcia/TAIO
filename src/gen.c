@@ -588,17 +588,19 @@ void test_subgraph(int* passed, int* failed) {
     utils_print_execution_time(time_exact, time_approx);
 
     if (distance(g0, a_exact) == 0 &&
-        distance(g0, b_exact) == 0) 
+        distance(g0, b_exact) == 0)
     {
         printf("\033[0;32m%s", "\nPASSED");
         printf("\033[0;37m\n\n");
-        (*passed)++;
-        
+
         if (
-            distance(a_exact, a_approx) != 0 ||
-            distance(b_exact, b_approx) != 0
-            ) 
+            distance(a_exact, a_approx) == 0 &&
+            distance(b_exact, b_approx) == 0
+            )
         {
+            (*passed)++;
+        }
+        else {
             printf("\033[0;31m%s", "\nAPPROX FAILED");
         }
     }
