@@ -93,3 +93,17 @@ void tests_metric(int* passed, int* failed) {
     test_metric_different_graphs(passed, failed);
     PAUSE();
 }
+
+void test_metric_from_args(matrix* g1, matrix* g2, int* passed, int* failed) {
+    printf("\n\nRunning metrics test...\n");
+
+    int d = distance(g1, g2);
+
+    graph_print(g1, "Graph 1");
+    graph_print(g2, "Graph 2");
+
+    printf("\nDistance: %d\n", d);
+
+    (*passed)++;
+    print_test_pass(__func__);
+}

@@ -21,8 +21,8 @@ void test_approx_clique(int* passed, int* failed) {
     graph_print(g3, "");
     graph_print(g4, "");
 
-    graph_save_to_file(g3, "res/TEST_APPROX_CLIQUE_3.txt");
-    graph_save_to_file(g4, "res/TEST_APPROX_CLIQUE_4.txt");
+    //graph_save_to_file(g3, "res/TEST_APPROX_CLIQUE_3.txt");
+    //graph_save_to_file(g4, "res/TEST_APPROX_CLIQUE_4.txt");
 
     matrix_destroy(g0);
     matrix_destroy(g2);
@@ -51,8 +51,8 @@ void test_exact_clique(int* passed, int* failed) {
     graph_print(g3, "Exact clique");
     graph_print(g4, "Approximated clique");
 
-    graph_save_to_file(g3, "res/TEST_APPROX_CLIQUE_3.txt");
-    graph_save_to_file(g4, "res/TEST_APPROX_CLIQUE_4.txt");
+    //graph_save_to_file(g3, "res/TEST_APPROX_CLIQUE_3.txt");
+    //graph_save_to_file(g4, "res/TEST_APPROX_CLIQUE_4.txt");
 
     matrix_destroy(g0);
     matrix_destroy(g2);
@@ -81,8 +81,8 @@ void test_exact_clique_bb(int* passed, int* failed) {
     graph_print(g3,"");
     graph_print(g4,"");
 
-    graph_save_to_file(g3, "res/TEST_EXACT_CLIQUE_BB_3.txt");
-    graph_save_to_file(g4, "res/TEST_EXACT_CLIQUE_BB_4.txt");
+    //graph_save_to_file(g3, "res/TEST_EXACT_CLIQUE_BB_3.txt");
+    //graph_save_to_file(g4, "res/TEST_EXACT_CLIQUE_BB_4.txt");
 
     matrix_destroy(g0);
     matrix_destroy(g2);
@@ -105,8 +105,8 @@ void test_exact_clique_bb_random(int* passed, int* failed) {
     graph_print(g0, "");
     graph_print(g1, "");
 
-    graph_save_to_file(g0, "res/TEST_EXACT_CLIQUE_BB_RANDOM_0.txt");
-    graph_save_to_file(g1, "res/TEST_EXACT_CLIQUE_BB_RANDOM_1.txt");
+    //graph_save_to_file(g0, "res/TEST_EXACT_CLIQUE_BB_RANDOM_0.txt");
+    //graph_save_to_file(g1, "res/TEST_EXACT_CLIQUE_BB_RANDOM_1.txt");
 
     matrix_destroy(g0);
     matrix_destroy(g1);
@@ -319,8 +319,6 @@ void test_clique_simple(int clique_size, int graph_size, int* passed, int* faile
         (*failed)++;
     }
 
-    printf("\033[0;37m\n\n");
-
     matrix_destroy(g0);
     matrix_destroy(g2);
     matrix_destroy(g3);
@@ -360,3 +358,38 @@ void tests_clique(int* passed, int* failed) {
     test_clique_simple(50, 500, passed, failed);
 }
 
+void test_clique_from_args(matrix* g, int* passed, int* failed) {
+    printf("\n\nRunning clique test...\n");
+
+    matrix* g_exact = matrix_clone(g);
+
+    clock_t time_exact = clock();
+    exact_clique_bb_run(g_exact);
+    time_exact = clock() - time_exact;
+
+    clock_t time_approx = clock();
+    matrix* g_approx = approx_clique_run(g);
+    time_approx = clock() - time_approx;
+
+    graph_print(g, "Original graph");
+    graph_print(g_exact, "Exact clique");
+    graph_print(g_approx, "Approximated clique");
+
+    utils_print_execution_time(time_exact, time_approx);
+
+    graph_save_to_file(g, "res/test_clique_graph.txt");
+    graph_save_to_file(g_exact, "res/test_clique_exact.txt");
+    graph_save_to_file(g_approx, "res/test_clique_approx.txt");
+
+    if (graph_clique_equal(g_exact, g_approx)) {
+        print_test_pass(__func__);
+        (*passed)++;
+    }
+    else {
+        print_test_fail_msg(__func__, "approx");
+        (*failed)++;
+    }
+
+    printf("\nExact clique size: %d\n", graph_calc_clique_size(g_exact));
+    printf("Approx clique size: %d\n", graph_calc_clique_size(g_approx));
+}

@@ -1,6 +1,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
 
 #include "graph.h"
 #include "approx_clique.h"
@@ -127,9 +128,9 @@ void test_basic(){
     graph_print(g1, "");
     graph_print(g2, "");
     
-    graph_save_to_file(g0, "res/TEST_BASIC_0.txt");
+    /*graph_save_to_file(g0, "res/TEST_BASIC_0.txt");
     graph_save_to_file(g1, "res/TEST_BASIC_1.txt");
-    graph_save_to_file(g2, "res/TEST_BASIC_2.txt");
+    graph_save_to_file(g2, "res/TEST_BASIC_2.txt");*/
     
     matrix_destroy(g0);
     matrix_destroy(g1);
@@ -179,29 +180,46 @@ void test_subgraph_simple() {
 
 #pragma endregion
 
-int main() {
+int main(int argc, char** argv) {
     //srand((unsigned int)time(NULL));
     srand(985); // 30 sec, 0 fails
     //srand(12724); // 630 sec, 0 fails
     //srand(54322); // 125 sec, 2 fails
 
+    bool run_distance;
+    bool run_clique;
+    bool run_subgraph;
+    matrix* g1 = NULL;
+    matrix* g2 = NULL;
+
+    read_args(argc, argv, &run_distance, &run_clique, &run_subgraph, &g1, &g2);
+
     int passed = 0, failed = 0;
 
-    clock_t tests_time = clock();
-    tests_metric(&passed, &failed);
-    tests_clique(&passed, &failed);
-    tests_subgraph(&passed, &failed);
-    tests_time = clock() - tests_time;
+    if (run_distance) {
+        test_metric_from_args(g1, g2, &passed, &failed);
+    }
 
-    printf("\n-------------\n");
-    printf("TESTS SUMMARY\n");
-    printf("-------------\n");
-    printf("Total execution time: %f seconds\n", ((double)tests_time) / CLOCKS_PER_SEC);
-    printf("-------------\n");
-    printf("\033[0;32m%s: %d\n", "PASSED", passed);
-    printf("\033[0;31m%s: %d\n", "FAILED", failed);
-    printf("\033[0;37m");
-    printf("-------------\n");
+    if (run_clique) {
+        test_clique_from_args(g1, &passed, &failed);
+    }
+
+    if (run_subgraph) {
+        test_subgraph_from_args(g1, g2, &passed, &failed);
+    }
+
+    if (!run_distance && !run_clique && !run_subgraph) {
+        clock_t tests_time = clock();
+        tests_metric(&passed, &failed);
+        tests_clique(&passed, &failed);
+        tests_subgraph(&passed, &failed);
+        tests_time = clock() - tests_time;
+
+        print_tests_summary(passed, failed, tests_time);
+    }
+
+    if (g1 != NULL) free(g1);
+    if (g2 != NULL) free(g2);
 
     return 0;
 }
