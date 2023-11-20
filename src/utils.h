@@ -3,6 +3,8 @@
 
 #include <stdio.h>
 #include <time.h>
+#include <stdbool.h>
+#include "matrix.h"
 
 #define ERR(source) (perror(source), fprintf(stderr, "%s:%d\n", __FILE__, __LINE__), exit(EXIT_FAILURE))
 
@@ -18,5 +20,8 @@ void print_test_pass(const char* test_name);
 void print_test_pass_msg(const char* test_name, const char* msg);
 void print_test_fail(const char* test_name);
 void print_test_fail_msg(const char* test_name, const char* msg);
+void print_tests_summary(int passed, int failed, clock_t elapsed);
+
+void read_args(int argc, char** argv, bool* run_distance, bool* run_clique, bool* run_subgraph, matrix** g1, matrix** g2);
 
 #endif
