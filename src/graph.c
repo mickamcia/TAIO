@@ -2,6 +2,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "limits.h"
+
+#define MAX_PRINT_SIZE 20
+
+// internal functions
+int graph_calc_clique_size_n(matrix* g);
+int graph_calc_clique_size_m(matrix* g);
 
 void graph_generate(matrix* g, int edge_weight_max, int edge_weight_min, float edge_occur_prob, int should_be_directed){
     for(int i = 0; i < g->size; i++){
@@ -24,17 +31,50 @@ void graph_generate(matrix* g, int edge_weight_max, int edge_weight_min, float e
     }
 }
 
-void graph_print(matrix *g)
+void graph_print(matrix *g, const char* name)
 {
-    printf("%d\n", g->size);
-    for(int i = 0; i < g->size; i++){
-        for(int j = 0; j < g->size; j++){
+    if (g->size > MAX_PRINT_SIZE) {
+        //printf("Graph is too large to print.\n");
+        return;
+    }
+
+    printf("\n%s\n", name);
+
+
+    for (int j = 0; j <= g->size; j++) {
+        printf("----");
+    }
+
+    printf("-\n u\\v|");
+
+    for (int j = 0; j < g->size; j++) {
+        printf("% 3d ", j);
+    }
+
+    printf("\n----|");
+
+    for (int j = 0; j < g->size; j++) {
+        printf("----");
+    }
+
+    printf("\n");
+
+    for (int i = 0; i < g->size; i++) {
+        printf("%3d |", i);
+        for (int j = 0; j < g->size; j++) {
             const int val = g->mat[i * g->size + j];
-            if(val >= 0) printf("% 3d ", val); // prints from 0 to 99, should change to "%d" by the end
+            if (val == INT_MAX) printf("inf ");
+            else if (val >= 0) printf("%3d ", val); // prints from 0 to 99, should change to "%d" by the end
             else printf("    ");
         }
         printf("\n");
     }
+
+    for (int j = 0; j <= g->size; j++) {
+        printf("----");
+    }
+
+    printf("-\n");
 }
 
 matrix* graph_load_from_file(char *path)
@@ -146,4 +186,44 @@ void graph_simplify_multidigraph_to_graph(matrix *g) // turns directed multigrap
     for(int i = 0; i < n; i++){
         g->mat[i * n + i] = 0;
     }
+}
+
+matrix* graph_complement(matrix* g)
+{
+    matrix* gc = matrix_init(g->size);
+
+    int n = g->size;
+
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            if (i == j) continue;
+            int index = i * n + j;
+            if (g->mat[index] == 0)
+                gc->mat[index] = 1;
+        }
+    }
+
+    return gc;
+}
+
+int graph_calc_clique_size(matrix* g) {
+    return graph_calc_clique_size_m(g);
+}
+
+int graph_calc_clique_size_n(matrix* g) {
+    return 0;
+}
+
+int graph_calc_clique_size_m(matrix* g) {
+    int graph_size = 0;
+    for (int i = 0; i < g->size; i++)
+        for (int j = 0; j < g->size; j++)
+            if (g->mat[i * g->size + j] > 0)
+                graph_size += g->mat[i * g->size + j];
+
+    return graph_size;
+}
+
+int graph_clique_equal(matrix* g1, matrix* g2) {
+    return graph_calc_clique_size(g1) == graph_calc_clique_size(g2);
 }

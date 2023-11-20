@@ -2,3 +2,6 @@ res/
 obj/
 bin/
 .vscode/
+vs/
+vs*
+x64/
