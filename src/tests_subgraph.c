@@ -265,7 +265,7 @@ void test_subgraph_from_args(matrix* g1, matrix* g2, int* passed, int* failed) {
         (*passed)++;
     }
     else {
-        print_test_fail_msg(__func__, "approx");
+        print_test_fail(__func__);
         (*failed)++;
     }
 
