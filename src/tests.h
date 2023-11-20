@@ -13,6 +13,10 @@
 #include "utils.h"
 #include "metric.h"
 
+#define PAUSE_AFTER_TEST 0
+
+#define PAUSE() (PAUSE_AFTER_TEST == 1 && fprintf(stdout, "Press any key to continue...\n") && getchar() )
+
 void tests_metric(int* passed, int* failed);
 void tests_clique(int* passed, int* failed);
 void tests_subgraph(int* passed, int* failed);

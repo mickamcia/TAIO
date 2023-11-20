@@ -127,15 +127,15 @@ void test_approx_subgraph(int* passed, int* failed) {
 
 }
 
-void test_subgraph(int* passed, int* failed) {
-    printf("\n%s\n", __func__);
+void test_subgraph(int subgraph_size, int graph_a_size, int graph_b_size, int* passed, int* failed) {
+    printf("\nTEST: %s - subgraph size: %d, A size: %d, B size: %d\n", __func__, subgraph_size, graph_a_size, graph_b_size);
 
-    const int subgraph_size = 5;
-    const int graph_a_size = 12;
-    const int graph_b_size = 9;
+    //const int subgraph_size = 5;
+    //const int graph_a_size = 12;
+    //const int graph_b_size = 9;
+
     matrix* g0 = matrix_init(subgraph_size);
     graph_generate(g0, 7, 1, 0.8f, 1);
-
 
     matrix* g3 = matrix_init(graph_a_size);
     graph_generate(g3, 2, 1, 0.0, 1);
@@ -165,20 +165,19 @@ void test_subgraph(int* passed, int* failed) {
     time_approx = clock() - time_approx;
 
     graph_print(g0, "Subgraph");
-    graph_print(g5, "Original a");
-    graph_print(a_exact, "Exact subgraph of a");
-    graph_print(a_approx, "Approx subgraph of a");
-    graph_print(g6, "Original b");
-    graph_print(b_exact, "Exact subgraph of b");
-    graph_print(b_approx, "Approx subgraph of b");
+    graph_print(g5, "Original A");
+    graph_print(a_exact, "Exact subgraph of A");
+    graph_print(a_approx, "Approx subgraph of A");
+    graph_print(g6, "Original B");
+    graph_print(b_exact, "Exact subgraph of B");
+    graph_print(b_approx, "Approx subgraph of B");
 
     utils_print_execution_time(time_exact, time_approx);
 
     if (distance(g0, a_exact) == 0 &&
         distance(g0, b_exact) == 0)
     {
-        printf("\033[0;32m%s: %s", __func__, "\nPASSED");
-        printf("\033[0;37m\n\n");
+        print_test_pass(__func__);
 
         if (
             distance(a_exact, a_approx) == 0 &&
@@ -188,17 +187,15 @@ void test_subgraph(int* passed, int* failed) {
             (*passed)++;
         }
         else {
-            printf("\033[0;31m%s", "\nAPPROX FAILED");
+            print_test_fail_msg(__func__, "approx");
+            printf("\033[0;31m\n%s", "APPROX FAILED");
         }
     }
     else
     {
-        printf("\033[0;31m%s", "\nFAIL");
+        print_test_fail(__func__);
         (*failed)++;
     }
-
-
-    printf("\033[0;37m\n\n");
 
     graph_save_to_file(g0, "res/TEST_EXACT_SUBGRAPH_5.txt");
     graph_save_to_file(g5, "res/TEST_EXACT_SUBGRAPH_5.txt");
@@ -220,6 +217,17 @@ void test_subgraph(int* passed, int* failed) {
 }
 
 void tests_subgraph(int* passed, int* failed) {
-    printf("Running subgraphs tests...\n");
+    printf("\n\nRunning subgraphs tests...\n");
 
+    test_subgraph(5, 5, 5, passed, failed);
+    PAUSE();
+
+    test_subgraph(10, 10, 15, passed, failed);
+    PAUSE();
+
+    test_subgraph(10, 18, 20, passed, failed);
+    PAUSE();  
+
+    test_subgraph(15, 20, 30, passed, failed);
+    PAUSE();
 }

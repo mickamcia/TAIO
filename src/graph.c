@@ -4,6 +4,8 @@
 #include <string.h>
 #include "limits.h"
 
+#define MAX_PRINT_SIZE 20
+
 // internal functions
 int graph_calc_clique_size_n(matrix* g);
 int graph_calc_clique_size_m(matrix* g);
@@ -31,13 +33,19 @@ void graph_generate(matrix* g, int edge_weight_max, int edge_weight_min, float e
 
 void graph_print(matrix *g, const char* name)
 {
-    printf("\n%s\n-", name);
+    if (g->size > MAX_PRINT_SIZE) {
+        //printf("Graph is too large to print.\n");
+        return;
+    }
+
+    printf("\n%s\n", name);
+
 
     for (int j = 0; j <= g->size; j++) {
         printf("----");
     }
 
-    printf("\n u\\v|");
+    printf("-\n u\\v|");
 
     for (int j = 0; j < g->size; j++) {
         printf("% 3d ", j);

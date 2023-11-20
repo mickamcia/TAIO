@@ -21,8 +21,6 @@ void test_metric_equal_graphs(int* passed, int* failed) {
         (*failed)++;
     }
 
-    printf("\033[0;37m\n\n");
-
     matrix_destroy(g1);
     matrix_destroy(g2);
 }
@@ -49,8 +47,6 @@ void test_metric_permuted_graphs(int* passed, int* failed) {
         print_test_fail(__func__);
         (*failed)++;
     }
-
-    printf("\033[0;37m\n\n");
 
     matrix_destroy(g1);
     matrix_destroy(g2);
@@ -79,8 +75,6 @@ void test_metric_different_graphs(int* passed, int* failed) {
         (*failed)++;
     }
 
-    printf("\033[0;37m\n\n");
-
     matrix_destroy(g1);
     matrix_destroy(g2);
 }
@@ -91,6 +85,11 @@ void tests_metric(int* passed, int* failed) {
     printf("Running metrics tests...\n");
 
     test_metric_equal_graphs(passed, failed);
+    PAUSE();
+    
     test_metric_permuted_graphs(passed, failed);
+    PAUSE();
+
     test_metric_different_graphs(passed, failed);
+    PAUSE();
 }
