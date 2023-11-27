@@ -4,16 +4,18 @@
 #include "utils.h"
 #include "graph.h"
 #include "limits.h"
+#define SCALE_TAB 5
 
 // internal
-int* build_degree_vector(matrix* g, int* newSize);
-int vector_diff(int* v1, int* v2, int size);
+int* build_degree_vector(matrix* g, int size);
+float vector_diff(int* v1, int* v2, int size);
 int get_graph_n(matrix* g);
 int get_graph_m_connected(matrix* g);
 int sum_acc(int g1_n, int g2_n);
 float err(matrix* g1, matrix* g2, int n, int m);
+float scale(float lower, float upper, float value);
 
-int distance(matrix* g1, matrix* g2) {
+float distance(matrix* g1, matrix* g2) {
 
 	int g1_n, g1_m, g2_n, g2_m;
 	int sum_acc_value;
@@ -24,7 +26,7 @@ int distance(matrix* g1, matrix* g2) {
 	g1_m = get_graph_m_connected(g1);
 	g2_m = get_graph_m_connected(g2);
 	
-	//printf("\ng1_n: %d, g2_n: %d, g1_m: %d, g2_m: %d\n", g1_n, g2_n, g1_m, g2_m);
+	printf("\ng1_n: %d, g2_n: %d, g1_m: %d, g2_m: %d\n", g1_n, g2_n, g1_m, g2_m);
 	
 	if (g1_n >= g2_n) {
 	
@@ -76,40 +78,49 @@ int sum_acc(int g1_n, int g2_n)
 	return result;
 }
 
+
 float err(matrix* g1, matrix* g2, int n, int m) {
-	
+	float scales[SCALE_TAB] = {1/2.0, 1/2.0 + 1/16.0 ,1 / 2.0 + 1 / 8.0 ,1-1/4.0,1};
 	float err_outgoing_edges_acc_diff;
 	float err_outgoing_edges_diff;
 	float err_neighbour_outgoing_edges_acc_diff;
 	float err_neighbour_outgoing_edges_diff;
-	
+	int* v1; 
+	int* v2; 
+
+	v1 = build_degree_vector(g1, n);
+	v2 = build_degree_vector(g2, n);
+	list_print(v1, n);
+	list_print(v2, n);
+
+	err_outgoing_edges_acc_diff = vector_diff(v1, v2, n);
+	printf("%f\n", err_outgoing_edges_acc_diff);
+
+	if (err_outgoing_edges_acc_diff != 0)
+	{
+		free(v1);
+		free(v2);
+		return scale(scales[3], scales[4], err_outgoing_edges_acc_diff);
+	}
 
 
-	//int* v1 = build_degree_vector(g1, &v1_size);
-	//int* v2 = build_degree_vector(g2, &v2_size);
-
-	//if (v1_size != v2_size)
-	//	return INT_MAX;
-
-	//int d = vector_diff(v1, v2, v1_size);
-
-	//free(v1);
-	//free(v2);
 
 	return 0;
 }
 
-int* build_degree_vector(matrix* g, int* newSize) {
-	*newSize = 0;
-	for (int i = 0; i < g->size; i++)
-		if (g->mat[i * g->size + i] == 0)
-			(*newSize)++;
+float scale(float lower, float upper, float value)
+{
+	printf("%f,%f,%f\n", lower, upper, value);
+	return lower + (upper - lower) * value;
+}
 
-	int* vector = (int*)malloc(sizeof(int) * *newSize);
+int* build_degree_vector(matrix* g, int size) {
+
+	int* vector = (int*)malloc(sizeof(int) * size);
 	if (!vector)
 		ERR("malloc");
 
-	memset(vector, 0, sizeof(int) * *newSize);
+	memset(vector, 0, sizeof(int) * size);
 
 	int v_i = 0, v_j = 0;
 	for (int i = 0; i < g->size; i++) {
@@ -123,16 +134,17 @@ int* build_degree_vector(matrix* g, int* newSize) {
 		}
 	}
 
-	bubble_sort(vector, *newSize);
+	bubble_sort(vector, size);
 	return vector;
 }
 
-int vector_diff(int* v1, int* v2, int size) {
-	int diff = 0;
-
+float vector_diff(int* v1, int* v2, int size) {
+	float diff = 0;
+	float sum = 0;
 	for (int i = 0; i < size; i++) {
 		diff += abs(v1[i] - v2[i]);
+		sum += (v1[i] + v2[i]);
 	}
-
-	return diff;
+	printf("%f, %f\n", diff, sum);
+	return diff/sum;
 }
