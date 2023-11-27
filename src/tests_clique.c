@@ -231,11 +231,6 @@ void test_clique_random(int graph_size, int* passed, int* failed) {
     matrix* g0 = matrix_init(graph_size);
     graph_generate(g0, 15, 1, 0.45f, directed);
 
-    // to do: tu trzeba pomyslec, exact nie dziala na grafach skierowanych!!
-    if (directed) {
-        graph_simplify_multidigraph_to_multigraph(g0);
-    }
-
     matrix* g_exact = matrix_clone(g0);
 
     clock_t time_exact = clock();
