@@ -33,7 +33,8 @@ int is_addable_to_clique(const matrix* g, const int* clique, const int vertex){
         if(clique[i] == 0) continue;
         for(int j = 0; j < g->size; j++){
             if(j == vertex) continue;
-            if(g->mat[i * g->size + vertex] == 0 && g->mat[vertex * g->size + i] == 0) return 0;
+            // edges weight must be greater than 0 in both directions
+            if(g->mat[i * g->size + vertex] == 0 || g->mat[vertex * g->size + i] == 0) return 0;
         }
     }
     return 1;
