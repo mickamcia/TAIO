@@ -182,9 +182,9 @@ void test_subgraph_simple() {
 
 int main(int argc, char** argv) {
     //srand((unsigned int)time(NULL));
-    srand(985); // 30 sec, 0 fails
+    //srand(985); // 30 sec, 0 fails
     //srand(12724); // 630 sec, 0 fails
-    //srand(54322); // 125 sec, 2 fails
+    srand(54322); // 125 sec, 2 fails
 
     bool run_distance;
     bool run_clique;

@@ -13,7 +13,7 @@ int graph_weight_selected_vertices(const matrix* g, const int* vertices){
         if(vertices[i] == 0) continue;
         for(int j = i + 1; j < g->size; j++){
             if(vertices[j] == 0) continue;
-            total += g->mat[i * g->size + j];
+            total += g->mat[i * g->size + j] + g->mat[j * g->size + i];
         }
     }
     return total;
@@ -33,7 +33,7 @@ int is_addable_to_clique(const matrix* g, const int* clique, const int vertex){
         if(clique[i] == 0) continue;
         for(int j = 0; j < g->size; j++){
             if(j == vertex) continue;
-            if(g->mat[i * g->size + vertex] == 0) return 0;
+            if(g->mat[i * g->size + vertex] == 0 && g->mat[vertex * g->size + i] == 0) return 0;
         }
     }
     return 1;
@@ -63,7 +63,8 @@ void calculate_expandable(int* expandable, const int* nbors, const int* candidat
 
 void calculate_nbors(const matrix* g, int* nbors, const int vertex){
     for(int i = 0; i < g->size; i++){
-        if(i != vertex && g->mat[i * g->size + vertex] != 0){
+        // it is the case in the provided clique definition that weights in both directions must be greater than zero
+        if(i != vertex && (g->mat[i * g->size + vertex] != 0 && g->mat[vertex * g->size + i] != 0)){
             nbors[i] = 1;
         }
         else{
@@ -77,7 +78,7 @@ int calculate_sigma_weight(const matrix* g, const int* clique, const int vertex)
     int total = 0;
     for(int i = 0; i < g->size; i++){
         if(clique[i] == 1){
-            total += g->mat[i * g->size + vertex];
+            total += g->mat[i * g->size + vertex] + g->mat[vertex * g->size + i];
         }
     }
     return total;
@@ -179,8 +180,8 @@ void calculate_permutation_and_upper_bound(const matrix* g, const int* curr_cliq
             int max_score = 0;
             for(int j = 0; j < g->size; j++){
                 if(nbors[j] == 1){
-                    if(max_score < g->mat[i * g->size + j]){
-                        max_score = g->mat[i * g->size + j];
+                    if(max_score < g->mat[i * g->size + j] + g->mat[j * g->size + i]){
+                        max_score = g->mat[i * g->size + j] + g->mat[j * g->size + i];
                     }
                 }
             }
