@@ -4,6 +4,6 @@
 #include <stdio.h>
 #include "matrix.h"
 
-int distance(matrix* g1, matrix* g2);
+float distance(matrix* g1, matrix* g2);
 
 #endif
