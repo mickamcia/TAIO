@@ -105,5 +105,5 @@ void test_metric_from_args(matrix* g1, matrix* g2, int* passed, int* failed) {
     printf("\nDistance: %f\n", d);
 
     (*passed)++;
-    print_test_pass(__func__);
+    //print_test_pass(__func__);
 }

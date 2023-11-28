@@ -4,7 +4,7 @@
 #include "utils.h"
 #include "graph.h"
 #include "limits.h"
-#define SCALE_TAB 5
+#define SCALE_TAB 6
 
 // internal
 int* build_degree_vector(matrix* g, int size);
@@ -12,14 +12,14 @@ float vector_diff(int* v1, int* v2, int size);
 int get_graph_n(matrix* g);
 int get_graph_m_connected(matrix* g);
 int sum_acc(int g1_n, int g2_n);
-float err(matrix* g1, matrix* g2, int n, int m);
+float err(matrix* g1, matrix* g2, int  g1_n, int g1_m, int g2_n,int  g2_m);
 float scale(float lower, float upper, float value);
 
 float distance(matrix* g1, matrix* g2) {
 
 	int g1_n, g1_m, g2_n, g2_m;
-	int sum_acc_value;
-	float err_value = 0; 
+	int sum_acc_value = 0;
+	int m_diff_value;
 
 	g1_n = get_graph_n(g1);
 	g2_n = get_graph_n(g2);
@@ -28,21 +28,22 @@ float distance(matrix* g1, matrix* g2) {
 	
 	printf("\ng1_n: %d, g2_n: %d, g1_m: %d, g2_m: %d\n", g1_n, g2_n, g1_m, g2_m);
 	
-	if (g1_n >= g2_n) {
+	if (g1_n > g2_n) {
 	
 		sum_acc_value = sum_acc(g2_n, g1_n);
+		m_diff_value = g1_m - g2_m;
+	}
+	else if (g1_n == g2_n) 
+	{
+		m_diff_value = abs(g1_m - g2_m);
 	}
 	else 
 	{
 		sum_acc_value = sum_acc(g1_n, g2_n);
-	}
-	
-	if (g1_n == g2_n && g1_m == g2_m)
-	{
-		err_value = err(g1, g2, g1_n,g1_m);
+		m_diff_value = g2_m - g1_m;
 	}
 
-	return  sum_acc_value + abs(g1_n - g2_n) + abs(g1_m - g2_m) + err_value;
+	return  sum_acc_value + m_diff_value + abs(g1_n - g2_n) + err(g1, g2, g1_n, g1_m, g2_n, g2_m);
 }
 
 
@@ -79,8 +80,9 @@ int sum_acc(int g1_n, int g2_n)
 }
 
 
-float err(matrix* g1, matrix* g2, int n, int m) {
-	float scales[SCALE_TAB] = {1/2.0, 1/2.0 + 1/16.0 ,1 / 2.0 + 1 / 8.0 ,1-1/4.0,1};
+float err(matrix* g1, matrix* g2, int  g1_n, int g1_m, int g2_n, int  g2_m){
+
+	float scales[SCALE_TAB] = {1/2.0, 1/2.0 + 1/16.0 ,1 / 2.0 + 1 / 8.0 ,1-1/4.0,1 - 1 / 8.0,1};
 	float err_outgoing_edges_acc_diff;
 	float err_outgoing_edges_diff;
 	float err_neighbour_outgoing_edges_acc_diff;
@@ -88,12 +90,20 @@ float err(matrix* g1, matrix* g2, int n, int m) {
 	int* v1; 
 	int* v2; 
 
-	v1 = build_degree_vector(g1, n);
-	v2 = build_degree_vector(g2, n);
-	list_print(v1, n);
-	list_print(v2, n);
+	if(g1_n< g2_n)
+	{
+		return scale(scales[4], scales[5], g1_n/(float)g2_n);
+	}
+	else if (g1_n > g2_n) {
+		return scale(scales[4], scales[5], g2_n / (float)g1_n);
+	}
 
-	err_outgoing_edges_acc_diff = vector_diff(v1, v2, n);
+	v1 = build_degree_vector(g1, g1_n);
+	v2 = build_degree_vector(g2, g1_n);
+	list_print(v1, g1_n);
+	list_print(v2, g1_n);
+
+	err_outgoing_edges_acc_diff = vector_diff(v1, v2, g1_n);
 	printf("%f\n", err_outgoing_edges_acc_diff);
 
 	if (err_outgoing_edges_acc_diff != 0)
