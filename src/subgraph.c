@@ -2,7 +2,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-#define HALF_EDGE_CODE -2
 inline int minimum(const int a, const int b);
 
 int minimum(const int a, const int b) {
@@ -20,30 +19,16 @@ matrix* modular_product(matrix* a, matrix* b)
                     if (b_i == b_j) continue;
                     const int a_edge = a->mat[a_i * a->size + a_j];
                     const int b_edge = b->mat[b_i * b->size + b_j];
+                    const int a_edge_inv = a->mat[a_i + a->size * a_j];
+                    const int b_edge_inv = b->mat[b_i + b->size * b_j];
                     if (a_edge != 0 && b_edge != 0) {
-                        c->mat[(a_i * b->size + b_i) * c->size + (a_j * b->size + b_j)] = minimum(a_edge, b_edge);
+                        c->mat[(a_i * b->size + b_i) * c->size + (a_j * b->size + b_j)] = minimum(a_edge, b_edge) * c->size * c->size;
                     }
                     else if (a_edge == 0 && b_edge == 0) {
-                        c->mat[(a_i * b->size + b_i) * c->size + (a_j * b->size + b_j)] = 1;
+                        c->mat[(a_i * b->size + b_i) * c->size + (a_j * b->size + b_j)] = 1 * c->size * c->size;
                     }
-                }
-            }
-        }
-    }
-    for (int a_i = 0; a_i < a->size; a_i++) {
-        for (int b_i = 0; b_i < b->size; b_i++) {
-            for (int a_j = 0; a_j < a->size; a_j++) {
-                if (a_i == a_j) continue;
-                for (int b_j = 0; b_j < b->size; b_j++) {
-                    if (b_i == b_j) continue;
-                    const int a_edge = a->mat[a_i * a->size + a_j];
-                    const int b_edge = b->mat[b_i * b->size + b_j];
-                    if (
-                        (a_edge != 0 || b_edge != 0)
-                        && c->mat[(a_i * b->size + b_i) * c->size + (a_j * b->size + b_j)] != 0
-                        && c->mat[(a_i * b->size + b_i) + c->size * (a_j * b->size + b_j)] == 0
-                        ) {
-                        c->mat[(a_i * b->size + b_i) + c->size * (a_j * b->size + b_j)] = HALF_EDGE_CODE;
+                    else if (a_edge_inv != 0 && b_edge_inv != 0){
+                        c->mat[(a_i * b->size + b_i) * c->size + (a_j * b->size + b_j)] = 1;
                     }
                 }
             }
@@ -82,22 +67,17 @@ void extract_solution(matrix* clique, matrix* a, matrix* b)
                     if (a_clique_indices[a_i] == 0 || a_clique_indices[a_j] == 0) {
                         a->mat[a_i * a->size + a_j] = -1;
                     }
-                    else if (a_i != a_j && val > 0 && a_edge != 0 && b_edge != 0) {
-                        a->mat[a_i * a->size + a_j] = val;
+                    else if (a_i != a_j && val > 0 && (a_edge != 0 || b_edge != 0)) 
+                    {
+                        a->mat[a_i * a->size + a_j] = val / (clique->size * clique->size);
                     }
-                    else if (val == HALF_EDGE_CODE){
-                        a->mat[a_i * a->size + a_j] = 0;
-                    }
-
 
                     if (b_clique_indices[b_i] == 0 || b_clique_indices[b_j] == 0) {
                         b->mat[b_i * b->size + b_j] = -1;
                     }
-                    else if (b_i != b_j && val > 0 && a_edge != 0 && b_edge != 0) {
-                        b->mat[b_i * b->size + b_j] = val;
-                    }
-                    else if (val == HALF_EDGE_CODE){
-                        b->mat[b_i * b->size + b_j] = 0;
+                    else if (b_i != b_j && val > 0 && (a_edge != 0 || b_edge != 0))
+                    {
+                        b->mat[b_i * b->size + b_j] = val / (clique->size * clique->size);
                     }
                 }
             }
