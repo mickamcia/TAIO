@@ -319,10 +319,10 @@ void tests_metric(int* passed, int* failed) {
 void test_metric_from_args(matrix* g1, matrix* g2, int* passed, int* failed) {
     printf("\n\nRunning metrics test...\n");
 
-    float d = distance(g1, g2);
-
     graph_print(g1, "Graph 1");
     graph_print(g2, "Graph 2");
+
+    float d = distance(g1, g2);
 
     printf("\nDistance: %f\n", d);
 

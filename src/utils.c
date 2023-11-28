@@ -6,72 +6,9 @@
 #include "utils.h"
 #include "graph.h"
 
-void sortEachList_degreeMatrix(int* arr, int size);
-void sortMatrix_degreeMatrix(int* arr, int size);
-bool isSecondListBigger(int* arr, int size, int row1, int row2);
-
 void utils_print_execution_time(clock_t exact, clock_t approx) {
 	printf("\nExact: %f seconds\n", ((double)exact) / CLOCKS_PER_SEC);
 	printf("Approx: %f seconds\n", ((double)approx) / CLOCKS_PER_SEC);
-}
-
-void sort_degreeMatrix(int* arr, int size) {
-	sortEachList_degreeMatrix(arr, size);
-	sortMatrix_degreeMatrix(arr, size);
-}
-
-void sortEachList_degreeMatrix(int* arr, int size) {
-	for (int k = 0; k < size; k++) {
-		int i, j;
-		int swapped;
-		for (i = 0; i < size - 2; i++) {
-			swapped = 0;
-			for (j = 0; j < size - i - 2; j++) {
-				if (arr[k * size + j] == 0) continue;
-				if (arr[k * size + j] < arr[k * size + j + 1]) {
-					int tmp = arr[k * size + j];
-					arr[k * size + j] = arr[k * size + j + 1];
-					arr[k * size + j + 1] = tmp;
-					swapped = 1;
-				}
-			}
-			if (swapped == 0)
-				break;
-		}
-	}
-}
-void sortMatrix_degreeMatrix(int* arr, int size) {
-	int i, j;
-	int swapped;
-	for (i = 0; i < size - 1; i++) {
-		swapped = 0;
-		for (j = 0; j < size - i - 1; j++) {
-			if (arr[size * j + (size-1)] < arr[size * (j+1) + (size - 1)] || 
-				(arr[size * j + (size - 1)] == arr[size * (j + 1) + (size - 1)] && isSecondListBigger(arr,size,j,j+1))) {
-				for (int k = 0; k < size; ++k) {
-					int tmp = arr[size * j + k];
-					arr[size * j + k] = arr[size * (j + 1) + k];
-					arr[size * (j + 1) + k] = tmp;
-					swapped = 1;
-				}
-			}
-		}
-		if (swapped == 0)
-			break;
-	}
-}
-
-bool isSecondListBigger(int* arr, int size, int row1, int row2)
-{
-	//array2d_print(arr, size, size, "sort");
-
-	for (int i = 0; i < size - 1; i++) {
-		if (arr[row1 * size + i] < arr[row2 * size + i])
-			return true;
-		else if (arr[row1 * size + i] > arr[row2 * size + i])
-			return false;
-	}
-	return false;
 }
 
 void array_print(int* g, int size, char name[])
