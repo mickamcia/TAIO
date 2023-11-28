@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-
+#define HALF_EDGE_CODE -2
 inline int minimum(const int a, const int b);
 
 int minimum(const int a, const int b) {
@@ -43,7 +43,7 @@ matrix* modular_product(matrix* a, matrix* b)
                         && c->mat[(a_i * b->size + b_i) * c->size + (a_j * b->size + b_j)] != 0
                         && c->mat[(a_i * b->size + b_i) + c->size * (a_j * b->size + b_j)] == 0
                         ) {
-                        c->mat[(a_i * b->size + b_i) + c->size * (a_j * b->size + b_j)] = 2137;
+                        c->mat[(a_i * b->size + b_i) + c->size * (a_j * b->size + b_j)] = HALF_EDGE_CODE;
                     }
                 }
             }
@@ -85,7 +85,7 @@ void extract_solution(matrix* clique, matrix* a, matrix* b)
                     else if (a_i != a_j && val > 0 && a_edge != 0 && b_edge != 0) {
                         a->mat[a_i * a->size + a_j] = val;
                     }
-                    else if (val == 2137){
+                    else if (val == HALF_EDGE_CODE){
                         a->mat[a_i * a->size + a_j] = 0;
                     }
 
@@ -96,7 +96,7 @@ void extract_solution(matrix* clique, matrix* a, matrix* b)
                     else if (b_i != b_j && val > 0 && a_edge != 0 && b_edge != 0) {
                         b->mat[b_i * b->size + b_j] = val;
                     }
-                    else if (val == 2137){
+                    else if (val == HALF_EDGE_CODE){
                         b->mat[b_i * b->size + b_j] = 0;
                     }
                 }
