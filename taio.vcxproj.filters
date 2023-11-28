@@ -60,6 +60,9 @@
     <ClCompile Include="src\utils.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\stats.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\approx_clique.h">
@@ -96,6 +99,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\utils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\stats.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

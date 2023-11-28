@@ -1,4 +1,6 @@
+#include <stdlib.h>
 #include "tests.h"
+#include "stats.h"
 
 void test_approx_clique(int* passed, int* failed) {
     printf("\n%s\n", __func__);
@@ -222,7 +224,7 @@ void test_clique_no_edges(int* passed, int* failed) {
     matrix_destroy(g_approx);
 }
 
-void test_clique_random(int graph_size, int* passed, int* failed) {
+stats* test_clique_random(int graph_size, int* passed, int* failed) {
     const int directed = 1;
     //const int graph_size = 200;
     
@@ -266,6 +268,8 @@ void test_clique_random(int graph_size, int* passed, int* failed) {
     matrix_destroy(g0);
     matrix_destroy(g_exact);
     matrix_destroy(g_approx);
+
+    return stats_create(time_exact, time_approx);
 }
 
 void test_clique_simple(int clique_size, int graph_size, int* passed, int* failed) {
@@ -333,7 +337,7 @@ void tests_clique(int* passed, int* failed) {
 
     // small graphs
     for (int i = 2; i <= 10; i += 2) {
-        test_clique_random(i, passed, failed);
+            test_clique_random(i, passed, failed);
         PAUSE();
     }
 
@@ -387,4 +391,30 @@ void test_clique_from_args(matrix* g, int* passed, int* failed) {
 
     printf("\nExact clique size: %d\n", graph_calc_clique_size(g_exact));
     printf("Approx clique size: %d\n", graph_calc_clique_size(g_approx));
+}
+
+
+void test_clique_stats(int* passed, int* failed) {
+    FILE* stats_file = stats_clique_open_csv();
+
+    for (int i = 200; i <= 600; i += 50) {
+        stats* s_avg = stats_create(0, 0);
+        for (int j = 0; j < TEST_SAMPLING; j++) {
+            stats* s = test_clique_random(i, passed, failed);
+            s_avg->exact_time += s->exact_time;
+            s_avg->approx_time += s->approx_time;
+            free(s);
+        }
+
+        s_avg->exact_time /= TEST_SAMPLING;
+        s_avg->approx_time /= TEST_SAMPLING;
+
+        stats_clique_save_to_file(stats_file, i, s_avg);
+
+        free(s_avg);
+
+        PAUSE();
+    }
+
+    fclose(stats_file);
 }

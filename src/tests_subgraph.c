@@ -1,4 +1,6 @@
+#include <stdlib.h>
 #include "tests.h"
+#include "stats.h"
 
 void test_exact_subgraph_simple(int* passed, int* failed) {
     printf("\n%s\n", __func__);
@@ -127,7 +129,7 @@ void test_approx_subgraph(int* passed, int* failed) {
 
 }
 
-void test_subgraph(int subgraph_size, int graph_a_size, int graph_b_size, int* passed, int* failed) {
+stats* test_subgraph(int subgraph_size, int graph_a_size, int graph_b_size, int* passed, int* failed) {
     printf("\nTEST: %s - subgraph size: %d, A size: %d, B size: %d\n", __func__, subgraph_size, graph_a_size, graph_b_size);
 
     //const int subgraph_size = 5;
@@ -213,6 +215,8 @@ void test_subgraph(int subgraph_size, int graph_a_size, int graph_b_size, int* p
     matrix_destroy(a_approx);
     matrix_destroy(b_exact);
     matrix_destroy(b_approx);
+
+    return stats_create(time_exact, time_approx);
 }
 
 void tests_subgraph(int* passed, int* failed) {
@@ -275,4 +279,35 @@ void test_subgraph_from_args(matrix* g1, matrix* g2, int* passed, int* failed) {
     graph_save_to_file(g2, "res/test_subgraph_b.txt");
     graph_save_to_file(b_exact, "res/test_subgraph_b_exact.txt");
     graph_save_to_file(b_approx, "res/test_subgraph_b_approx.txt");
+}
+
+void test_subgraph_stats(int* passed, int* failed) {
+    FILE* stats_file = stats_subgraph_open_csv();
+
+    for (int n1 = 10; n1 < 40; n1 += 4) {
+        int n2 = (double)n1 * 1.25;
+
+        printf("%d %d\n", n1, n2);
+        PAUSE();
+
+        stats* s_avg = stats_create(0, 0);
+
+        for (int i = 0; i < TEST_SAMPLING; i++) {
+            //int subgraph_size = ;
+
+            stats* s = test_subgraph(10, n1, n2, passed, failed);
+            s_avg->exact_time += s->exact_time;
+            s_avg->approx_time += s->approx_time;
+            free(s);
+        }
+
+        s_avg->exact_time /= TEST_SAMPLING;
+        s_avg->approx_time /= TEST_SAMPLING;
+
+        stats_subgraph_save_to_file(stats_file, n1, n2, s_avg);
+
+        free(s_avg);
+    }
+
+    fclose(stats_file);
 }

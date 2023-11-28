@@ -115,12 +115,14 @@ void read_args(
 	bool* run_distance, 
 	bool* run_clique, 
 	bool* run_subgraph, 
+	bool* generate_stats,
 	matrix** g1, 
 	matrix** g2) 
 {
 	bool d = false;
 	bool c = false;
 	bool s = false;
+	bool g = false;
 	*g1 = NULL;
 	*g2 = NULL;
 
@@ -130,6 +132,7 @@ void read_args(
 		case 'd': d = true; break;
 		case 'c': c = true; break;
 		case 's': s = true; break;
+		case 'g': *generate_stats = true; return;
 		case 'h': usage(argv[0]);
 		default: usage(argv[0]);
 		}

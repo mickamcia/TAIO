@@ -189,12 +189,19 @@ int main(int argc, char** argv) {
     bool run_distance;
     bool run_clique;
     bool run_subgraph;
+    bool generate_stats = false;
     matrix* g1 = NULL;
     matrix* g2 = NULL;
 
-    read_args(argc, argv, &run_distance, &run_clique, &run_subgraph, &g1, &g2);
+    read_args(argc, argv, &run_distance, &run_clique, &run_subgraph, &generate_stats, &g1, &g2);
 
     int passed = 0, failed = 0;
+
+    if (generate_stats) {
+        test_clique_stats(&passed, &failed);
+        test_subgraph_stats(&passed, &failed);
+        return 0;
+    }
 
     if (run_distance) {
         test_metric_from_args(g1, g2, &passed, &failed);

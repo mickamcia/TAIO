@@ -22,6 +22,6 @@ void print_test_fail(const char* test_name);
 void print_test_fail_msg(const char* test_name, const char* msg);
 void print_tests_summary(int passed, int failed, clock_t elapsed);
 
-void read_args(int argc, char** argv, bool* run_distance, bool* run_clique, bool* run_subgraph, matrix** g1, matrix** g2);
+void read_args(int argc, char** argv, bool* run_distance, bool* run_clique, bool* run_subgraph, bool* generate_stats, matrix** g1, matrix** g2);
 
 #endif

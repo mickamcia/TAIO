@@ -29,6 +29,7 @@
     <ClCompile Include="src\graph.c" />
     <ClCompile Include="src\matrix.c" />
     <ClCompile Include="src\metric.c" />
+    <ClCompile Include="src\stats.c" />
     <ClCompile Include="src\subgraph.c" />
     <ClCompile Include="src\tests_clique.c" />
     <ClCompile Include="src\tests_metric.c" />
@@ -45,6 +46,7 @@
     <ClInclude Include="src\graph.h" />
     <ClInclude Include="src\matrix.h" />
     <ClInclude Include="src\metric.h" />
+    <ClInclude Include="src\stats.h" />
     <ClInclude Include="src\subgraph.h" />
     <ClInclude Include="src\tests.h" />
     <ClInclude Include="src\utils.h" />
