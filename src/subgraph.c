@@ -30,6 +30,25 @@ matrix* modular_product(matrix* a, matrix* b)
             }
         }
     }
+    for (int a_i = 0; a_i < a->size; a_i++) {
+        for (int b_i = 0; b_i < b->size; b_i++) {
+            for (int a_j = 0; a_j < a->size; a_j++) {
+                if (a_i == a_j) continue;
+                for (int b_j = 0; b_j < b->size; b_j++) {
+                    if (b_i == b_j) continue;
+                    const int a_edge = a->mat[a_i * a->size + a_j];
+                    const int b_edge = b->mat[b_i * b->size + b_j];
+                    if (
+                        (a_edge != 0 || b_edge != 0)
+                        && c->mat[(a_i * b->size + b_i) * c->size + (a_j * b->size + b_j)] != 0
+                        && c->mat[(a_i * b->size + b_i) + c->size * (a_j * b->size + b_j)] == 0
+                        ) {
+                        c->mat[(a_i * b->size + b_i) + c->size * (a_j * b->size + b_j)] = 2137;
+                    }
+                }
+            }
+        }
+    }
     return c;
 }
 
@@ -59,12 +78,15 @@ void extract_solution(matrix* clique, matrix* a, matrix* b)
                 for (int b_j = 0; b_j < b->size; b_j++) {
                     const int b_edge = b_original->mat[b_i * b->size + b_j];
                     int val = clique->mat[(a_i * b->size + b_i) * clique->size + (a_j * b->size + b_j)];
-
+                    
                     if (a_clique_indices[a_i] == 0 || a_clique_indices[a_j] == 0) {
                         a->mat[a_i * a->size + a_j] = -1;
                     }
                     else if (a_i != a_j && val > 0 && a_edge != 0 && b_edge != 0) {
                         a->mat[a_i * a->size + a_j] = val;
+                    }
+                    else if (val == 2137){
+                        a->mat[a_i * a->size + a_j] = 0;
                     }
 
 
@@ -73,6 +95,9 @@ void extract_solution(matrix* clique, matrix* a, matrix* b)
                     }
                     else if (b_i != b_j && val > 0 && a_edge != 0 && b_edge != 0) {
                         b->mat[b_i * b->size + b_j] = val;
+                    }
+                    else if (val == 2137){
+                        b->mat[b_i * b->size + b_j] = 0;
                     }
                 }
             }

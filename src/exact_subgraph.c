@@ -11,6 +11,8 @@ void exact_subgraph_run(matrix* a, matrix* b)
     matrix* clique = matrix_clone(mod_prod);
 
     exact_clique_bb_run(clique);
+    graph_print(mod_prod, "mod_prod");
+    graph_print(clique, "clique");
     extract_solution(clique, a, b);
     
     matrix_destroy(mod_prod);
