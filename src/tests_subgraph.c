@@ -274,12 +274,12 @@ void test_subgraph_from_args(matrix* g1, matrix* g2, int* passed, int* failed) {
         (*failed)++;
     }
 
-    graph_save_to_file(g1, "res/test_subgraph_a.txt");
-    graph_save_to_file(a_exact, "res/test_subgraph_a_exact.txt");
-    graph_save_to_file(a_approx, "res/test_subgraph_a_approx.txt");
-    graph_save_to_file(g2, "res/test_subgraph_b.txt");
-    graph_save_to_file(b_exact, "res/test_subgraph_b_exact.txt");
-    graph_save_to_file(b_approx, "res/test_subgraph_b_approx.txt");
+    //graph_save_to_file(g1, "test_subgraph_a.txt");
+    graph_save_to_file(a_exact, "test_subgraph_a_exact.txt");
+    graph_save_to_file(a_approx, "test_subgraph_a_approx.txt");
+    //graph_save_to_file(g2, "test_subgraph_b.txt");
+    graph_save_to_file(b_exact, "test_subgraph_b_exact.txt");
+    graph_save_to_file(b_approx, "test_subgraph_b_approx.txt");
 }
 
 void test_subgraph_stats(int* passed, int* failed) {

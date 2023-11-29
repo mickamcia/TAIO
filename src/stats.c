@@ -16,13 +16,12 @@ stats* stats_create(clock_t exact_time, clock_t approx_time) {
 }
 
 FILE* stats_clique_open_csv() {
-    time_t t = time(NULL);
-    struct tm tm = *localtime(&t);
-
-    char file_name[50];
-    strftime(file_name, sizeof(file_name), "stats/clique_%Y-%m-%d_%H-%M-%S.csv", &tm);
+    //time_t t = time(NULL);
+    //struct tm tm = *localtime(&t);
+    //char file_name[50];
+    //strftime(file_name, sizeof(file_name), "stats/clique_%Y-%m-%d_%H-%M-%S.csv", &tm);
     
-    FILE* file = fopen(file_name, "w");
+    FILE* file = fopen("clique.csv", "w");
     fprintf(file, "n,exact,approx\n");
 
     return file;
@@ -33,13 +32,12 @@ void stats_clique_save_to_file(FILE* file, int graph_size, stats* s) {
 }
 
 FILE* stats_subgraph_open_csv() {
-    time_t t = time(NULL);
-    struct tm tm = *localtime(&t);
+    //time_t t = time(NULL);
+    //struct tm tm = *localtime(&t);
+    //char file_name[50];
+    //strftime(file_name, sizeof(file_name), "stats/subgraph_%Y-%m-%d_%H-%M-%S.csv", &tm);
 
-    char file_name[50];
-    strftime(file_name, sizeof(file_name), "stats/subgraph_%Y-%m-%d_%H-%M-%S.csv", &tm);
-
-    FILE* file = fopen(file_name, "w");
+    FILE* file = fopen("subgraph.csv", "w");
     fprintf(file, "n1,n2,exact,approx\n");
 
     return file;

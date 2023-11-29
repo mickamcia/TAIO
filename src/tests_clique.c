@@ -373,9 +373,9 @@ void test_clique_from_args(matrix* g, int* passed, int* failed) {
 
     utils_print_execution_time(time_exact, time_approx);
 
-    graph_save_to_file(g, "res/test_clique_graph.txt");
-    graph_save_to_file(g_exact, "res/test_clique_exact.txt");
-    graph_save_to_file(g_approx, "res/test_clique_approx.txt");
+    //graph_save_to_file(g, "test_clique_graph.txt");
+    graph_save_to_file(g_exact, "test_clique_exact.txt");
+    graph_save_to_file(g_approx, "test_clique_approx.txt");
 
     if (graph_clique_equal(g_exact, g_approx)) {
         print_test_pass(__func__);
