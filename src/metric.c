@@ -7,8 +7,8 @@
 #define SCALE_TAB 5
 
 // internal
-int graph_get_n(matrix* g);
-int graph_get_m_unique(matrix* g);
+int get_size_n(matrix* g);
+int get_size_m_unique(matrix* g);
 int multigraph_position_sum(int g1_n, int g2_n);
 float multigraph_similarity(matrix* g1, matrix* g2, int  g1_n, int g2_n);
 float scale(float lower, float upper, float value);
@@ -25,10 +25,10 @@ bool is_second_list_bigger(int* arr, int size, int row1, int row2);
 float distance(matrix* g1, matrix* g2) {
 	int sum_acc_value = 0;
 	int m_unique_diff_value;
-	int g1_n = graph_get_n(g1);
-	int g2_n = graph_get_n(g2);
-	int g1_m_unique = graph_get_m_unique(g1);
-	int g2_m_unique = graph_get_m_unique(g2);
+	int g1_n = get_size_n(g1);
+	int g2_n = get_size_n(g2);
+	int g1_m_unique = get_size_m_unique(g1);
+	int g2_m_unique = get_size_m_unique(g2);
 	
 	//printf("\ng1_n: %d, g2_n: %d, g1_m_unique: %d, g2_m_unique: %d\n", g1_n, g2_n, g1_m_unique, g2_m_unique);
 	
@@ -50,7 +50,7 @@ float distance(matrix* g1, matrix* g2) {
 	return  sum_acc_value + m_unique_diff_value + abs(g1_n - g2_n) + multigraph_similarity(g1, g2, g1_n, g2_n);
 }
 
-int graph_get_n(matrix* g)
+int get_size_n(matrix* g)
 {
 	int size = 0;
 	for (int i = 0; i < g->size; i++)
@@ -59,7 +59,7 @@ int graph_get_n(matrix* g)
 	return size;
 }
 
-int graph_get_m_unique(matrix* g)
+int get_size_m_unique(matrix* g)
 {
 	int m = 0;
 	for (int i = 0; i < g->size; i++) {

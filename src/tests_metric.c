@@ -1,7 +1,11 @@
 #include "tests.h"
 
 void test_metric_equal_graphs(int* passed, int* failed) {
+
+    
     int size = 15;
+    printf("\nTEST: %s - n=%d\n", __func__, size);
+
     matrix* g1 = matrix_init(size);
     graph_generate(g1, 7, 1, 0.8f, 1);
     matrix* g2 = matrix_clone(g1);
@@ -26,7 +30,10 @@ void test_metric_equal_graphs(int* passed, int* failed) {
 }
 
 void test_metric_permuted_equal_graphs(int* passed, int* failed) {
+
+
     int size = 20;
+    printf("\nTEST: %s - n=%d\n", __func__, size);
     matrix* g1 = matrix_init(size);
     graph_generate(g1, 1, 0, 0.8f, 1);
     matrix* g2 = matrix_clone(g1);
@@ -54,6 +61,7 @@ void test_metric_permuted_equal_graphs(int* passed, int* failed) {
 
 void test_metric_noised_graphs(int* passed, int* failed) {
     int size = 11;
+    printf("\nTEST: %s - n=%d\n", __func__, size);
     matrix* g1 = matrix_init(size);
     graph_generate(g1, 7, 1, 0.8f, 1);
     matrix* g2 = matrix_clone(g1);
@@ -82,6 +90,7 @@ void test_metric_noised_graphs(int* passed, int* failed) {
 void test_metric_different_graphs_not_pass_condition1(int* passed, int* failed) {
     int size_g1 = 3;
     int size_g2 = 5;
+    printf("\nTEST: %s - n1=%d, n2=%d \n", __func__, size_g1, size_g2);
 
     matrix* g1 = matrix_init(size_g1);
     graph_generate(g1, 7, 1, 1.0f, 1);  //clique
@@ -110,6 +119,7 @@ void test_metric_different_graphs_not_pass_condition1(int* passed, int* failed) 
 
 void test_metric_different_graphs_not_pass_condition2(int* passed, int* failed) {
     int size = 4;
+    printf("\nTEST: %s - n=%d\n", __func__, size);
     matrix* g1 = matrix_init(size);
     graph_generate(g1, 7, 1, 1.0f, 1);
     matrix* g2 = matrix_clone(g1);
@@ -139,6 +149,7 @@ void test_metric_different_graphs_not_pass_condition2(int* passed, int* failed) 
 
 void test_metric_different_graphs_not_pass_condition3(int* passed, int* failed) {
     int size = 3;
+    printf("\nTEST: %s - n=%d\n", __func__, size);
     matrix* g1 = matrix_init(size);
     matrix* g2 = matrix_clone(g1);
 
@@ -177,6 +188,7 @@ void test_metric_different_graphs_not_pass_condition3(int* passed, int* failed) 
 
 void test_metric_different_graphs_not_pass_condition4(int* passed, int* failed) {
     int size = 6;
+    printf("\nTEST: %s - n=%d\n", __func__, size);
     matrix* g1 = matrix_init(size);
     matrix* g2 = matrix_clone(g1);
 
@@ -223,6 +235,7 @@ void test_metric_different_graphs_not_pass_condition4(int* passed, int* failed) 
 
 void test_metric_different_graphs_pass_condition4(int* passed, int* failed) {
     int size = 10;
+    printf("\nTEST: %s - n=%d\n", __func__, size);
     matrix* g1 = matrix_init(size);
     matrix* g2 = matrix_clone(g1);
 
@@ -322,6 +335,7 @@ void test_metric_from_args(matrix* g1, matrix* g2, int* passed, int* failed) {
     graph_print(g1, "Graph 1");
     graph_print(g2, "Graph 2");
 
+    printf("\nTEST: %s - n1=%d, n2=%d \n", __func__, g1->size, g2->size);
     float d = distance(g1, g2);
 
     printf("\nDistance: %f\n", d);
