@@ -34,26 +34,29 @@ matrix* get_max_clique(matrix* all_cliques, matrix* g) {
 	int maxSize = 0;
 
 	for (int i = 0; i < all_cliques->size; i++) {
-		memset(clique->mat, 0, sizeof(int) * g->size * g->size);
+		int clique_size = 0;
+		memset(clique->mat, -1, sizeof(int) * g->size * g->size);
 		for (int j = 0; j < all_cliques->size; j++) {
-			for (int k = 0; k < all_cliques->size; k++) {
-				clique->mat[j * clique->size + k] = -1;
-				clique->mat[k * clique->size + j] = -1;
-				if (all_cliques->mat[i * all_cliques->size + j] == 0) 
-					continue;
+			if (all_cliques->mat[i * all_cliques->size + j] == 0)
+				continue;
 
+			for (int k = 0; k < all_cliques->size; k++) {
 				if (k == j)
 					clique->mat[k * clique->size + k] = 0;
-				else if  (all_cliques->mat[i * all_cliques->size + k]) {
-					if (g->mat[j * g->size + k] > 0)
+				else if (all_cliques->mat[i * all_cliques->size + k]) {
+					if (g->mat[j * g->size + k] > 0) {
+						clique_size += g->mat[j * g->size + k];
 						clique->mat[j * clique->size + k] = g->mat[j * g->size + k];
-					if (g->mat[k * g->size + j] > 0)
+					}
+					if (g->mat[k * g->size + j] > 0) {
+						clique_size += g->mat[k * g->size + j];
 						clique->mat[k * clique->size + j] = g->mat[k * g->size + j];
+					}
 				}
 			}
 		}
 
-		int size = graph_calc_clique_size(clique);
+		int size = clique_size; 
 		// todo: rozwazyc przypadek ==
 		if (maxSize < size) {
 			maxSize = size;

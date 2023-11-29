@@ -51,6 +51,10 @@ void set_green_output_color(){
 	printf("\033[0;32m");
 }
 
+void set_yellow_output_color() {
+	printf("\033[0;33m");
+}
+
 void set_red_output_color(){
 	printf("\033[0;31m");
 }
@@ -65,9 +69,9 @@ void print_test_pass(const char* test_name){
 	reset_output_color();
 }
 
-void print_test_pass_msg(const char* test_name, const char* msg){
-	set_green_output_color();
-	printf("\n%s PASSED (%s)\n", test_name, msg);
+void print_test_approx_fail(const char* test_name) {
+	set_yellow_output_color();
+	printf("\n%s APPROX FAILED\n", test_name);
 	reset_output_color();
 }
 
@@ -77,19 +81,14 @@ void print_test_fail(const char* test_name){
 	reset_output_color();
 }
 
-void print_test_fail_msg(const char* test_name, const char* msg){
-	set_red_output_color();
-	printf("\n%s FAILED (%s)\n", test_name, msg);
-	reset_output_color();
-}
-
-void print_tests_summary(int passed, int failed, clock_t elapsed) {
+void print_tests_summary(int passed, int failed, int approx_failed, clock_t elapsed) {
 	printf("\n-------------\n");
 	printf("TESTS SUMMARY\n");
 	printf("-------------\n");
 	printf("Total execution time: %f seconds\n", ((double)elapsed) / CLOCKS_PER_SEC);
 	printf("-------------\n");
 	printf("\033[0;32m%s: %d\n", "PASSED", passed);
+	printf("\033[0;33m%s: %d\n", "APPROX FAILED", approx_failed);
 	printf("\033[0;31m%s: %d\n", "FAILED", failed);
 	printf("\033[0m");
 	printf("-------------\n");
@@ -105,6 +104,7 @@ void usage(char* programName) {
 	fprintf(stderr, "\t-c\tFind maximum clique in graph from file FILE_1.\n");
 	fprintf(stderr, "\t-d\tCalculate distance between graphs from files FILE_1 and FILE_2.\n");
 	fprintf(stderr, "\t-s\tFind maximum common subgraph of graphs from files FILE_1 and FILE_2.\n");
+	fprintf(stderr, "\t-g\tGenerate stats (time comparison of exact and approx algorithm).\n");
 	fprintf(stderr, "\t-h\tDisplay help.\n\n");
 	exit(EXIT_FAILURE);
 }
@@ -115,12 +115,14 @@ void read_args(
 	bool* run_distance, 
 	bool* run_clique, 
 	bool* run_subgraph, 
+	bool* generate_stats,
 	matrix** g1, 
 	matrix** g2) 
 {
 	bool d = false;
 	bool c = false;
 	bool s = false;
+	bool g = false;
 	*g1 = NULL;
 	*g2 = NULL;
 
@@ -130,6 +132,7 @@ void read_args(
 		case 'd': d = true; break;
 		case 'c': c = true; break;
 		case 's': s = true; break;
+		case 'g': *generate_stats = true; return;
 		case 'h': usage(argv[0]);
 		default: usage(argv[0]);
 		}
@@ -155,4 +158,12 @@ void read_args(
 	*run_distance = d;
 	*run_clique = c;
 	*run_subgraph = s;
+}
+
+double minimum(const double a, const double b) {
+	return a > b ? b : a;
+}
+
+double maximum(const double a, const double b) {
+	return a > b ? a : b;
 }

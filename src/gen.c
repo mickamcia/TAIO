@@ -181,41 +181,53 @@ void test_subgraph_simple() {
 #pragma endregion
 
 int main(int argc, char** argv) {
-    srand((unsigned int)time(NULL));
-    //srand(985); // 30 sec, 0 fails
+    //srand((unsigned int)time(NULL));
+    srand(985); // 30 sec, 0 fails
     //srand(12724); // 630 sec, 0 fails
     //srand(54322); // 125 sec, 2 fails
 
     bool run_distance;
     bool run_clique;
     bool run_subgraph;
+    bool generate_stats = false;
     matrix* g1 = NULL;
     matrix* g2 = NULL;
 
-    read_args(argc, argv, &run_distance, &run_clique, &run_subgraph, &g1, &g2);
+    read_args(argc, argv, &run_distance, &run_clique, &run_subgraph, &generate_stats, &g1, &g2);
 
-    int passed = 0, failed = 0;
+    int passed = 0, failed = 0, approx_failed = 0;
+
+    if (generate_stats) {
+        clock_t tests_time = clock();
+
+        test_clique_stats(&passed, &failed, &approx_failed);
+        test_subgraph_stats(&passed, &failed, &approx_failed);
+        
+        tests_time = clock() - tests_time;
+        print_tests_summary(passed, failed, approx_failed, tests_time);
+        return 0;
+    }
 
     if (run_distance) {
         test_metric_from_args(g1, g2, &passed, &failed);
     }
 
     if (run_clique) {
-        test_clique_from_args(g1, &passed, &failed);
+        test_clique_from_args(g1, &passed, &failed, &approx_failed);
     }
 
     if (run_subgraph) {
-        test_subgraph_from_args(g1, g2, &passed, &failed);
+        test_subgraph_from_args(g1, g2, &passed, &failed, &approx_failed);
     }
 
     if (!run_distance && !run_clique && !run_subgraph) {
         clock_t tests_time = clock();
         tests_metric(&passed, &failed);
-        tests_clique(&passed, &failed);
-        tests_subgraph(&passed, &failed);
+        tests_clique(&passed, &failed, &approx_failed);
+        tests_subgraph(&passed, &failed, &approx_failed);
         tests_time = clock() - tests_time;
 
-        print_tests_summary(passed, failed, tests_time);
+        print_tests_summary(passed, failed, approx_failed, tests_time);
     }
 
     if (g1 != NULL) free(g1);

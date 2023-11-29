@@ -1,13 +1,7 @@
 #include "subgraph.h"
 #include <string.h>
 #include <stdlib.h>
-
-
-inline int minimum(const int a, const int b);
-
-int minimum(const int a, const int b) {
-    return a > b ? b : a;
-}
+#include "utils.h"
 
 matrix* modular_product(matrix* a, matrix* b)
 {

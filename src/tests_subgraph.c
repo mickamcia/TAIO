@@ -1,4 +1,7 @@
+#include <stdlib.h>
+#include <limits.h>
 #include "tests.h"
+#include "stats.h"
 
 void test_exact_subgraph_simple(int* passed, int* failed) {
     printf("\n%s\n", __func__);
@@ -127,7 +130,7 @@ void test_approx_subgraph(int* passed, int* failed) {
 
 }
 
-void test_subgraph(int subgraph_size, int graph_a_size, int graph_b_size, int* passed, int* failed) {
+stats* test_subgraph(int subgraph_size, int graph_a_size, int graph_b_size, int* passed, int* failed, int* approx_failed) {
     printf("\nTEST: %s - subgraph size: %d, A size: %d, B size: %d\n", __func__, subgraph_size, graph_a_size, graph_b_size);
 
     //const int subgraph_size = 5;
@@ -135,7 +138,7 @@ void test_subgraph(int subgraph_size, int graph_a_size, int graph_b_size, int* p
     //const int graph_b_size = 9;
 
     matrix* g0 = matrix_init(subgraph_size);
-    graph_generate(g0, 7, 1, 0.8f, 1);
+    graph_generate(g0, 7, 1, 0.6f, 1);
 
     matrix* g3 = matrix_init(graph_a_size);
     graph_generate(g3, 2, 1, 0.0, 1);
@@ -177,7 +180,6 @@ void test_subgraph(int subgraph_size, int graph_a_size, int graph_b_size, int* p
     if (distance(g0, a_exact) == 0 &&
         distance(g0, b_exact) == 0)
     {
-        print_test_pass(__func__);
 
         if (
             distance(a_exact, a_approx) == 0 &&
@@ -185,9 +187,11 @@ void test_subgraph(int subgraph_size, int graph_a_size, int graph_b_size, int* p
             )
         {
             (*passed)++;
+            print_test_pass(__func__);
         }
         else {
-            print_test_fail_msg(__func__, "approx");
+            (*approx_failed)++;
+            print_test_approx_fail(__func__);
         }
     }
     else
@@ -196,13 +200,14 @@ void test_subgraph(int subgraph_size, int graph_a_size, int graph_b_size, int* p
         (*failed)++;
     }
 
-    //graph_save_to_file(g0, "res/TEST_EXACT_SUBGRAPH_5.txt");
-    //graph_save_to_file(g5, "res/TEST_EXACT_SUBGRAPH_5.txt");
-    //graph_save_to_file(g6, "res/TEST_EXACT_SUBGRAPH_6.txt");
-    //graph_save_to_file(a_exact, "res/TEST_EXACT_SUBGRAPH_7.txt");
-    //graph_save_to_file(a_approx, "res/TEST_EXACT_SUBGRAPH_7.txt");
-    //graph_save_to_file(b_exact, "res/TEST_EXACT_SUBGRAPH_8.txt");
-    //graph_save_to_file(b_approx, "res/TEST_EXACT_SUBGRAPH_8.txt");
+    if (GENERATE_EXAMPLES) {
+        char f1[50];
+        char f2[50];
+        sprintf(f1, "examples/example_subgraph_%d_g1.txt", *passed + *failed + *approx_failed);
+        sprintf(f2, "examples/example_subgraph_%d_g2.txt", *passed + *failed + *approx_failed);
+        graph_save_to_file(g5, f1);
+        graph_save_to_file(g6, f2);
+    }
 
     matrix_destroy(g0);
     matrix_destroy(g3);
@@ -213,25 +218,36 @@ void test_subgraph(int subgraph_size, int graph_a_size, int graph_b_size, int* p
     matrix_destroy(a_approx);
     matrix_destroy(b_exact);
     matrix_destroy(b_approx);
+
+    return stats_create(time_exact, time_approx);
 }
 
-void tests_subgraph(int* passed, int* failed) {
+void tests_subgraph(int* passed, int* failed, int* approx_failed) {
+    stats* s;
     printf("\n\nRunning subgraphs tests...\n");
-
-    test_subgraph(5, 5, 5, passed, failed);
+    
+    s = test_subgraph(3, 4, 5, passed, failed, approx_failed);
     PAUSE();
+    free(s);
 
-    test_subgraph(10, 10, 15, passed, failed);
+    s = test_subgraph(5, 5, 5, passed, failed, approx_failed);
     PAUSE();
+    free(s);
 
-    test_subgraph(10, 18, 20, passed, failed);
+    s = test_subgraph(10, 10, 15, passed, failed, approx_failed);
+    PAUSE();
+    free(s);
+
+    s = test_subgraph(10, 18, 20, passed, failed, approx_failed);
     PAUSE();  
+    free(s);
 
-    test_subgraph(15, 20, 30, passed, failed);
+    s = test_subgraph(13, 21, 25, passed, failed, approx_failed);
     PAUSE();
+    free(s);
 }
 
-void test_subgraph_from_args(matrix* g1, matrix* g2, int* passed, int* failed) {
+void test_subgraph_from_args(matrix* g1, matrix* g2, int* passed, int* failed, int* approx_failed) {
     printf("\n\nRunning subgraphs test...\n");
     matrix* a_exact = matrix_clone(g1);
     matrix* b_exact = matrix_clone(g2);
@@ -265,14 +281,56 @@ void test_subgraph_from_args(matrix* g1, matrix* g2, int* passed, int* failed) {
         (*passed)++;
     }
     else {
-        print_test_fail(__func__);
-        (*failed)++;
+        print_test_approx_fail(__func__);
+        (*approx_failed)++;
     }
 
-    graph_save_to_file(g1, "res/test_subgraph_a.txt");
-    graph_save_to_file(a_exact, "res/test_subgraph_a_exact.txt");
-    graph_save_to_file(a_approx, "res/test_subgraph_a_approx.txt");
-    graph_save_to_file(g2, "res/test_subgraph_b.txt");
-    graph_save_to_file(b_exact, "res/test_subgraph_b_exact.txt");
-    graph_save_to_file(b_approx, "res/test_subgraph_b_approx.txt");
+    //graph_save_to_file(g1, "test_subgraph_a.txt");
+    graph_save_to_file(a_exact, "test_subgraph_a_exact.txt");
+    graph_save_to_file(a_approx, "test_subgraph_a_approx.txt");
+    //graph_save_to_file(g2, "test_subgraph_b.txt");
+    graph_save_to_file(b_exact, "test_subgraph_b_exact.txt");
+    graph_save_to_file(b_approx, "test_subgraph_b_approx.txt");
+}
+
+void test_subgraph_stats(int* passed, int* failed, int* approx_failed) {
+    FILE* stats_file = stats_subgraph_open_csv();
+
+    for (int n1 = 10; n1 < 51; n1 += 4) {
+        int n2 = (double)n1 * 1.25;
+
+        stats* s_avg = stats_create(0, 0);
+        stats* sample_min_val = stats_create(INT_MAX, INT_MAX);
+        stats* sample_max_val = stats_create(0, 0);
+
+        for (int i = 0; i < TEST_SAMPLING; i++) {
+            printf("\nSample %d/%d:", i + 1, TEST_SAMPLING);
+
+            stats* s = test_subgraph(10, n1, n2, passed, failed, approx_failed);
+            s_avg->exact_time += s->exact_time;
+            s_avg->approx_time += s->approx_time;
+
+            sample_min_val->exact_time = minimum(sample_min_val->exact_time, s->exact_time);
+            sample_min_val->approx_time = minimum(sample_min_val->approx_time, s->approx_time);
+            sample_max_val->exact_time = maximum(sample_max_val->exact_time, s->exact_time);
+            sample_max_val->approx_time = maximum(sample_max_val->approx_time, s->approx_time);
+
+            free(s);
+        }
+
+        s_avg->exact_time -= sample_min_val->exact_time;
+        s_avg->exact_time -= sample_max_val->exact_time;
+
+        s_avg->approx_time -= sample_min_val->approx_time;
+        s_avg->approx_time -= sample_max_val->approx_time;
+
+        s_avg->exact_time /= (TEST_SAMPLING - 2);
+        s_avg->approx_time /= (TEST_SAMPLING - 2);
+
+        stats_subgraph_save_to_file(stats_file, n1, n2, s_avg);
+
+        free(s_avg);
+    }
+
+    fclose(stats_file);
 }
