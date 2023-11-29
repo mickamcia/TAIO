@@ -11,25 +11,6 @@ void utils_print_execution_time(clock_t exact, clock_t approx) {
 	printf("Approx: %f seconds\n", ((double)approx) / CLOCKS_PER_SEC);
 }
 
-void bubble_sort(int* arr, int size) {
-	int i, j;
-	int swapped;
-	for (i = 0; i < size - 1; i++) {
-		swapped = 0;
-		for (j = 0; j < size - i - 1; j++) {
-			if (arr[j] > arr[j + 1]) {
-				int tmp = arr[j];
-				arr[j] = arr[j + 1];
-				arr[j + 1] = tmp;
-				swapped = 1;
-			}
-		}
-
-		if (swapped == 0)
-			break;
-	}
-}
-
 void array_print(int* g, int size, char name[])
 {
 	printf("\n%s\n", name);
@@ -55,6 +36,16 @@ void array2d_print(int* arr, int columns, int rows, char name[])
 		printf("\n");
 	}
 }
+
+void list_print(int* arr, int size)
+{
+	printf("\nlist:\n");
+	for (int i = 0; i < size; i++) {
+		printf("% 3d ", arr[i]); 
+		}
+	printf("\n");
+}
+
 
 void set_green_output_color(){
 	printf("\033[0;32m");
