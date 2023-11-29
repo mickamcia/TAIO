@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <limits.h>
 #include "tests.h"
 #include "stats.h"
 
@@ -137,7 +138,7 @@ stats* test_subgraph(int subgraph_size, int graph_a_size, int graph_b_size, int*
     //const int graph_b_size = 9;
 
     matrix* g0 = matrix_init(subgraph_size);
-    graph_generate(g0, 7, 1, 0.8f, 1);
+    graph_generate(g0, 7, 1, 0.6f, 1);
 
     matrix* g3 = matrix_init(graph_a_size);
     graph_generate(g3, 2, 1, 0.0, 1);
@@ -231,7 +232,7 @@ void tests_subgraph(int* passed, int* failed) {
     test_subgraph(10, 18, 20, passed, failed);
     PAUSE();  
 
-    test_subgraph(15, 20, 30, passed, failed);
+    test_subgraph(13, 21, 25, passed, failed);
     PAUSE();
 }
 
@@ -284,25 +285,36 @@ void test_subgraph_from_args(matrix* g1, matrix* g2, int* passed, int* failed) {
 void test_subgraph_stats(int* passed, int* failed) {
     FILE* stats_file = stats_subgraph_open_csv();
 
-    for (int n1 = 10; n1 < 40; n1 += 4) {
+    for (int n1 = 10; n1 < 51; n1 += 4) {
         int n2 = (double)n1 * 1.25;
 
-        printf("%d %d\n", n1, n2);
-        PAUSE();
-
         stats* s_avg = stats_create(0, 0);
+        stats* sample_min_val = stats_create(INT_MAX, INT_MAX);
+        stats* sample_max_val = stats_create(0, 0);
 
         for (int i = 0; i < TEST_SAMPLING; i++) {
-            //int subgraph_size = ;
+            printf("\nSample %d/%d:", i + 1, TEST_SAMPLING);
 
             stats* s = test_subgraph(10, n1, n2, passed, failed);
             s_avg->exact_time += s->exact_time;
             s_avg->approx_time += s->approx_time;
+
+            sample_min_val->exact_time = minimum(sample_min_val->exact_time, s->exact_time);
+            sample_min_val->approx_time = minimum(sample_min_val->approx_time, s->approx_time);
+            sample_max_val->exact_time = maximum(sample_max_val->exact_time, s->exact_time);
+            sample_max_val->approx_time = maximum(sample_max_val->approx_time, s->approx_time);
+
             free(s);
         }
 
-        s_avg->exact_time /= TEST_SAMPLING;
-        s_avg->approx_time /= TEST_SAMPLING;
+        s_avg->exact_time -= sample_min_val->exact_time;
+        s_avg->exact_time -= sample_max_val->exact_time;
+
+        s_avg->approx_time -= sample_min_val->approx_time;
+        s_avg->approx_time -= sample_max_val->approx_time;
+
+        s_avg->exact_time /= (TEST_SAMPLING - 2);
+        s_avg->approx_time /= (TEST_SAMPLING - 2);
 
         stats_subgraph_save_to_file(stats_file, n1, n2, s_avg);
 

@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <limits.h>
 #include "tests.h"
 #include "stats.h"
 
@@ -249,10 +250,6 @@ stats* test_clique_random(int graph_size, int* passed, int* failed) {
 
     utils_print_execution_time(time_exact, time_approx);
 
-    /*graph_save_to_file(g0, "res/TEST_EXACT_CLIQUE_3.txt");
-    graph_save_to_file(g_exact, "res/TEST_EXACT_CLIQUE_EXACT.txt");
-    graph_save_to_file(g_approx, "res/TEST_EXACT_CLIQUE_APPROX.txt");*/
-
     printf("\nExact clique size: %d\n", graph_calc_clique_size(g_exact));
     printf("Approx clique size: %d\n", graph_calc_clique_size(g_approx));
 
@@ -397,19 +394,35 @@ void test_clique_from_args(matrix* g, int* passed, int* failed) {
 void test_clique_stats(int* passed, int* failed) {
     FILE* stats_file = stats_clique_open_csv();
 
-    for (int i = 200; i <= 600; i += 50) {
+    for (int n = 200; n <= 600; n += 50) {
         stats* s_avg = stats_create(0, 0);
-        for (int j = 0; j < TEST_SAMPLING; j++) {
-            stats* s = test_clique_random(i, passed, failed);
+        stats* sample_min_val = stats_create(INT_MAX, INT_MAX);
+        stats* sample_max_val = stats_create(0, 0);
+
+        for (int i = 0; i < TEST_SAMPLING; i++) {
+            printf("\nSample %d/%d:", i + 1, TEST_SAMPLING);
+            stats* s = test_clique_random(n, passed, failed);
             s_avg->exact_time += s->exact_time;
             s_avg->approx_time += s->approx_time;
+
+            sample_min_val->exact_time = minimum(sample_min_val->exact_time, s->exact_time);
+            sample_min_val->approx_time = minimum(sample_min_val->approx_time, s->approx_time);
+            sample_max_val->exact_time = maximum(sample_max_val->exact_time, s->exact_time);
+            sample_max_val->approx_time = maximum(sample_max_val->approx_time, s->approx_time);
+
             free(s);
         }
 
-        s_avg->exact_time /= TEST_SAMPLING;
-        s_avg->approx_time /= TEST_SAMPLING;
+        s_avg->exact_time -= sample_min_val->exact_time;
+        s_avg->exact_time -= sample_max_val->exact_time;
 
-        stats_clique_save_to_file(stats_file, i, s_avg);
+        s_avg->approx_time -= sample_min_val->approx_time;
+        s_avg->approx_time -= sample_max_val->approx_time;
+
+        s_avg->exact_time /= (TEST_SAMPLING - 2);
+        s_avg->approx_time /= (TEST_SAMPLING - 2);
+
+        stats_clique_save_to_file(stats_file, n, s_avg);
 
         free(s_avg);
 

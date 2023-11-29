@@ -198,8 +198,13 @@ int main(int argc, char** argv) {
     int passed = 0, failed = 0;
 
     if (generate_stats) {
+        clock_t tests_time = clock();
+
         test_clique_stats(&passed, &failed);
         test_subgraph_stats(&passed, &failed);
+        
+        tests_time = clock() - tests_time;
+        print_tests_summary(passed, failed, tests_time);
         return 0;
     }
 

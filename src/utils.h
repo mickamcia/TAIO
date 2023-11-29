@@ -24,4 +24,7 @@ void print_tests_summary(int passed, int failed, clock_t elapsed);
 
 void read_args(int argc, char** argv, bool* run_distance, bool* run_clique, bool* run_subgraph, bool* generate_stats, matrix** g1, matrix** g2);
 
+double minimum(const double a, const double b);
+double maximum(const double a, const double b);
+
 #endif

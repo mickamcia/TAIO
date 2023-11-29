@@ -159,3 +159,11 @@ void read_args(
 	*run_clique = c;
 	*run_subgraph = s;
 }
+
+double minimum(const double a, const double b) {
+	return a > b ? b : a;
+}
+
+double maximum(const double a, const double b) {
+	return a > b ? a : b;
+}
