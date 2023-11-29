@@ -105,6 +105,7 @@ void usage(char* programName) {
 	fprintf(stderr, "\t-c\tFind maximum clique in graph from file FILE_1.\n");
 	fprintf(stderr, "\t-d\tCalculate distance between graphs from files FILE_1 and FILE_2.\n");
 	fprintf(stderr, "\t-s\tFind maximum common subgraph of graphs from files FILE_1 and FILE_2.\n");
+	fprintf(stderr, "\t-g\tGenerate stats (time comparison of exact and approx algorithm).\n");
 	fprintf(stderr, "\t-h\tDisplay help.\n\n");
 	exit(EXIT_FAILURE);
 }

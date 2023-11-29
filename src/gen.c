@@ -214,6 +214,8 @@ int main(int argc, char** argv) {
 
     if (run_clique) {
         test_clique_from_args(g1, &passed, &failed);
+        if (g2 != NULL)
+            test_clique_from_args(g2, &passed, &failed);
     }
 
     if (run_subgraph) {
