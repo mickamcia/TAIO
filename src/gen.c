@@ -128,9 +128,9 @@ void test_basic(){
     graph_print(g1, "");
     graph_print(g2, "");
     
-    /*graph_save_to_file(g0, "res/TEST_BASIC_0.txt");
+    graph_save_to_file(g0, "res/TEST_BASIC_0.txt");
     graph_save_to_file(g1, "res/TEST_BASIC_1.txt");
-    graph_save_to_file(g2, "res/TEST_BASIC_2.txt");*/
+    graph_save_to_file(g2, "res/TEST_BASIC_2.txt");
     
     matrix_destroy(g0);
     matrix_destroy(g1);
@@ -143,7 +143,7 @@ void test_subgraph_simple() {
     matrix* g0 = matrix_init(size);
     example2(g0);
 
-    matrix* g1 = matrix_init(size );
+    matrix* g1 = matrix_init(size);
     example2(g1);
 
     graph_simplify_multidigraph_to_multigraph(g1);
@@ -163,6 +163,7 @@ void test_subgraph_simple() {
     graph_print(g1, "Original b");
     graph_print(b_exact, "Exact subgraph of b");
     graph_print(b_approx, "Approx subgraph of b");
+    graph_save_to_file(b_approx, "res/SAVING.txt");
 
 
     if (graph_clique_equal(a_exact, a_approx) && graph_clique_equal(b_exact, b_approx)) {
@@ -181,7 +182,9 @@ void test_subgraph_simple() {
 #pragma endregion
 
 int main(int argc, char** argv) {
-    srand((unsigned int)time(NULL));
+    unsigned int seed = (unsigned int)time(NULL);
+    printf("SEED: %u\n", seed);
+    srand(seed);
     //srand(985); // 30 sec, 0 fails
     //srand(12724); // 630 sec, 0 fails
     //srand(54322); // 125 sec, 2 fails

@@ -22,6 +22,12 @@ void sort_each_vector_in_degreeMatrix(int* arr, int size);
 void sort_acc_vector_degreeMatrix(int* arr, int size);
 bool is_second_list_bigger(int* arr, int size, int row1, int row2);
 
+int max(int a, int b);
+
+int max(int a, int b){
+	return a > b ? a : b;
+}
+
 float distance(matrix* g1, matrix* g2) {
 	int sum_acc_value = 0;
 	int m_unique_diff_value;

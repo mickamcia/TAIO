@@ -247,9 +247,9 @@ void test_clique_random(int graph_size, int* passed, int* failed) {
 
     utils_print_execution_time(time_exact, time_approx);
 
-    /*graph_save_to_file(g0, "res/TEST_EXACT_CLIQUE_3.txt");
-    graph_save_to_file(g_exact, "res/TEST_EXACT_CLIQUE_EXACT.txt");
-    graph_save_to_file(g_approx, "res/TEST_EXACT_CLIQUE_APPROX.txt");*/
+    //graph_save_to_file(g0, "res/TEST_EXACT_CLIQUE_3.txt");
+    //graph_save_to_file(g_exact, "res/TEST_EXACT_CLIQUE_EXACT.txt");
+    //graph_save_to_file(g_approx, "res/TEST_EXACT_CLIQUE_APPROX.txt");
 
     printf("\nExact clique size: %d\n", graph_calc_clique_size(g_exact));
     printf("Approx clique size: %d\n", graph_calc_clique_size(g_approx));

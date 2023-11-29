@@ -102,10 +102,18 @@ matrix* graph_load_from_file(char *path)
 
 void graph_save_to_file(matrix *g, char *path)
 {
+    int actual_size = 0;
+    for(int i = 0 ; i < g->size; i++){
+        if(g->mat[i * g->size + i] != -1){
+            actual_size++;
+        }
+    }
     FILE *file = fopen(path, "w");
-    fprintf(file, "%d\n", g->size);
+    fprintf(file, "%d\n", actual_size);
     for(int i = 0; i < g->size; i++){
+        if(g->mat[i * g->size + i] == -1) continue;
         for(int j = 0; j < g->size; j++){
+            if(g->mat[j * g->size + j] == -1) continue;
             fprintf(file, "% 3d ", g->mat[i * g->size + j]); // prints from 0 to 99, should change to "%d" by the end
         }
         fprintf(file, "\n");
