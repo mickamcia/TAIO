@@ -152,7 +152,7 @@ float multigraph_similarity(matrix* g1, matrix* g2, int  g1_n, int g2_n){
 	array2d_print(m2_neighbour, g2_n, g2_n, "m2_neighbour sorted:");*/
 
 	err_neighbour_outgoing_edges_acc_diff = count_err_diff(m1_neighbour, m2_neighbour, g1_n);
-	//printf("Condition4 error: %f\n", err_neighbour_outgoing_edges_acc_diff);
+	printf("Condition4 error: %f\n", err_neighbour_outgoing_edges_acc_diff);
 
 	free(m1_neighbour);
 	free(m2_neighbour);
@@ -228,6 +228,7 @@ float count_err_acc_diff(int* m1, int* m2, int size) {
 		max_sum += maximum(m1[(size - 1) + i * size], m2[(size - 1) + i * size]);
 	}
 	//printf("count_err_acc_diff:\n difference: %f, max_sum: %f\n", diff, max_sum);
+	if (diff == 0) return 0;
 	return diff / max_sum;
 }
 
@@ -241,6 +242,7 @@ float count_err_diff(int* m1, int* m2, int size) {
 		}
 	}
 	//printf("count_err_diff:\n difference: %f, max_sum: %f\n", diff, max_sum);
+	if (diff == 0) return 0;
 	return diff / max_sum;
 }
 
@@ -257,7 +259,6 @@ void sort_each_vector_in_degreeMatrix(int* arr, int size) {
 		for (i = 0; i < size - 2; i++) {
 			swapped = 0;
 			for (j = 0; j < size - i - 2; j++) {
-				if (arr[k * size + j] == 0) continue;
 				if (arr[k * size + j] < arr[k * size + j + 1]) {
 					int tmp = arr[k * size + j];
 					arr[k * size + j] = arr[k * size + j + 1];
