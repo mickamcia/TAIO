@@ -1,8 +1,6 @@
 #include "tests.h"
 
 void test_metric_equal_graphs(int* passed, int* failed) {
-
-    
     int size = 15;
     printf("\nTEST: %s - n=%d\n", __func__, size);
 
@@ -25,13 +23,16 @@ void test_metric_equal_graphs(int* passed, int* failed) {
         (*failed)++;
     }
 
+    if (GENERATE_EXAMPLES) {
+        graph_save_to_file(g1, "examples/example_metric_1_g1.txt");
+        graph_save_to_file(g2, "examples/example_metric_1_g2.txt");
+    }
+
     matrix_destroy(g1);
     matrix_destroy(g2);
 }
 
 void test_metric_permuted_equal_graphs(int* passed, int* failed) {
-
-
     int size = 20;
     printf("\nTEST: %s - n=%d\n", __func__, size);
     matrix* g1 = matrix_init(size);
@@ -53,6 +54,11 @@ void test_metric_permuted_equal_graphs(int* passed, int* failed) {
     else {
         print_test_fail(__func__);
         (*failed)++;
+    }
+
+    if (GENERATE_EXAMPLES) {
+        graph_save_to_file(g1, "examples/example_metric_2_g1.txt");
+        graph_save_to_file(g2, "examples/example_metric_2_g2.txt");
     }
 
     matrix_destroy(g1);
@@ -81,6 +87,11 @@ void test_metric_noised_graphs(int* passed, int* failed) {
     else {
         print_test_fail(__func__);
         (*failed)++;
+    }
+
+    if (GENERATE_EXAMPLES) {
+        graph_save_to_file(g1, "examples/example_metric_3_g1.txt");
+        graph_save_to_file(g2, "examples/example_metric_3_g2.txt");
     }
 
     matrix_destroy(g1);
@@ -113,6 +124,11 @@ void test_metric_different_graphs_not_pass_condition1(int* passed, int* failed) 
         (*failed)++;
     }
 
+    if (GENERATE_EXAMPLES) {
+        graph_save_to_file(g1, "examples/example_metric_4_g1.txt");
+        graph_save_to_file(g2, "examples/example_metric_4_g2.txt");
+    }
+
     matrix_destroy(g1);
     matrix_destroy(g2);
 }
@@ -141,6 +157,11 @@ void test_metric_different_graphs_not_pass_condition2(int* passed, int* failed) 
     else {
         print_test_fail(__func__);
         (*failed)++;
+    }
+
+    if (GENERATE_EXAMPLES) {
+        graph_save_to_file(g1, "examples/example_metric_5_g1.txt");
+        graph_save_to_file(g2, "examples/example_metric_5_g2.txt");
     }
 
     matrix_destroy(g1);
@@ -180,6 +201,11 @@ void test_metric_different_graphs_not_pass_condition3(int* passed, int* failed) 
     else {
         print_test_fail(__func__);
         (*failed)++;
+    }
+
+    if (GENERATE_EXAMPLES) {
+        graph_save_to_file(g1, "examples/example_metric_6_g1.txt");
+        graph_save_to_file(g2, "examples/example_metric_6_g2.txt");
     }
 
     matrix_destroy(g1);
@@ -227,6 +253,11 @@ void test_metric_different_graphs_not_pass_condition4(int* passed, int* failed) 
     else {
         print_test_fail(__func__);
         (*failed)++;
+    }
+
+    if (GENERATE_EXAMPLES) {
+        graph_save_to_file(g1, "examples/example_metric_7_g1.txt");
+        graph_save_to_file(g2, "examples/example_metric_7_g2.txt");
     }
 
     matrix_destroy(g1);
@@ -294,6 +325,11 @@ void test_metric_different_graphs_pass_condition4(int* passed, int* failed) {
     else {
         print_test_fail(__func__);
         (*failed)++;
+    }
+
+    if (GENERATE_EXAMPLES) {
+        graph_save_to_file(g1, "examples/example_metric_8_g1.txt");
+        graph_save_to_file(g2, "examples/example_metric_8_g2.txt");
     }
 
     matrix_destroy(g1);

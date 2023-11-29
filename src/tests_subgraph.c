@@ -200,13 +200,14 @@ stats* test_subgraph(int subgraph_size, int graph_a_size, int graph_b_size, int*
         (*failed)++;
     }
 
-    //graph_save_to_file(g0, "res/TEST_EXACT_SUBGRAPH_5.txt");
-    //graph_save_to_file(g5, "res/TEST_EXACT_SUBGRAPH_5.txt");
-    //graph_save_to_file(g6, "res/TEST_EXACT_SUBGRAPH_6.txt");
-    //graph_save_to_file(a_exact, "res/TEST_EXACT_SUBGRAPH_7.txt");
-    //graph_save_to_file(a_approx, "res/TEST_EXACT_SUBGRAPH_7.txt");
-    //graph_save_to_file(b_exact, "res/TEST_EXACT_SUBGRAPH_8.txt");
-    //graph_save_to_file(b_approx, "res/TEST_EXACT_SUBGRAPH_8.txt");
+    if (GENERATE_EXAMPLES) {
+        char f1[50];
+        char f2[50];
+        sprintf(f1, "examples/example_subgraph_%d_g1.txt", *passed + *failed + *approx_failed);
+        sprintf(f2, "examples/example_subgraph_%d_g2.txt", *passed + *failed + *approx_failed);
+        graph_save_to_file(g5, f1);
+        graph_save_to_file(g6, f2);
+    }
 
     matrix_destroy(g0);
     matrix_destroy(g3);
@@ -225,6 +226,10 @@ void tests_subgraph(int* passed, int* failed, int* approx_failed) {
     stats* s;
     printf("\n\nRunning subgraphs tests...\n");
     
+    s = test_subgraph(3, 4, 5, passed, failed, approx_failed);
+    PAUSE();
+    free(s);
+
     s = test_subgraph(5, 5, 5, passed, failed, approx_failed);
     PAUSE();
     free(s);

@@ -15,6 +15,7 @@
 
 #define PAUSE_AFTER_TEST 0
 #define TEST_SAMPLING 10
+#define GENERATE_EXAMPLES 0
 
 #define PAUSE() (PAUSE_AFTER_TEST == 1 && fprintf(stdout, "Press any key to continue...\n") && getchar() )
 

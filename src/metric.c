@@ -152,7 +152,7 @@ float multigraph_similarity(matrix* g1, matrix* g2, int  g1_n, int g2_n){
 	array2d_print(m2_neighbour, g2_n, g2_n, "m2_neighbour sorted:");*/
 
 	err_neighbour_outgoing_edges_acc_diff = count_err_diff(m1_neighbour, m2_neighbour, g1_n);
-	printf("Condition4 error: %f\n", err_neighbour_outgoing_edges_acc_diff);
+	//printf("Condition4 error: %f\n", err_neighbour_outgoing_edges_acc_diff);
 
 	free(m1_neighbour);
 	free(m2_neighbour);
