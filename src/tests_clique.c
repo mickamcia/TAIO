@@ -115,7 +115,7 @@ void test_exact_clique_bb_random(int* passed, int* failed) {
     matrix_destroy(g1);
 }
 
-void test_clique_full_graph(int* passed, int* failed) {
+void test_clique_full_graph(int* passed, int* failed, int* approx_failed) {
     const int clique_size = 50;
     const int graph_size = 50;
 
@@ -159,8 +159,8 @@ void test_clique_full_graph(int* passed, int* failed) {
         (*passed)++;
     }
     else {
-        print_test_fail_msg(__func__, "approx");
-        (*failed)++;
+        print_test_approx_fail(__func__);
+        (*approx_failed)++;
     }
 
     matrix_destroy(g0);
@@ -170,7 +170,7 @@ void test_clique_full_graph(int* passed, int* failed) {
     matrix_destroy(g_approx);
 }
 
-void test_clique_no_edges(int* passed, int* failed) {
+void test_clique_no_edges(int* passed, int* failed, int * approx_failed) {
     const int clique_size = 25;
     const int graph_size = 25;
 
@@ -214,8 +214,8 @@ void test_clique_no_edges(int* passed, int* failed) {
         (*passed)++;
     }
     else {
-        print_test_fail_msg(__func__, "approx");
-        (*failed)++;
+        print_test_approx_fail(__func__);
+        (*approx_failed)++;
     }
 
     matrix_destroy(g0);
@@ -225,7 +225,7 @@ void test_clique_no_edges(int* passed, int* failed) {
     matrix_destroy(g_approx);
 }
 
-stats* test_clique_random(int graph_size, int* passed, int* failed) {
+stats* test_clique_random(int graph_size, int* passed, int* failed, int* approx_failed) {
     const int directed = 1;
     //const int graph_size = 200;
     
@@ -258,8 +258,8 @@ stats* test_clique_random(int graph_size, int* passed, int* failed) {
         (*passed)++;
     }
     else {
-        print_test_fail_msg(__func__, "approx");
-        (*failed)++;
+        print_test_approx_fail(__func__);
+        (*approx_failed)++;
     }
 
     matrix_destroy(g0);
@@ -269,7 +269,7 @@ stats* test_clique_random(int graph_size, int* passed, int* failed) {
     return stats_create(time_exact, time_approx);
 }
 
-void test_clique_simple(int clique_size, int graph_size, int* passed, int* failed) {
+void test_clique_simple(int clique_size, int graph_size, int* passed, int* failed, int* approx_failed) {
 
     printf("\nTEST: %s - n: %d, clique size: %d\n", __func__, graph_size, clique_size);
 
@@ -311,8 +311,8 @@ void test_clique_simple(int clique_size, int graph_size, int* passed, int* faile
         (*passed)++;
     }
     else {
-        print_test_fail_msg(__func__, "approx");
-        (*failed)++;
+        print_test_approx_fail(__func__);
+        (*approx_failed)++;
     }
 
     matrix_destroy(g0);
@@ -322,42 +322,42 @@ void test_clique_simple(int clique_size, int graph_size, int* passed, int* faile
     matrix_destroy(g_approx);
 }
 
-void tests_clique(int* passed, int* failed) {
+void tests_clique(int* passed, int* failed, int* approx_failed) {
 
     printf("\n\nRunning clique tests...\n");
 
-    test_clique_full_graph(passed, failed);
+    test_clique_full_graph(passed, failed, approx_failed);
     PAUSE();
 
-    test_clique_no_edges(passed, failed);
+    test_clique_no_edges(passed, failed, approx_failed);
     PAUSE();
 
     // small graphs
     for (int i = 2; i <= 10; i += 2) {
-        stats* s = test_clique_random(i, passed, failed);
+        stats* s = test_clique_random(i, passed, failed, approx_failed);
         free(s);
         PAUSE();
     }
 
     // medium graphs
     for (int i = 30; i <= 100; i += 10) {
-        stats* s = test_clique_random(i, passed, failed);
+        stats* s = test_clique_random(i, passed, failed, approx_failed);
         free(s);
         PAUSE();
     }
 
     // large graphs - exact ~10s
     for (int i = 0; i < 1; i++) {
-        stats* s = test_clique_random(200, passed, failed);
+        stats* s = test_clique_random(200, passed, failed, approx_failed);
         free(s);
         PAUSE();
     }
 
     // specified clique size
-    test_clique_simple(50, 500, passed, failed);
+    test_clique_simple(50, 500, passed, failed, approx_failed);
 }
 
-void test_clique_from_args(matrix* g, int* passed, int* failed) {
+void test_clique_from_args(matrix* g, int* passed, int* failed, int* approx_failed) {
     printf("\n\nRunning clique test...\n");
 
     matrix* g_exact = matrix_clone(g);
@@ -385,8 +385,8 @@ void test_clique_from_args(matrix* g, int* passed, int* failed) {
         (*passed)++;
     }
     else {
-        print_test_fail_msg(__func__, "approx");
-        (*failed)++;
+        print_test_approx_fail(__func__);
+        (*approx_failed)++;
     }
 
     printf("\nExact clique size: %d\n", graph_calc_clique_size(g_exact));
@@ -394,7 +394,7 @@ void test_clique_from_args(matrix* g, int* passed, int* failed) {
 }
 
 
-void test_clique_stats(int* passed, int* failed) {
+void test_clique_stats(int* passed, int* failed, int* approx_failed) {
     FILE* stats_file = stats_clique_open_csv();
 
     for (int n = 200; n <= 600; n += 50) {
@@ -404,7 +404,7 @@ void test_clique_stats(int* passed, int* failed) {
 
         for (int i = 0; i < TEST_SAMPLING; i++) {
             printf("\nSample %d/%d:", i + 1, TEST_SAMPLING);
-            stats* s = test_clique_random(n, passed, failed);
+            stats* s = test_clique_random(n, passed, failed, approx_failed);
             s_avg->exact_time += s->exact_time;
             s_avg->approx_time += s->approx_time;
 

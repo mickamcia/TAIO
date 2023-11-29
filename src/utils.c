@@ -51,6 +51,10 @@ void set_green_output_color(){
 	printf("\033[0;32m");
 }
 
+void set_yellow_output_color() {
+	printf("\033[0;33m");
+}
+
 void set_red_output_color(){
 	printf("\033[0;31m");
 }
@@ -65,9 +69,9 @@ void print_test_pass(const char* test_name){
 	reset_output_color();
 }
 
-void print_test_pass_msg(const char* test_name, const char* msg){
-	set_green_output_color();
-	printf("\n%s PASSED (%s)\n", test_name, msg);
+void print_test_approx_fail(const char* test_name) {
+	set_yellow_output_color();
+	printf("\n%s APPROX FAILED\n", test_name);
 	reset_output_color();
 }
 
@@ -77,19 +81,14 @@ void print_test_fail(const char* test_name){
 	reset_output_color();
 }
 
-void print_test_fail_msg(const char* test_name, const char* msg){
-	set_red_output_color();
-	printf("\n%s FAILED (%s)\n", test_name, msg);
-	reset_output_color();
-}
-
-void print_tests_summary(int passed, int failed, clock_t elapsed) {
+void print_tests_summary(int passed, int failed, int approx_failed, clock_t elapsed) {
 	printf("\n-------------\n");
 	printf("TESTS SUMMARY\n");
 	printf("-------------\n");
 	printf("Total execution time: %f seconds\n", ((double)elapsed) / CLOCKS_PER_SEC);
 	printf("-------------\n");
 	printf("\033[0;32m%s: %d\n", "PASSED", passed);
+	printf("\033[0;33m%s: %d\n", "APPROX FAILED", approx_failed);
 	printf("\033[0;31m%s: %d\n", "FAILED", failed);
 	printf("\033[0m");
 	printf("-------------\n");

@@ -130,7 +130,7 @@ void test_approx_subgraph(int* passed, int* failed) {
 
 }
 
-stats* test_subgraph(int subgraph_size, int graph_a_size, int graph_b_size, int* passed, int* failed) {
+stats* test_subgraph(int subgraph_size, int graph_a_size, int graph_b_size, int* passed, int* failed, int* approx_failed) {
     printf("\nTEST: %s - subgraph size: %d, A size: %d, B size: %d\n", __func__, subgraph_size, graph_a_size, graph_b_size);
 
     //const int subgraph_size = 5;
@@ -180,7 +180,6 @@ stats* test_subgraph(int subgraph_size, int graph_a_size, int graph_b_size, int*
     if (distance(g0, a_exact) == 0 &&
         distance(g0, b_exact) == 0)
     {
-        print_test_pass(__func__);
 
         if (
             distance(a_exact, a_approx) == 0 &&
@@ -188,9 +187,11 @@ stats* test_subgraph(int subgraph_size, int graph_a_size, int graph_b_size, int*
             )
         {
             (*passed)++;
+            print_test_pass(__func__);
         }
         else {
-            print_test_fail_msg(__func__, "approx");
+            (*approx_failed)++;
+            print_test_approx_fail(__func__);
         }
     }
     else
@@ -220,28 +221,28 @@ stats* test_subgraph(int subgraph_size, int graph_a_size, int graph_b_size, int*
     return stats_create(time_exact, time_approx);
 }
 
-void tests_subgraph(int* passed, int* failed) {
+void tests_subgraph(int* passed, int* failed, int* approx_failed) {
     stats* s;
     printf("\n\nRunning subgraphs tests...\n");
     
-    s = test_subgraph(5, 5, 5, passed, failed);
+    s = test_subgraph(5, 5, 5, passed, failed, approx_failed);
     PAUSE();
     free(s);
 
-    s = test_subgraph(10, 10, 15, passed, failed);
+    s = test_subgraph(10, 10, 15, passed, failed, approx_failed);
     PAUSE();
     free(s);
 
-    s = test_subgraph(10, 18, 20, passed, failed);
+    s = test_subgraph(10, 18, 20, passed, failed, approx_failed);
     PAUSE();  
     free(s);
 
-    s = test_subgraph(13, 21, 25, passed, failed);
+    s = test_subgraph(13, 21, 25, passed, failed, approx_failed);
     PAUSE();
     free(s);
 }
 
-void test_subgraph_from_args(matrix* g1, matrix* g2, int* passed, int* failed) {
+void test_subgraph_from_args(matrix* g1, matrix* g2, int* passed, int* failed, int* approx_failed) {
     printf("\n\nRunning subgraphs test...\n");
     matrix* a_exact = matrix_clone(g1);
     matrix* b_exact = matrix_clone(g2);
@@ -275,8 +276,8 @@ void test_subgraph_from_args(matrix* g1, matrix* g2, int* passed, int* failed) {
         (*passed)++;
     }
     else {
-        print_test_fail(__func__);
-        (*failed)++;
+        print_test_approx_fail(__func__);
+        (*approx_failed)++;
     }
 
     //graph_save_to_file(g1, "test_subgraph_a.txt");
@@ -287,7 +288,7 @@ void test_subgraph_from_args(matrix* g1, matrix* g2, int* passed, int* failed) {
     graph_save_to_file(b_approx, "test_subgraph_b_approx.txt");
 }
 
-void test_subgraph_stats(int* passed, int* failed) {
+void test_subgraph_stats(int* passed, int* failed, int* approx_failed) {
     FILE* stats_file = stats_subgraph_open_csv();
 
     for (int n1 = 10; n1 < 51; n1 += 4) {
@@ -300,7 +301,7 @@ void test_subgraph_stats(int* passed, int* failed) {
         for (int i = 0; i < TEST_SAMPLING; i++) {
             printf("\nSample %d/%d:", i + 1, TEST_SAMPLING);
 
-            stats* s = test_subgraph(10, n1, n2, passed, failed);
+            stats* s = test_subgraph(10, n1, n2, passed, failed, approx_failed);
             s_avg->exact_time += s->exact_time;
             s_avg->approx_time += s->approx_time;
 
