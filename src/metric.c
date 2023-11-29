@@ -124,6 +124,8 @@ float multigraph_similarity(matrix* g1, matrix* g2, int  g1_n, int g2_n){
 	{
 		free(m1_self);
 		free(m2_self);
+		free(m1_neighbour);
+		free(m2_neighbour);
 		return scale(bounds[2], bounds[3], err_outgoing_edges_acc_diff);
 	}
 
@@ -135,6 +137,8 @@ float multigraph_similarity(matrix* g1, matrix* g2, int  g1_n, int g2_n){
 
 	if (err_outgoing_edges_diff != 0)
 	{
+		free(m1_neighbour);
+		free(m2_neighbour);
 		return scale(bounds[1], bounds[2], err_outgoing_edges_diff);
 	}
 
@@ -221,7 +225,7 @@ float count_err_acc_diff(int* m1, int* m2, int size) {
 	float max_sum = 0;
 	for (int i = 0; i < size; i++) {
 		diff += abs(m1[(size-1) + i*size] - m2[(size - 1) + i * size]);
-		max_sum += max(m1[(size - 1) + i * size], m2[(size - 1) + i * size]);
+		max_sum += maximum(m1[(size - 1) + i * size], m2[(size - 1) + i * size]);
 	}
 	//printf("count_err_acc_diff:\n difference: %f, max_sum: %f\n", diff, max_sum);
 	return diff / max_sum;
@@ -233,7 +237,7 @@ float count_err_diff(int* m1, int* m2, int size) {
 	for (int i = 0; i < size; i++) {
 		for (int j = 0; j < size-1; j++) {
 		diff += abs(m1[j + i * size] - m2[j + i * size]);
-		max_sum += max(m1[j + i * size],m2[j + i * size]);
+		max_sum += maximum(m1[j + i * size],m2[j + i * size]);
 		}
 	}
 	//printf("count_err_diff:\n difference: %f, max_sum: %f\n", diff, max_sum);

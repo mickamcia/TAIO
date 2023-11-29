@@ -334,19 +334,22 @@ void tests_clique(int* passed, int* failed) {
 
     // small graphs
     for (int i = 2; i <= 10; i += 2) {
-            test_clique_random(i, passed, failed);
+        stats* s = test_clique_random(i, passed, failed);
+        free(s);
         PAUSE();
     }
 
     // medium graphs
     for (int i = 30; i <= 100; i += 10) {
-        test_clique_random(i, passed, failed);
+        stats* s = test_clique_random(i, passed, failed);
+        free(s);
         PAUSE();
     }
 
     // large graphs - exact ~10s
     for (int i = 0; i < 1; i++) {
-        test_clique_random(200, passed, failed);
+        stats* s = test_clique_random(200, passed, failed);
+        free(s);
         PAUSE();
     }
 

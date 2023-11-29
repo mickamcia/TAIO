@@ -221,19 +221,24 @@ stats* test_subgraph(int subgraph_size, int graph_a_size, int graph_b_size, int*
 }
 
 void tests_subgraph(int* passed, int* failed) {
+    stats* s;
     printf("\n\nRunning subgraphs tests...\n");
-
-    test_subgraph(5, 5, 5, passed, failed);
+    
+    s = test_subgraph(5, 5, 5, passed, failed);
     PAUSE();
+    free(s);
 
-    test_subgraph(10, 10, 15, passed, failed);
+    s = test_subgraph(10, 10, 15, passed, failed);
     PAUSE();
+    free(s);
 
-    test_subgraph(10, 18, 20, passed, failed);
+    s = test_subgraph(10, 18, 20, passed, failed);
     PAUSE();  
+    free(s);
 
-    test_subgraph(13, 21, 25, passed, failed);
+    s = test_subgraph(13, 21, 25, passed, failed);
     PAUSE();
+    free(s);
 }
 
 void test_subgraph_from_args(matrix* g1, matrix* g2, int* passed, int* failed) {
