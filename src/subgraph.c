@@ -48,7 +48,7 @@ matrix* modular_product(matrix* a, matrix* b)
                     const int a_edge = a->mat[a_i * a->size + a_j];
                     const int b_edge = b->mat[b_i * b->size + b_j];
                     if (a_edge != 0 && b_edge != 0) {
-                        c->mat[(a_i * b->size + b_i) * c->size + (a_j * b->size + b_j)] = minimum(a_edge, b_edge);
+                        c->mat[(a_i * b->size + b_i) * c->size + (a_j * b->size + b_j)] = minimum(a_edge, b_edge) * c->size * c->size;
                     }
                     else if (a_edge == 0 && b_edge == 0) {
                         c->mat[(a_i * b->size + b_i) * c->size + (a_j * b->size + b_j)] = 1;
@@ -94,7 +94,7 @@ void extract_solution(matrix* mod_prod, matrix* clique, matrix* a, matrix* b)
                         a->mat[a_i * a->size + a_j] = -1;
                     }
                     else if (a_i != a_j && clique_val > 0 && a_edge != 0 && b_edge != 0) {
-                        a->mat[a_i * a->size + a_j] = edge_val;
+                        a->mat[a_i * a->size + a_j] = edge_val / (mod_prod->size * mod_prod->size);
                     }
 
 
@@ -102,7 +102,7 @@ void extract_solution(matrix* mod_prod, matrix* clique, matrix* a, matrix* b)
                         b->mat[b_i * b->size + b_j] = -1;
                     }
                     else if (b_i != b_j && clique_val > 0 && a_edge != 0 && b_edge != 0) {
-                        b->mat[b_i * b->size + b_j] = edge_val;
+                        b->mat[b_i * b->size + b_j] = edge_val / (mod_prod->size * mod_prod->size);
                     }
                 }
             }
