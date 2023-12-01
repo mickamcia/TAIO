@@ -234,15 +234,15 @@ void tests_subgraph(int* passed, int* failed, int* approx_failed) {
     PAUSE();
     free(s);
 
-    s = test_subgraph(10, 10, 15, passed, failed, approx_failed);
+    s = test_subgraph(8, 15, 18, passed, failed, approx_failed);
+    PAUSE();
+    free(s);
+
+    s = test_subgraph(10, 16, 17, passed, failed, approx_failed);
     PAUSE();
     free(s);
 
     s = test_subgraph(10, 18, 20, passed, failed, approx_failed);
-    PAUSE();  
-    free(s);
-
-    s = test_subgraph(13, 21, 25, passed, failed, approx_failed);
     PAUSE();
     free(s);
 }
