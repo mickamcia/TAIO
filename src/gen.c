@@ -179,12 +179,57 @@ void test_subgraph_simple() {
 }
 
 #pragma endregion
+int graph_size(matrix* g){
+    int size = 0;
+    for(int i = 0; i < g->size; i++){
+        for(int j = 0; j < g->size; j++){
+            if(g->mat[i * g->size + j] > 0){
+                size += g->mat[i * g->size + j];
+            }
+        }
+    }
+    return size;
+}
+void quick_test(){
+    while(1){
+        matrix* g1_original = matrix_init(2);
+        matrix* g2_original = matrix_init(3);
+        graph_generate(g1_original, 10, 0, 0.5, 1);
+        graph_generate(g2_original, 10, 0, 0.5, 1);
+        matrix* g1_first = matrix_clone(g1_original);
+        matrix* g2_first = matrix_clone(g2_original);
+        matrix* g1_second = matrix_clone(g1_original);
+        matrix* g2_second = matrix_clone(g2_original);
+        exact_subgraph_run(g1_first, g2_first);
+        approx_subgraph_run(g1_second, g2_second);
+        if(graph_size(g1_first) != graph_size(g2_first)
+        || graph_size(g1_first) != graph_size(g1_second) //check equality between approx and exact
+        || graph_size(g1_second) != graph_size(g2_second)
+        )
+        {
+            printf("AAAAAAAAAAAAAAAAAAAAA\n");
+            graph_print(g1_original, "g1_original");
+            graph_print(g2_original, "g2_original");
+            graph_print(g1_first, "g1_first_exact");
+            graph_print(g1_second, "g1_second_approx");
+            graph_print(g2_first, "g2_first_exact");
+            graph_print(g2_second, "g2_second_approx");
+        }
+        matrix_destroy(g1_first);
+        matrix_destroy(g1_second);
+        matrix_destroy(g2_first);
+        matrix_destroy(g2_second);
+        matrix_destroy(g1_original);
+        matrix_destroy(g2_original);
 
+    }
+}
 int main(int argc, char** argv) {
     //srand((unsigned int)time(NULL));
     srand(985); // 30 sec, 0 fails
     //srand(12724); // 630 sec, 0 fails
     //srand(54322); // 125 sec, 2 fails
+    quick_test();
 
     bool run_distance;
     bool run_clique;
