@@ -8,7 +8,7 @@ void symmetrize_max(matrix* m){
         for (int j = i + 1; j < m->size; j++) {
             const int u_v = m->mat[i * m->size + j];
             const int v_u = m->mat[i + m->size * j];
-            const int max_edge = u_v > v_u ? u_v : v_u;
+            const int max_edge = u_v + v_u;
             m->mat[i * m->size + j] = max_edge;
             m->mat[i + m->size * j] = max_edge;
         }
