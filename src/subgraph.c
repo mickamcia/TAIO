@@ -59,7 +59,23 @@ matrix* modular_product(matrix* a, matrix* b)
     }
     return c;
 }
-
+void remove_isolated_vertices(matrix* g){
+    for(int i = 0; i < g->size; i++){
+        int does_have_an_edge = false;
+        for(int j = 0; j < g->size; j++){
+            if(g->mat[i * g->size + j] > 0 || g->mat[i + g->size * j] > 0){
+                does_have_an_edge = true;
+                break;
+            }
+        }
+        if(false == does_have_an_edge){
+            for(int j = 0; j < g->size; j++){
+                g->mat[i * g->size + j] = -1;
+                g->mat[i + g->size * j] = -1;
+            }
+        }
+    }
+}
 void extract_solution(matrix* mod_prod, matrix* clique, matrix* a, matrix* b)
 {
     int* a_clique_indices = (int*)malloc(sizeof(int) * a->size);
@@ -108,7 +124,8 @@ void extract_solution(matrix* mod_prod, matrix* clique, matrix* a, matrix* b)
             }
         }
     }
-    
+    remove_isolated_vertices(a);
+    remove_isolated_vertices(b);
     matrix_destroy(a_original);
     matrix_destroy(b_original);
     free(a_clique_indices);
