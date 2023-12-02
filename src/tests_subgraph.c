@@ -296,17 +296,18 @@ void test_subgraph_from_args(matrix* g1, matrix* g2, int* passed, int* failed, i
 void test_subgraph_stats(int* passed, int* failed, int* approx_failed) {
     FILE* stats_file = stats_subgraph_open_csv();
 
-    for (int n1 = 10; n1 < 51; n1 += 4) {
+    for (int n1 = 5; n1 < 22; n1 += 3) {
         int n2 = (double)n1 * 1.25;
 
         stats* s_avg = stats_create(0, 0);
         stats* sample_min_val = stats_create(INT_MAX, INT_MAX);
         stats* sample_max_val = stats_create(0, 0);
 
+        int subgraph_size = minimum(10, n1 - 1);
+
         for (int i = 0; i < TEST_SAMPLING; i++) {
             printf("\nSample %d/%d:", i + 1, TEST_SAMPLING);
-
-            stats* s = test_subgraph(10, n1, n2, passed, failed, approx_failed);
+            stats* s = test_subgraph(subgraph_size, n1, n2, passed, failed, approx_failed);
             s_avg->exact_time += s->exact_time;
             s_avg->approx_time += s->approx_time;
 
