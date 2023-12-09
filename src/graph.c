@@ -106,7 +106,8 @@ void graph_save_to_file(matrix *g, char *path)
     fprintf(file, "%d\n", g->size);
     for(int i = 0; i < g->size; i++){
         for(int j = 0; j < g->size; j++){
-            fprintf(file, "% 3d ", g->mat[i * g->size + j]); // prints from 0 to 99, should change to "%d" by the end
+            const int val = g->mat[i * g->size + j] > 0 ? g->mat[i * g->size + j] : 0;
+            fprintf(file, "%d ", val); // prints from 0 to 99, should change to "%d" by the end
         }
         fprintf(file, "\n");
     }
