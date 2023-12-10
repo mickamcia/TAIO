@@ -83,6 +83,7 @@ matrix* graph_load_from_file(char *path)
 
     int size;
 
+    fscanf(file, "%d", &size); // scan first "1\n"
     fscanf(file, "%d", &size);
     matrix* g = matrix_init(size);
     
@@ -103,6 +104,7 @@ matrix* graph_load_from_file(char *path)
 void graph_save_to_file(matrix *g, char *path)
 {
     FILE *file = fopen(path, "w");
+    fprintf(file, "1\n"); // save first "1\n"
     fprintf(file, "%d\n", g->size);
     for(int i = 0; i < g->size; i++){
         for(int j = 0; j < g->size; j++){
