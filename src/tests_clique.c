@@ -363,40 +363,57 @@ void tests_clique(int* passed, int* failed, int* approx_failed) {
     test_clique_simple(50, 500, passed, failed, approx_failed);
 }
 
-void test_clique_from_args(matrix* g, int* passed, int* failed, int* approx_failed) {
+void test_clique_from_args(matrix* g, bool run_exact, bool run_approx, int* passed, int* failed, int* approx_failed) {
     printf("\n\nRunning clique test...\n");
 
     matrix* g_exact = matrix_clone(g);
 
-    clock_t time_exact = clock();
-    exact_clique_bb_run(g_exact);
-    time_exact = clock() - time_exact;
+    clock_t time_exact;
+    if (run_exact) {
+        time_exact = clock();
+        exact_clique_bb_run(g_exact);
+        time_exact = clock() - time_exact;
+    }
 
-    clock_t time_approx = clock();
-    matrix* g_approx = approx_clique_run(g);
-    time_approx = clock() - time_approx;
+    clock_t time_approx;
+    matrix* g_approx = NULL;
+    if (run_approx) {
+        time_approx = clock();
+        g_approx = approx_clique_run(g);
+        time_approx = clock() - time_approx;
+    }
 
     graph_print(g, "Original graph");
-    graph_print(g_exact, "Exact clique");
-    graph_print(g_approx, "Approximated clique");
 
-    utils_print_execution_time(time_exact, time_approx);
+    if (run_exact)
+        graph_print(g_exact, "Exact clique");
+
+    if (run_approx)
+        graph_print(g_approx, "Approximated clique");
+
 
     //graph_save_to_file(g, "test_clique_graph.txt");
-    graph_save_to_file(g_exact, "test_clique_exact.txt");
-    graph_save_to_file(g_approx, "test_clique_approx.txt");
+    if (run_exact)
+        graph_save_to_file(g_exact, "test_clique_exact.txt");
+    if (run_approx)
+        graph_save_to_file(g_approx, "test_clique_approx.txt");
 
-    if (graph_clique_equal(g_exact, g_approx)) {
-        print_test_pass(__func__);
-        (*passed)++;
-    }
-    else {
-        print_test_approx_fail(__func__);
-        (*approx_failed)++;
+    if (run_exact && run_approx) {
+        utils_print_execution_time(time_exact, time_approx);
+        if (graph_clique_equal(g_exact, g_approx)) {
+            print_test_pass(__func__);
+            (*passed)++;
+        }
+        else {
+            print_test_approx_fail(__func__);
+            (*approx_failed)++;
+        }
     }
 
-    printf("\nExact clique size: %d\n", graph_calc_clique_size(g_exact));
-    printf("Approx clique size: %d\n", graph_calc_clique_size(g_approx));
+    if (run_exact)
+        printf("\nExact clique size: %d\n", graph_calc_clique_size(g_exact));
+    if (run_approx)
+        printf("Approx clique size: %d\n", graph_calc_clique_size(g_approx));
 }
 
 

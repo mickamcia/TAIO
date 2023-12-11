@@ -104,6 +104,8 @@ void usage(char* programName) {
 	fprintf(stderr, "\t-c\tFind maximum clique in graph from file FILE_1.\n");
 	fprintf(stderr, "\t-d\tCalculate distance between graphs from files FILE_1 and FILE_2.\n");
 	fprintf(stderr, "\t-s\tFind maximum common subgraph of graphs from files FILE_1 and FILE_2.\n");
+	fprintf(stderr, "\t-e\tRuns only exact algorithms.\n");
+	fprintf(stderr, "\t-a\tRuns only approximation algorithms.\n");
 	fprintf(stderr, "\t-g\tGenerate stats (time comparison of exact and approx algorithm).\n");
 	fprintf(stderr, "\t-h\tDisplay help.\n\n");
 	exit(EXIT_FAILURE);
@@ -114,7 +116,9 @@ void read_args(
 	char** argv, 
 	bool* run_distance, 
 	bool* run_clique, 
-	bool* run_subgraph, 
+	bool* run_subgraph,
+	bool* run_exact,
+	bool* run_approx,
 	bool* generate_stats,
 	matrix** g1, 
 	matrix** g2) 
@@ -123,6 +127,8 @@ void read_args(
 	bool c = false;
 	bool s = false;
 	bool g = false;
+	bool e = false;
+	bool a = false;
 	*g1 = NULL;
 	*g2 = NULL;
 
@@ -132,6 +138,8 @@ void read_args(
 		case 'd': d = true; break;
 		case 'c': c = true; break;
 		case 's': s = true; break;
+		case 'e': e = true; break;
+		case 'a': a = true; break;
 		case 'g': *generate_stats = true; return;
 		case 'h': usage(argv[0]);
 		default: usage(argv[0]);
@@ -158,6 +166,15 @@ void read_args(
 	*run_distance = d;
 	*run_clique = c;
 	*run_subgraph = s;
+
+	if (!e && !a) {
+		*run_exact = true;
+		*run_approx = true;
+	}
+	else {
+		*run_exact = e;
+		*run_approx = a;
+	}
 }
 
 double minimum(const double a, const double b) {

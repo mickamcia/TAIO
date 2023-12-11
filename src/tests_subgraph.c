@@ -247,50 +247,68 @@ void tests_subgraph(int* passed, int* failed, int* approx_failed) {
     free(s);
 }
 
-void test_subgraph_from_args(matrix* g1, matrix* g2, int* passed, int* failed, int* approx_failed) {
+void test_subgraph_from_args(matrix* g1, matrix* g2, bool run_exact, bool run_approx, int* passed, int* failed, int* approx_failed) {
     printf("\n\nRunning subgraphs test...\n");
     matrix* a_exact = matrix_clone(g1);
     matrix* b_exact = matrix_clone(g2);
 
-    clock_t time_exact = clock();
-    exact_subgraph_run(a_exact, b_exact);
-    time_exact = clock() - time_exact;
+    clock_t time_exact;
+    if (run_exact) {
+        time_exact = clock();
+        exact_subgraph_run(a_exact, b_exact);
+        time_exact = clock() - time_exact;
+    }
 
     matrix* a_approx = matrix_clone(g1);
     matrix* b_approx = matrix_clone(g2);
 
-    clock_t time_approx = clock();
-    approx_subgraph_run(a_approx, b_approx);
-    time_approx = clock() - time_approx;
+    clock_t time_approx;
+    if (run_approx) {
+        time_approx = clock();
+        approx_subgraph_run(a_approx, b_approx);
+        time_approx = clock() - time_approx;
+    }
 
     graph_print(g1, "Original A");
     graph_print(g2, "Original B");
-    graph_print(a_exact, "Exact subgraph of A");
-    graph_print(b_exact, "Exact subgraph of B");
-    graph_print(a_approx, "Approx subgraph of A");
-    graph_print(b_approx, "Approx subgraph of B");
-
-    utils_print_execution_time(time_exact, time_approx);
-
-    if (
-        distance(a_exact, a_approx) == 0 &&
-        distance(b_exact, b_approx) == 0
-        )
-    {
-        print_test_pass(__func__);
-        (*passed)++;
+    
+    if (run_exact) {
+        graph_print(a_exact, "Exact subgraph of A");
+        graph_print(b_exact, "Exact subgraph of B");
     }
-    else {
-        print_test_approx_fail(__func__);
-        (*approx_failed)++;
+
+    if (run_approx) {
+        graph_print(a_approx, "Approx subgraph of A");
+        graph_print(b_approx, "Approx subgraph of B");
+    }
+
+    if (run_exact && run_approx) {
+        utils_print_execution_time(time_exact, time_approx);
+
+        if (
+            distance(a_exact, a_approx) == 0 &&
+            distance(b_exact, b_approx) == 0
+            )
+        {
+            print_test_pass(__func__);
+            (*passed)++;
+        }
+        else {
+            print_test_approx_fail(__func__);
+            (*approx_failed)++;
+        }
     }
 
     //graph_save_to_file(g1, "test_subgraph_a.txt");
-    graph_save_to_file(a_exact, "test_subgraph_a_exact.txt");
-    graph_save_to_file(a_approx, "test_subgraph_a_approx.txt");
+    if (run_exact) {
+        graph_save_to_file(a_exact, "test_subgraph_a_exact.txt");
+        graph_save_to_file(b_exact, "test_subgraph_b_exact.txt");
+    }
     //graph_save_to_file(g2, "test_subgraph_b.txt");
-    graph_save_to_file(b_exact, "test_subgraph_b_exact.txt");
-    graph_save_to_file(b_approx, "test_subgraph_b_approx.txt");
+    if (run_approx) {
+        graph_save_to_file(a_approx, "test_subgraph_a_approx.txt");
+        graph_save_to_file(b_approx, "test_subgraph_b_approx.txt");
+    }
 }
 
 void test_subgraph_stats(int* passed, int* failed, int* approx_failed) {

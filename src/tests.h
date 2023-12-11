@@ -24,8 +24,8 @@ void tests_clique(int* passed, int* failed, int* approx_failed);
 void tests_subgraph(int* passed, int* failed, int* approx_failed);
 
 void test_metric_from_args(matrix* g1, matrix* g2, int* passed, int* failed);
-void test_clique_from_args(matrix* g, int* passed, int* failed, int* approx_failed);
-void test_subgraph_from_args(matrix* g1, matrix* g2, int* passed, int* failed, int* approx_failed);
+void test_clique_from_args(matrix* g, bool run_exact, bool run_approx, int* passed, int* failed, int* approx_failed);
+void test_subgraph_from_args(matrix* g1, matrix* g2, bool run_exact, bool run_approx, int* passed, int* failed, int* approx_failed);
 
 void test_clique_stats(int* passed, int* failed, int* approx_failed);
 void test_subgraph_stats(int* passed, int* failed, int* approx_failed);

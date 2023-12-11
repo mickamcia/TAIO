@@ -189,11 +189,13 @@ int main(int argc, char** argv) {
     bool run_distance;
     bool run_clique;
     bool run_subgraph;
+    bool run_exact;
+    bool run_approx;
     bool generate_stats = false;
     matrix* g1 = NULL;
     matrix* g2 = NULL;
 
-    read_args(argc, argv, &run_distance, &run_clique, &run_subgraph, &generate_stats, &g1, &g2);
+    read_args(argc, argv, &run_distance, &run_clique, &run_subgraph, &run_exact, &run_approx, &generate_stats, &g1, &g2);
 
     int passed = 0, failed = 0, approx_failed = 0;
 
@@ -213,11 +215,11 @@ int main(int argc, char** argv) {
     }
 
     if (run_clique) {
-        test_clique_from_args(g1, &passed, &failed, &approx_failed);
+        test_clique_from_args(g1, run_exact, run_approx, &passed, &failed, &approx_failed);
     }
 
     if (run_subgraph) {
-        test_subgraph_from_args(g1, g2, &passed, &failed, &approx_failed);
+        test_subgraph_from_args(g1, g2, run_exact, run_approx, &passed, &failed, &approx_failed);
     }
 
     if (!run_distance && !run_clique && !run_subgraph) {

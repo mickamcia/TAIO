@@ -22,7 +22,7 @@ void print_test_approx_fail(const char* test_name);
 void print_test_fail(const char* test_name);
 void print_tests_summary(int passed, int failed, int approx_failed, clock_t elapsed);
 
-void read_args(int argc, char** argv, bool* run_distance, bool* run_clique, bool* run_subgraph, bool* generate_stats, matrix** g1, matrix** g2);
+void read_args(int argc, char** argv, bool* run_distance, bool* run_clique, bool* run_subgraph, bool* run_exact, bool* run_approx, bool* generate_stats, matrix** g1, matrix** g2);
 
 double minimum(const double a, const double b);
 double maximum(const double a, const double b);
